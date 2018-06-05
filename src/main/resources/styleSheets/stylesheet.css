@@ -1,6 +1,39 @@
 .parent{
     -fx-background-color: #fff;
 }
+
 .sidebar{
     -fx-background-color: #333645;
 }
+
+/*
+.tree-cell:expanded, .tree-cell:sub-tree-item {
+    -fx-background-color: #333645 ;
+    -fx-font-weight: bold ;
+
+}*/
+
+.tree-cell {
+    -fx-padding: 0.5em 0em 0.5em 0em ;
+    -fx-font-size: 18px;
+}
+
+/*.tree-cell:sub-tree-item {
+    -fx-padding: 0.1em ;
+}*/
+
+.tree-view, .tree-cell {
+    -fx-background-color:  #333645;
+    -fx-text-fill: #b4b4b4;
+}
+
+
+/*.tree-cell:expanded, .tree-cell:sub-tree-item {
+    -fx-background-color: #404040 ;
+}*/
+
+.tree-cell:selected {
+    -fx-text-fill: white ;
+    -fx-background-color: #00A2D3 ;
+}
+

@@ -2,14 +2,13 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.layout.StackPane?>
 <BorderPane prefHeight="600.0" prefWidth="1024.0" stylesheets="@../styleSheets/stylesheet.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MainController">
     <left>
    <VBox prefHeight="600.0" prefWidth="300.0" styleClass="sidebar">
@@ -22,7 +21,7 @@
                   <Font name="Ebrima" size="19.0" />
                </font>
             </Label>
-             <HBox alignment="CENTER" prefHeight="0.0" prefWidth="300.0" VBox.vgrow="NEVER">
+          <!--   <HBox alignment="CENTER" prefHeight="0.0" prefWidth="300.0" VBox.vgrow="NEVER">
                  <children>
                      <Label onMouseClicked="#dashboardButtonClicked" prefHeight="21.0" prefWidth="300.0" text="Dashboard" textFill="#b4b4b4">
                          <font>
@@ -41,25 +40,21 @@
                      <padding>
                         <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                      </padding></Label>
-               </children></HBox>
-             <HBox alignment="CENTER" prefHeight="0.0" prefWidth="300.0" VBox.vgrow="NEVER">
+               </children></HBox>-->
+             <StackPane alignment="TOP_CENTER" prefHeight="0.0" prefWidth="300.0" VBox.vgrow="ALWAYS">
                  <children>
-                     <Label prefHeight="21.0" prefWidth="300.0" text="Groups" textFill="#b4b4b4">
-                         <font>
-                             <Font name="Ebrima" size="16.0" />
-                         </font>
-                         <padding>
-                             <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
-                         </padding></Label>
-                     <ImageView fitHeight="23.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                  <TreeView fx:id="locationTreeView" onContextMenuRequested="#mouseClick" onMouseClicked="#mouseClick" prefHeight="491.0" prefWidth="300.0">
+
+                  </TreeView>
+                    <!-- <ImageView fitHeight="23.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                          <image>
                              <Image url="@../drawable/ic_action_name.png" />
                          </image>
                      <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin></ImageView>
-                 </children></HBox>
-             <ListView fx:id="grouplistView" layoutY="20.0" prefHeight="0.0" prefWidth="300.0" />
+                        <Insets right="10.0" left="10.0" />
+                     </HBox.margin></ImageView>-->
+                 </children></StackPane>
+<!--
              <HBox alignment="CENTER" prefHeight="0.0" prefWidth="300.0" VBox.vgrow="NEVER">
                  <children>
                      <Label prefHeight="21.0" prefWidth="300.0" text="Settings" textFill="#b4b4b4">
@@ -70,7 +65,7 @@
                              <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                          </padding></Label>
                  </children></HBox>
-
+-->
          </children></VBox>
     </left>
     <center>

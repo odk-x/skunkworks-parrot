@@ -15,9 +15,7 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import javafx.concurrent.Task;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
 import java.io.FileInputStream;
@@ -32,13 +30,19 @@ public class CreateNotificationController implements Initializable {
     public TextField title_field;
     public TextField message_field;
     public Button send_button;
+    public ProgressIndicator progressIndicator;
+    public Label statusLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        progressIndicator.setVisible(false);
+        statusLabel.setVisible(false);
     }
 
     public void sendButtonClicked() {
+        progressIndicator.setVisible(true);
+        progressIndicator.setProgress(-1.0f);
+        send_button.setDisable(true);
         String titleStr = title_field.getText();
         String messageStr = message_field.getText();
         if(!(titleStr.isEmpty() && messageStr.isEmpty())) {
@@ -52,19 +56,23 @@ public class CreateNotificationController implements Initializable {
 
 // Send a message to the device corresponding to the provided
 // registration token.
-
+Task<Integer> task = new Task<Integer>() {
+    @Override
+    protected Integer call() throws Exception {
+        
+        return null;
+    }
+};
                 Thread t = new Thread(() -> {
                     try{
                         String response = FirebaseMessaging.getInstance().send(message);
                         System.out.println("Successfully sent message: " + response.toString());
-                       /* String topic = "all";
-// See documentation on defining a message payload.
-                        Message message = Message.builder()
-                                .putData("title", titleStr)
-                                .putData("message", messageStr)
-                                .setTopic(topic)
-                                .build();
-
+                        progressIndicator.setVisible(false);
+                        send_button.setDisable(false);
+                        title_field.setText("");
+                        message_field.setText("");
+                        statusLabel.setText("Message sent successfully.");
+/*
 // Send a message to the devices subscribed to the provided topic.
                         String response2 = FirebaseMessaging.getInstance().send(message);*/
 // Response is a message ID string.
@@ -72,11 +80,15 @@ public class CreateNotificationController implements Initializable {
                     }
                     catch (Exception e){
                         e.printStackTrace();
+                        progressIndicator.setVisible(false);
+                        send_button.setDisable(false);
+                        title_field.setText("");
+                        message_field.setText("");
+                        statusLabel.setText("Error in sending message please try again.");
                         System.out.println("error");
                     }
                 });
                 t.start();
-
             }
 // Response is a message ID string.
 
