@@ -10,7 +10,6 @@
    -fx-width: 100%;
 }
 
-
 .titled-pane:focused > .title > .arrow-button .arrow{
     -fx-background-color: white;
 }
@@ -37,7 +36,6 @@
     -fx-font-size: 18px;
 }
 
-
 #listView .list-cell:filled:selected:focused, .list-cell:filled:selected {
     -fx-text-fill: white;
 }
@@ -45,6 +43,7 @@
 #listView .list-cell:even{
     -fx-background-color: transparent;
 }
+
 
 #listView .list-cell:filled:hover{
     -fx-text-fill: white;
