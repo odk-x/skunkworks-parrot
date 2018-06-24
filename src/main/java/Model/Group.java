@@ -1,20 +1,30 @@
 package Model;
 
-public class Group {
-    String group_id;
-    String name;
+import java.util.ArrayList;
 
-    public Group(String group_id, String name) {
-        this.group_id = group_id;
+public class Group {
+    String id;
+    String name;
+    ArrayList<String> membersList;
+
+
+    public Group(String id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    public String getId() {
-        return group_id;
+    public Group(String id, String name, ArrayList<String> workerIdArrayList) {
+        this.id = id;
+        this.name = name;
+        this.membersList = workerIdArrayList;
     }
 
-    public void setId(String group_id) {
-        this.group_id = group_id;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
