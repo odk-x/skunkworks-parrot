@@ -6,34 +6,55 @@
     -fx-background-color: #333645;
 }
 
-/*
-.tree-cell:expanded, .tree-cell:sub-tree-item {
-    -fx-background-color: #333645 ;
-    -fx-font-weight: bold ;
+.container{
+   -fx-width: 100%;
+}
 
-}*/
 
-.tree-cell {
-    -fx-padding: 0.5em 0em 0.5em 0em ;
+.titled-pane:focused > .title > .arrow-button .arrow{
+    -fx-background-color: white;
+}
+
+.titled-pane > *.content{
+    -fx-background-color: transparent;
+}
+
+.titled-pane{
+    -fx-text-fill: #b4b4b4;
+    -fx-font-size: 18px;
+    -fx-background-color: transparent;
+}
+
+.titled-pane:focused > .title{
+    -fx-background-color:  #00A2D3 ;
+    -fx-text-fill: white;
+    -fx-title-fill: white;
+}
+
+.titled-pane > .title{
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
     -fx-font-size: 18px;
 }
 
-/*.tree-cell:sub-tree-item {
-    -fx-padding: 0.1em ;
-}*/
 
-.tree-view, .tree-cell {
-    -fx-background-color:  #333645;
+#listView .list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-text-fill: white;
+}
+
+#listView .list-cell:even{
+    -fx-background-color: transparent;
+}
+
+#listView .list-cell:filled:hover{
+    -fx-text-fill: white;
+}
+
+#listView .list-cell{
+    -fx-background-color: transparent;
     -fx-text-fill: #b4b4b4;
 }
 
-
-/*.tree-cell:expanded, .tree-cell:sub-tree-item {
-    -fx-background-color: #404040 ;
-}*/
-
-.tree-cell:selected {
-    -fx-text-fill: white ;
-    -fx-background-color: #00A2D3 ;
+#listView{
+    -fx-background-color: transparent;
 }
-
