@@ -33,7 +33,7 @@ public class MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         progressIndicator.setProgress(-1.0f);
         progressIndicator.setVisible(true);
-        getGroups();
+       // getGroups();
         progressIndicator.setProgress(1.0f);
         progressIndicator.setVisible(false);
 
