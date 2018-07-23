@@ -44,7 +44,6 @@
     -fx-background-color: transparent;
 }
 
-
 #listView .list-cell:filled:hover{
     -fx-text-fill: white;
 }
