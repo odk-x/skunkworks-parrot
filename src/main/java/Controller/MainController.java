@@ -151,6 +151,7 @@ public class MainController implements Initializable {
         mainHeading.setText("Settings");
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/settings.fxml"));
+            fxmlLoader.setController(new SettingsController());
             setCenterScene(fxmlLoader);
         } catch (Exception e) {
             e.printStackTrace();
