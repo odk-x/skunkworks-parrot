@@ -19,5 +19,6 @@ dependencies {
     implementation 'org.knowm:sundial:2.1.1'
     testCompile "org.testfx:testfx-core:4.0.13-alpha"
     testCompile "org.testfx:testfx-junit:4.0.13-alpha"
+    implementation 'com.google.zxing:core:3.2.1'
 
 }

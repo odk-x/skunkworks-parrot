@@ -126,6 +126,7 @@ public class MainController implements Initializable {
         mainHeading.setText("Create Notification");
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/CreateNotification.fxml"));
+            fxmlLoader.setController(new CreateNotificationController(groupArrayList));
             setCenterScene(fxmlLoader);
         } catch (Exception e) {
             e.printStackTrace();

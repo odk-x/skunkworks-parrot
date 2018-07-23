@@ -22,8 +22,10 @@
 
 .titled-pane:focused > .title{
     -fx-background-color:  #00A2D3 ;
-    -fx-text-fill: white;
-    -fx-title-fill: white;
+}
+
+.titled-pane:focused {
+    -fx-text-fill: #fff;
 }
 
 .titled-pane > .title{
