@@ -55,9 +55,11 @@ public class LoginPageController implements Initializable {
 
         if(usernameField.getText().trim().isEmpty()){
             setStatusText("Username field can't be empty");
+            stopProgress();
         }
         else if (passwordField.getText().trim().isEmpty()){
             setStatusText("Password field can't be empty");
+            stopProgress();
         }
         else{
             attemptLogin(usernameField.getText().trim(), passwordField.getText().trim());
@@ -73,10 +75,7 @@ public class LoginPageController implements Initializable {
                 updateProgress(-1, 100);
 
                 try {
-                    //TODO: write code to verify user credentials from server.
-                    if(username.equals("admin")&& password.equals("password")){
 
-                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     updateProgress(0, 100);
@@ -98,7 +97,6 @@ public class LoginPageController implements Initializable {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainUI.fxml"));
         Stage stage = new Stage();
-        stage.setTitle("My New Stage Title");
         try {
             stage.setScene(new Scene(fxmlLoader.load(),    1024, 600));
         } catch (IOException e) {
