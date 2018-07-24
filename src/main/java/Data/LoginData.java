@@ -23,7 +23,6 @@ public class LoginData {
       try {
           String content = new String(Files.readAllBytes(Paths.get(FILE_NAME)));
           JSONObject mainObject = new JSONObject(content);
-          System.out.println("$$$"+mainObject.toString());
           try {
               setSERVICE_ACCOUNT_KEY_PATH((String) mainObject.getString("serviceAccountKeyPath"));
               setWEB_API_KEY((String) mainObject.getString("webAPIKey"));
