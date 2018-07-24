@@ -1,5 +1,6 @@
 package Controller;
 
+import Data.LoginData;
 import Model.Group;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -36,10 +37,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static Data.LoginData.ANDROID_APP_PACKAGE_NAME;
-import static Data.LoginData.DYNAMIC_LINK_DOMAIN;
-import static Data.LoginData.FIREBASE_INVITES_URL;
 
 public class CreateGroupController implements Initializable {
     public TextField name_field;
@@ -123,9 +120,9 @@ public class CreateGroupController implements Initializable {
     private String createDynamicLink(String groupId) {
 
         JSONObject androidInfo = new JSONObject();
-        androidInfo.put("androidPackageName", ANDROID_APP_PACKAGE_NAME);
+        androidInfo.put("androidPackageName", LoginData.loginData.getANDROID_APP_PACKAGE_NAME());
         JSONObject dynamicLinkInfo = new JSONObject();
-        dynamicLinkInfo.put("dynamicLinkDomain", DYNAMIC_LINK_DOMAIN);
+        dynamicLinkInfo.put("dynamicLinkDomain", LoginData.loginData.getDYNAMIC_LINK_DOMAIN());
         dynamicLinkInfo.put("link", "https://odknotificatons?id="+groupId);
         dynamicLinkInfo.put("androidInfo", androidInfo);
 
@@ -138,7 +135,7 @@ public class CreateGroupController implements Initializable {
         HttpResponse response;
 
         try {
-            HttpPost post = new HttpPost(FIREBASE_INVITES_URL);
+            HttpPost post = new HttpPost(LoginData.loginData.getFIREBASE_INVITES_URL());
             StringEntity se = new StringEntity(mainObject.toString());
             post.setEntity(se);
             response = client.execute(post);
