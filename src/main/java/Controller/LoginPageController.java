@@ -47,19 +47,18 @@ public class LoginPageController implements Initializable {
     }
 
     public void loginButtonClicked(){
-        loginButton.setDisable(true);
         setStatusText(null);
         startProgress();
-        usernameField.setDisable(true);
-        passwordField.setDisable(true);
-
+        disableFields(true);
         if(usernameField.getText().trim().isEmpty()){
             setStatusText("Username field can't be empty");
             stopProgress();
+            disableFields(false);
         }
         else if (passwordField.getText().trim().isEmpty()){
             setStatusText("Password field can't be empty");
             stopProgress();
+            disableFields(false);
         }
         else{
             attemptLogin(usernameField.getText().trim(), passwordField.getText().trim());
@@ -75,7 +74,7 @@ public class LoginPageController implements Initializable {
                 updateProgress(-1, 100);
 
                 try {
-
+                    //TODO: Verify credentials from server.
                 } catch (Exception e) {
                     e.printStackTrace();
                     updateProgress(0, 100);
@@ -124,5 +123,11 @@ public class LoginPageController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void disableFields(boolean disable){
+        loginButton.setDisable(disable);
+        usernameField.setDisable(disable);
+        passwordField.setDisable(disable);
     }
 }
