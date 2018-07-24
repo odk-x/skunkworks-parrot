@@ -19,22 +19,17 @@ public class Launch extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        try {
-            initilizeSDK();
+       /* try {
+           // initilizeSDK();
         }catch(Exception e){
             e.printStackTrace();
-        }
+        }*/
 
-        Parent root = FXMLLoader.load(getClass().getResource("fxml/MainUI.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("fxml/LoginPage.fxml"));
         window = primaryStage;
         window.setTitle("ODK Notifications Admin Panel");
-        window.setScene(new Scene(root,1024,600));
+        window.setScene(new Scene(root,740,420));
         window.show();
-        getData();
-
-    }
-
-    private void getData() {
 
     }
 
