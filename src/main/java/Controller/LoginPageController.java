@@ -24,6 +24,7 @@ public class LoginPageController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/LoginForm.fxml"));
         try {
             setPane(fxmlLoader.load());
@@ -78,5 +79,11 @@ public class LoginPageController implements Initializable {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void disableFields(boolean disable){
+        loginButton.setDisable(disable);
+        usernameField.setDisable(disable);
+        passwordField.setDisable(disable);
     }
 }
