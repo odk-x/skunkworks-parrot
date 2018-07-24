@@ -16,6 +16,7 @@ public class LoginData {
     private String SERVICE_ACCOUNT_KEY_PATH;
     private String SYNC_CLIENT_URL;
     private static final String FILE_NAME = "keys.json";
+    public static final String FIREBASE_KEYS_FILE_NAME = "FirebaseKeys.json";
 
     public static LoginData loginData;
 
@@ -52,6 +53,16 @@ public class LoginData {
       } catch (IOException e) {
           e.printStackTrace();
       }
+
+      try {
+          String FirebaseKeysContent = new String(Files.readAllBytes(Paths.get(SERVICE_ACCOUNT_KEY_PATH)));
+          BufferedWriter out = new BufferedWriter(new FileWriter(FIREBASE_KEYS_FILE_NAME));
+          out.write(FirebaseKeysContent);
+          out.close();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+
   }
 
     public String getSUPERVISOR_ID() {
