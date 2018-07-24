@@ -6,7 +6,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class LoginData {
+public class Data {
     private String SUPERVISOR_ID;
     private String WEB_API_KEY;
     private String ANDROID_APP_PACKAGE_NAME;
@@ -18,9 +18,9 @@ public class LoginData {
     private static final String FILE_NAME = "keys.json";
     public static final String FIREBASE_KEYS_FILE_NAME = "FirebaseKeys.json";
 
-    public static LoginData loginData;
+    public static Data data;
 
-   public LoginData(){
+   public Data(){
       try {
           String content = new String(Files.readAllBytes(Paths.get(FILE_NAME)));
           JSONObject mainObject = new JSONObject(content);
@@ -131,7 +131,7 @@ public class LoginData {
 
     @Override
     public String toString() {
-        return "LoginData{" +
+        return "Data{" +
                 "SUPERVISOR_ID='" + SUPERVISOR_ID + '\'' +
                 ", WEB_API_KEY='" + WEB_API_KEY + '\'' +
                 ", ANDROID_APP_PACKAGE_NAME='" + ANDROID_APP_PACKAGE_NAME + '\'' +

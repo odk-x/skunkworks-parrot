@@ -1,6 +1,5 @@
 package Controller;
 
-import Data.LoginData;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -21,7 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static Data.LoginData.FIREBASE_KEYS_FILE_NAME;
+import static Data.Data.FIREBASE_KEYS_FILE_NAME;
 
 public class LoginFormController implements Initializable {
     public TextField usernameField;
