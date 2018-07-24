@@ -25,7 +25,7 @@
     <left>
         <VBox prefHeight="600.0" prefWidth="300.0" styleClass="sidebar">
             <children>
-                <HBox prefHeight="64.0" prefWidth="300.0" style="-fx-background-color: #00A2D3;" styleClass="container">
+                <HBox prefHeight="64.0" prefWidth="300.0" style="-fx-background-color: #00A2D3" styleClass="container">
                     <children>
                         <Label prefHeight="64.0" prefWidth="235.0" style="-fx-background-color: #00A2D3;" text="Admin Panel" textFill="WHITE">
                             <padding>
