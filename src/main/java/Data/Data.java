@@ -12,7 +12,7 @@ public class Data {
     private String ANDROID_APP_PACKAGE_NAME;
     private String PLAYSTORE_URL;
     private String FIREBASE_INVITES_URL = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + WEB_API_KEY;
-    private String DYNAMIC_LINK_DOMAIN = "odknotifications.page.link";
+    private String DYNAMIC_LINK_DOMAIN;
     private String SERVICE_ACCOUNT_KEY_PATH;
     private String SYNC_CLIENT_URL;
     private static final String FILE_NAME = "keys.json";
@@ -98,7 +98,7 @@ public class Data {
     }
 
     public String getFIREBASE_INVITES_URL() {
-        return FIREBASE_INVITES_URL;
+        return "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + WEB_API_KEY;
     }
 
     public void setFIREBASE_INVITES_URL(String FIREBASE_INVITES_URL) {

@@ -88,8 +88,10 @@ public class CreateGroupController implements Initializable {
                     }
                 };
                 task.setOnSucceeded(taskFinishEvent -> {
-                    clipboardButton.setVisible(true);
-                    saveImageButton.setVisible(true);
+                    if(groupLink!=null) {
+                        clipboardButton.setVisible(true);
+                        saveImageButton.setVisible(true);
+                    }
                 });
 
                 progressIndicator.progressProperty().bind(task.progressProperty());
@@ -119,6 +121,8 @@ public class CreateGroupController implements Initializable {
 
     private String createDynamicLink(String groupId) {
 
+        if(Data.data == null) Data.data = new Data();
+
         JSONObject androidInfo = new JSONObject();
         androidInfo.put("androidPackageName", Data.data.getANDROID_APP_PACKAGE_NAME());
         JSONObject dynamicLinkInfo = new JSONObject();
@@ -129,7 +133,6 @@ public class CreateGroupController implements Initializable {
         JSONObject mainObject = new JSONObject();
         mainObject.put("dynamicLinkInfo", dynamicLinkInfo);
 
-        // System.out.println("JSON Object->" + String.valueOf(mainObject));
         HttpClient client = new DefaultHttpClient();
         HttpConnectionParams.setConnectionTimeout(client.getParams(), 1000); //Timeout Limit
         HttpResponse response;
@@ -141,13 +144,14 @@ public class CreateGroupController implements Initializable {
             response = client.execute(post);
 
             if (response != null) {
-                InputStream in = response.getEntity().getContent(); //Get the data in the entity
+                InputStream in = response.getEntity().getContent();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                 StringBuilder result = new StringBuilder();
                 String line;
                 while((line = reader.readLine()) != null) {
                     result.append(line);
                 }
+                System.out.println(result.toString());
                 JSONObject responseJSON = new JSONObject(result.toString());
                 groupLink = responseJSON.getString("shortLink");
                 progressIndicator.setVisible(false);

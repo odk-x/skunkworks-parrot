@@ -9,9 +9,8 @@ import java.util.ArrayList;
 public class DatabaseCommunicator {
     private Connection c = null;
     private Statement stmt = null;
-    public static DatabaseCommunicator databaseCommunicator;
 
-    DatabaseCommunicator(){
+    public DatabaseCommunicator(){
         try {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:database.db");
@@ -23,7 +22,7 @@ public class DatabaseCommunicator {
 
     public ArrayList<Group> getGroups(){
         ArrayList<Group> groupList = new ArrayList<>();
-        try{
+       /* try{
             this.stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM Groups");
 
@@ -35,7 +34,12 @@ public class DatabaseCommunicator {
             }
         } catch (Exception e){
             e.printStackTrace();
-        }
+        }*/
+       //TODO : complete this method to fetch ODK Groups from database.
+        groupList.add(new Group("all","all"));
+        groupList.add(new Group("north","north"));
+        groupList.add(new Group("south","south"));
+
         return groupList;
     }
 
