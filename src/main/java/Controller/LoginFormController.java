@@ -1,5 +1,6 @@
 package Controller;
 
+import Data.LoginCredentials;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -72,6 +73,7 @@ public class LoginFormController implements Initializable {
                 try {
                     //TODO: write code to verify user credentials from server.
                     if(username.equals("admin")&& password.equals("password")) {
+                        LoginCredentials.credentials = new LoginCredentials(username,password);
                         try {
                             initializeFirebaseSDK();
                         }catch (IOException e){
