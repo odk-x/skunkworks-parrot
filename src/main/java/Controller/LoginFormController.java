@@ -1,5 +1,8 @@
 package Controller;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,9 +15,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static Data.Data.FIREBASE_KEYS_FILE_NAME;
 
 public class LoginFormController implements Initializable {
     public TextField usernameField;
@@ -65,8 +71,16 @@ public class LoginFormController implements Initializable {
 
                 try {
                     //TODO: write code to verify user credentials from server.
-                    if(username.equals("admin")&& password.equals("password")){
-
+                    if(username.equals("admin")&& password.equals("password")) {
+                        try {
+                            initializeFirebaseSDK();
+                        }catch (IOException e){
+                            updateProgress(0,100);
+                            updateMessage("Error: Firebase key file not found.");
+                        }
+                    }else{
+                        updateProgress(0,100);
+                        updateMessage("Invalid username/password");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -85,11 +99,23 @@ public class LoginFormController implements Initializable {
         new Thread(task).start();
     }
 
+    private void initializeFirebaseSDK() throws IOException{
+
+        FileInputStream serviceAccount = new FileInputStream(FIREBASE_KEYS_FILE_NAME);
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                 .setDatabaseUrl("https://odk-notifications.firebaseio.com/")
+                 .build();
+        FirebaseApp.initializeApp(options);
+
+    }
+
+
     private void moveToDashboard() {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainUI.fxml"));
         Stage stage = new Stage();
-        stage.setTitle("My New Stage Title");
+        stage.setTitle("ODK Notifications Admin Panel");
         try {
             stage.setScene(new Scene(fxmlLoader.load(),    1024, 600));
         } catch (IOException e) {

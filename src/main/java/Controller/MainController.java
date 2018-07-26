@@ -1,18 +1,22 @@
 package Controller;
 
+import Data.DatabaseCommunicator;
 import Model.Group;
 import com.google.firebase.database.*;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -27,16 +31,14 @@ public class MainController implements Initializable {
     public TitledPane groups_tp;
     public TitledPane settings_tp;
     public ListView listView;
+    public ImageView syncIcon;
     private ArrayList<Group> groupArrayList;
+    DatabaseCommunicator databaseCommunicator;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        progressIndicator.setProgress(-1.0f);
-        progressIndicator.setVisible(true);
+        databaseCommunicator = new DatabaseCommunicator();
         getGroups();
-        progressIndicator.setProgress(1.0f);
-        progressIndicator.setVisible(false);
-
 
         listView.setCellFactory(new Callback<ListView<Group>, ListCell<Group>>() {
             @Override
@@ -50,7 +52,6 @@ public class MainController implements Initializable {
                             setText(notificationGroup.getName());
                         }
                     }
-
                 };
                 return cell;
             }
@@ -81,29 +82,28 @@ public class MainController implements Initializable {
 
     private void getGroups() {
         groupArrayList = new ArrayList<>();
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("group");
-        ref.addValueEventListener(new ValueEventListener() {
+        Task<Void> task = new Task<Void>() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                groupArrayList.clear();
-                for (DataSnapshot singleGroup: snapshot.getChildren()){
-                    ArrayList<String> workerIdArrayList = new ArrayList();
-                    for(DataSnapshot workerSnapshot : singleGroup.child("members").getChildren()){
-                        workerIdArrayList.add((String)workerSnapshot.getValue());
-                    }
-                    Group newGroup = new Group((String)singleGroup.child("id").getValue(),(String)singleGroup.child("name").getValue(),workerIdArrayList);
-                    groupArrayList.add(newGroup);
-                    //System.out.println(newGroup.getName());
+            protected Void call() throws Exception {
+                updateProgress(-1, 100);
+
+                try {
+                    groupArrayList = databaseCommunicator.getGroups();
+                    updateProgress(100,100);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    updateProgress(0, 100);
                 }
-                listView.setItems(FXCollections.observableList(groupArrayList));
+                return null;
             }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
+        };
+        task.setOnSucceeded(taskFinishEvent -> {
+            listView.setItems(FXCollections.observableList(groupArrayList));
+            progressIndicator.setVisible(false);
         });
+
+        progressIndicator.progressProperty().bind(task.progressProperty());
+        new Thread(task).start();
     }
 
 
@@ -151,7 +151,6 @@ public class MainController implements Initializable {
         mainHeading.setText("Settings");
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/settings.fxml"));
-            fxmlLoader.setController(new SettingsController());
             setCenterScene(fxmlLoader);
         } catch (Exception e) {
             e.printStackTrace();
@@ -166,5 +165,29 @@ public class MainController implements Initializable {
         AnchorPane.setRightAnchor(pane,0.0);
         content.getChildren().clear();
         content.getChildren().add(pane);
+    }
+
+    public void syncFromServer() {
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                updateProgress(-1, 100);
+
+                try {
+                    //TODO: write code to fetch ODK Groups from SyncClient and save them in local Database.
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    updateProgress(0, 100);
+                }
+                return null;
+            }
+        };
+        task.setOnSucceeded(taskFinishEvent -> {
+            getGroups();
+            progressIndicator.setVisible(false);
+        });
+
+        progressIndicator.progressProperty().bind(task.progressProperty());
+        new Thread(task).start();
     }
 }

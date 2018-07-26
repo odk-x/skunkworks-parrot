@@ -1,6 +1,6 @@
 package Controller;
 
-import Data.LoginData;
+import Data.Data;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
@@ -26,14 +26,14 @@ public class SettingsController implements Initializable {
     }
 
     private void readKeyData() {
-       if(LoginData.loginData==null) LoginData.loginData = new LoginData();
+       if(Data.data ==null) Data.data = new Data();
 
-       serviceAccountKeyPathField.setText(LoginData.loginData.getSERVICE_ACCOUNT_KEY_PATH());
-       webAPIKeyField.setText(LoginData.loginData.getWEB_API_KEY());
-       dynamicLinkDomainField.setText(LoginData.loginData.getDYNAMIC_LINK_DOMAIN());
-       packageNameField.setText(LoginData.loginData.getANDROID_APP_PACKAGE_NAME());
-       syncClientURLField.setText(LoginData.loginData.getSYNC_CLIENT_URL());
-       System.out.print(LoginData.loginData);
+       serviceAccountKeyPathField.setText(Data.data.getSERVICE_ACCOUNT_KEY_PATH());
+       webAPIKeyField.setText(Data.data.getWEB_API_KEY());
+       dynamicLinkDomainField.setText(Data.data.getDYNAMIC_LINK_DOMAIN());
+       packageNameField.setText(Data.data.getANDROID_APP_PACKAGE_NAME());
+       syncClientURLField.setText(Data.data.getSYNC_CLIENT_URL());
+       System.out.print(Data.data);
     }
 
     @FXML
@@ -58,11 +58,11 @@ public class SettingsController implements Initializable {
     }
 
     public void saveButtonClicked()  {
-        LoginData.loginData.setANDROID_APP_PACKAGE_NAME(packageNameField.getText());
-        LoginData.loginData.setDYNAMIC_LINK_DOMAIN(dynamicLinkDomainField.getText());
-        LoginData.loginData.setSERVICE_ACCOUNT_KEY_PATH(serviceAccountKeyPathField.getText());
-        LoginData.loginData.setWEB_API_KEY(webAPIKeyField.getText());
-        LoginData.loginData.setSYNC_CLIENT_URL(syncClientURLField.getText());
-        LoginData.loginData.saveKeys();
+        Data.data.setANDROID_APP_PACKAGE_NAME(packageNameField.getText());
+        Data.data.setDYNAMIC_LINK_DOMAIN(dynamicLinkDomainField.getText());
+        Data.data.setSERVICE_ACCOUNT_KEY_PATH(serviceAccountKeyPathField.getText());
+        Data.data.setWEB_API_KEY(webAPIKeyField.getText());
+        Data.data.setSYNC_CLIENT_URL(syncClientURLField.getText());
+        Data.data.saveKeys();
     }
 }
