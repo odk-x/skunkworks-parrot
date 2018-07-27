@@ -6,6 +6,10 @@
     -fx-background-color: #333645;
 }
 
+.container{
+   -fx-width: 100%;
+}
+
 .titled-pane:focused > .title > .arrow-button .arrow{
     -fx-background-color: white;
 }
@@ -22,10 +26,8 @@
 
 .titled-pane:focused > .title{
     -fx-background-color:  #00A2D3 ;
-}
-
-.titled-pane:focused {
-    -fx-text-fill: #fff;
+    -fx-text-fill: white;
+    -fx-title-fill: white;
 }
 
 .titled-pane > .title{

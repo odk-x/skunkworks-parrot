@@ -25,6 +25,7 @@
                         <Insets top="10.0" />
                     </VBox.margin></Label>
                 <TextField fx:id="message_field" prefHeight="31.0" prefWidth="450.0" />
+
                 <HBox layoutX="30.0" layoutY="144.0">
                     <children>
                         <ComboBox fx:id="comboBox" prefHeight="31.0" prefWidth="235.0" promptText="Select Notification Group" />

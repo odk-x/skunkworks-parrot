@@ -33,7 +33,7 @@ public class MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         progressIndicator.setProgress(-1.0f);
         progressIndicator.setVisible(true);
-       // getGroups();
+        getGroups();
         progressIndicator.setProgress(1.0f);
         progressIndicator.setVisible(false);
 
@@ -151,6 +151,7 @@ public class MainController implements Initializable {
         mainHeading.setText("Settings");
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/settings.fxml"));
+            fxmlLoader.setController(new SettingsController());
             setCenterScene(fxmlLoader);
         } catch (Exception e) {
             e.printStackTrace();

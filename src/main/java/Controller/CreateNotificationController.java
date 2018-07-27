@@ -2,10 +2,16 @@ package Controller;
 
 
 import Model.Group;
+import com.google.firebase.database.*;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.Message;
+import javafx.application.Platform;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.util.Callback;
@@ -84,6 +90,7 @@ public class CreateNotificationController implements Initializable {
                     updateMessage("Please Wait...");
                     updateProgress(-1, 100);
                     String topic = selected.getId();
+
                     Message message = Message.builder()
                             .putData("title", titleStr)
                             .putData("message", messageStr)
@@ -92,12 +99,16 @@ public class CreateNotificationController implements Initializable {
 
                     try {
                         String response = FirebaseMessaging.getInstance().send(message);
+                        System.out.println("Response:" + response);
                         System.out.println("Successfully sent message: " + response.toString());
                         updateProgress(100, 100);
+                        updateMessage("Message sent successfully.");
+
                     } catch (Exception e) {
                         e.printStackTrace();
                         updateProgress(0, 100);
                         updateMessage("Error in sending message please try again.");
+                        System.out.println("error");
                     }
                     return null;
                 }
