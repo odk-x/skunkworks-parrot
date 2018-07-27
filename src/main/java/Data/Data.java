@@ -6,7 +6,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class LoginData {
+public class Data {
     private String SUPERVISOR_ID;
     private String WEB_API_KEY;
     private String ANDROID_APP_PACKAGE_NAME;
@@ -16,10 +16,11 @@ public class LoginData {
     private String SERVICE_ACCOUNT_KEY_PATH;
     private String SYNC_CLIENT_URL;
     private static final String FILE_NAME = "keys.json";
+    public static final String FIREBASE_KEYS_FILE_NAME = "FirebaseKeys.json";
 
-    public static LoginData loginData;
+    public static Data data;
 
-   public LoginData(){
+   public Data(){
       try {
           String content = new String(Files.readAllBytes(Paths.get(FILE_NAME)));
           JSONObject mainObject = new JSONObject(content);
@@ -52,6 +53,16 @@ public class LoginData {
       } catch (IOException e) {
           e.printStackTrace();
       }
+
+      try {
+          String FirebaseKeysContent = new String(Files.readAllBytes(Paths.get(SERVICE_ACCOUNT_KEY_PATH)));
+          BufferedWriter out = new BufferedWriter(new FileWriter(FIREBASE_KEYS_FILE_NAME));
+          out.write(FirebaseKeysContent);
+          out.close();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+
   }
 
     public String getSUPERVISOR_ID() {
@@ -120,7 +131,7 @@ public class LoginData {
 
     @Override
     public String toString() {
-        return "LoginData{" +
+        return "Data{" +
                 "SUPERVISOR_ID='" + SUPERVISOR_ID + '\'' +
                 ", WEB_API_KEY='" + WEB_API_KEY + '\'' +
                 ", ANDROID_APP_PACKAGE_NAME='" + ANDROID_APP_PACKAGE_NAME + '\'' +
