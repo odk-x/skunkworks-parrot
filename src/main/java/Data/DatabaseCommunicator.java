@@ -22,7 +22,9 @@ public class DatabaseCommunicator {
 
     public ArrayList<Group> getGroups(){
         ArrayList<Group> groupList = new ArrayList<>();
-       /* try{
+        groupList.add(new Group("all","all"));
+
+        try{
             this.stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM Groups");
 
@@ -30,16 +32,11 @@ public class DatabaseCommunicator {
                 String groupName = rs.getString("name");
                 Group group = new Group(groupName, groupName);
                 groupList.add(group);
-                System.out.println(groupName);
             }
         } catch (Exception e){
             e.printStackTrace();
-        }*/
+        }
        //TODO : complete this method to fetch ODK Groups from database.
-        groupList.add(new Group("all","all"));
-        groupList.add(new Group("north","north"));
-        groupList.add(new Group("south","south"));
-
         return groupList;
     }
 
@@ -61,11 +58,24 @@ public class DatabaseCommunicator {
         }
     }
 
+    private void executeUpdate(String query){
+        try {
+            this.stmt = c.createStatement();
+            stmt.executeUpdate(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void createGroupTable(){
         executeQuery("CREATE TABLE IF NOT EXISTS Groups (name VARCHAR PRIMARY KEY);");
     }
 
     public void insertGroup(Group group){
-        executeQuery("INSERT INTO Groups Values ("+group.getName()+")");
+        executeUpdate("INSERT INTO Groups(name) VALUES ('"+group.getName()+"');");
+    }
+
+    public void clearTable(String tableName){
+        executeUpdate("DELETE FROM "+ tableName +";");
     }
 }

@@ -1,6 +1,6 @@
 package Controller;
 
-import Data.DatabaseCommunicator;
+import Data.*;
 import Model.Group;
 import com.google.firebase.database.*;
 import javafx.collections.FXCollections;
@@ -15,10 +15,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
+import org.opendatakit.sync.client.SyncClient;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -175,6 +178,29 @@ public class MainController implements Initializable {
 
                 try {
                     //TODO: write code to fetch ODK Groups from SyncClient and save them in local Database.
+                    SyncClient syncClient = new SyncClient();
+                    Data data = new Data();
+                    String url = data.getSYNC_CLIENT_URL();
+                    URI uri = new URI(url);
+                    url = url +"/odktables";
+                    String appId = "default";
+                    syncClient.init(uri.getHost(), LoginCredentials.credentials.getUsername(),LoginCredentials.credentials.getPassword());
+                    ArrayList<Map<String, Object>> users = syncClient.getUsers(url, appId);
+                    syncClient.close();
+
+                    databaseCommunicator.clearTable("Groups");
+                    ArrayList<String> groupsList = new ArrayList<>();
+
+                    for (Map<String, Object> user : users) {
+                        ArrayList<String> userGroupList = (ArrayList)user.get("roles");
+                        for(String groupName : userGroupList){
+                            if((groupName.startsWith("GROUP_") || groupName.startsWith("ROLE_"))&& !groupsList.contains(groupName)){
+                                groupsList.add(groupName);
+                                databaseCommunicator.insertGroup(new Group(groupName, groupName));
+                                System.out.println(groupName);
+                            }
+                        }
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     updateProgress(0, 100);
