@@ -67,20 +67,21 @@ public class MainController implements Initializable {
                 NotificationGroupButtonClicked(selected);
             }
         });
+        createNotificationButtonClicked();
     }
 
 
     private void NotificationGroupButtonClicked(Group group) {
         System.out.println(group.getName() + " Group button clicked");
-
-    }
-
-    private ArrayList<String> getGroupsNames(ArrayList<Group> groups) {
-        ArrayList<String> groupNameList = new ArrayList<>();
-        for (Group group : groups) {
-            groupNameList.add(group.getName());
+        mainHeading.setText(group.getName());
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/NotificationGroup.fxml"));
+            fxmlLoader.setController(new NotificationGroupController(group.getName()));
+            setCenterScene(fxmlLoader);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return groupNameList;
+
     }
 
     private void getGroups() {
@@ -109,18 +110,6 @@ public class MainController implements Initializable {
         new Thread(task).start();
     }
 
-
-    @FXML
-    private void dashboardButtonClicked() {
-        System.out.println("Dashboard Button Clicked");
-        mainHeading.setText("Dashboard");
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Dashboard.fxml"));
-            setCenterScene(fxmlLoader);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @FXML
     private void createNotificationButtonClicked() {

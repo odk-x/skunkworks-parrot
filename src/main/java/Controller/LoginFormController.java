@@ -131,7 +131,7 @@ public class LoginFormController implements Initializable {
         syncClient.close();
 
         for (Map<String, Object> user : users) {
-            if(user.get("user_id").equals("username"+ username)){
+            if(user.get("user_id").equals("username:"+ username)){
                 if(((ArrayList<String>)(user.get("roles"))).contains("ROLE_SITE_ACCESS_ADMIN")){
                     return true;
                 }
