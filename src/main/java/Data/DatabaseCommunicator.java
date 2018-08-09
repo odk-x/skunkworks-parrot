@@ -20,6 +20,7 @@ public class DatabaseCommunicator {
     private static final String COLUMN_MESSAGE = "message";
     private static final String COLUMN_DATE = "date_int";
     private static final String COLUMN_STATUS = "status_str";
+    private static final String COLUMN_GRP_LINK="group_link";
 
     public DatabaseCommunicator(){
         try {
@@ -44,7 +45,8 @@ public class DatabaseCommunicator {
             while(rs.next()){
                 String groupName = rs.getString(COLUMN_NAME);
                 String groupId = rs.getString(COLUMN_GRP_ID);
-                Group group = new Group(groupId,groupName);
+                String groupLink = rs.getString(COLUMN_GRP_LINK);
+                Group group = new Group(groupId,groupName,groupLink);
                 groupList.add(group);
             }
         } catch (Exception e){
@@ -81,7 +83,7 @@ public class DatabaseCommunicator {
     }
 
     private void createGroupTable(){
-        executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_GROUPS+" ("+COLUMN_GRP_ID+" VARCHAR PRIMARY KEY, "+ COLUMN_NAME+" VARCHAR);");
+        executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_GROUPS+" ( "+ COLUMN_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_GRP_ID+" VARCHAR, "+ COLUMN_NAME+" VARCHAR, "+COLUMN_GRP_LINK+" VARCHAR);");
     }
 
     private void createNotificationsTable(){

@@ -79,7 +79,6 @@ public class LoginFormController implements Initializable {
                 updateProgress(-1, 100);
 
                 try {
-                    //TODO: write code to verify user credentials from server.
                     if(verifyCredentials(username,password)) {
                         LoginCredentials.credentials = new LoginCredentials(username,password);
                         try {

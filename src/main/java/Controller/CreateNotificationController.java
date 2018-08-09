@@ -96,6 +96,7 @@ public class CreateNotificationController implements Initializable {
                     Message message = Message.builder()
                             .putData("title", titleStr)
                             .putData("message", messageStr)
+                            .putData("group", selected.getId())
                             .setTopic(topic)
                             .build();
 
