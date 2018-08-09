@@ -1,0 +1,21 @@
+
+.titled-pane:focused > .title > .arrow-button .arrow{
+    -fx-background-color: white;
+}
+
+.titled-pane{
+    -fx-text-fill: #b4b4b4;
+    -fx-font-size: 16px;
+    -fx-background-color: transparent;
+}
+
+.titled-pane:focused > .title{
+    -fx-text-fill: white;
+    -fx-title-fill: white;
+}
+
+.titled-pane > .title{
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+}
