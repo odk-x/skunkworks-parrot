@@ -2,6 +2,7 @@ package Controller;
 
 import Data.*;
 import Model.Group;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.*;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
@@ -166,7 +167,6 @@ public class MainController implements Initializable {
                 updateProgress(-1, 100);
 
                 try {
-                    //TODO: write code to fetch ODK Groups from SyncClient and save them in local Database.
                     SyncClient syncClient = new SyncClient();
                     Data data = new Data();
                     String url = data.getSYNC_CLIENT_URL();
@@ -186,10 +186,28 @@ public class MainController implements Initializable {
                             if((groupName.startsWith("GROUP_") || groupName.startsWith("ROLE_"))&& !groupsList.contains(groupName)){
                                 groupsList.add(groupName);
                                 databaseCommunicator.insertGroup(new Group(groupName, groupName));
-                                System.out.println(groupName);
                             }
                         }
                     }
+
+                    DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("group");
+                    mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            for(DataSnapshot singleGroup : snapshot.getChildren()){
+                                String groupId =(String)singleGroup.child("id").getValue();
+                                String groupName =(String)singleGroup.child("name").getValue();
+                                String groupLink =(String)singleGroup.child("groupLink").getValue();
+                                groupsList.add(groupName);
+                                databaseCommunicator.insertGroup(new Group(groupId, groupName,groupLink));
+                            }
+                            getGroups();
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                     updateProgress(0, 100);
@@ -198,7 +216,6 @@ public class MainController implements Initializable {
             }
         };
         task.setOnSucceeded(taskFinishEvent -> {
-            getGroups();
             progressIndicator.setVisible(false);
         });
 
