@@ -1,7 +1,9 @@
 package Controller;
 
 
+import Data.DatabaseCommunicator;
 import Model.Group;
+import Model.Notification;
 import com.google.firebase.database.*;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
@@ -103,6 +105,9 @@ public class CreateNotificationController implements Initializable {
                         System.out.println("Successfully sent message: " + response.toString());
                         updateProgress(100, 100);
                         updateMessage("Message sent successfully.");
+                        DatabaseCommunicator dc= new DatabaseCommunicator();
+                        dc.addNotification(new Notification(titleStr,messageStr,selected.getId()));
+                        dc.closeConnection();
 
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -81,9 +81,4 @@ public class LoginPageController implements Initializable {
         }
     }
 
-    private void disableFields(boolean disable){
-        loginButton.setDisable(disable);
-        usernameField.setDisable(disable);
-        passwordField.setDisable(disable);
-    }
 }
