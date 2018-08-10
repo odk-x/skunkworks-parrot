@@ -21,6 +21,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -124,7 +125,6 @@ public class CreateNotificationController implements Initializable {
                         e.printStackTrace();
                         updateProgress(0, 100);
                         updateMessage("Error in sending message please try again.");
-                        System.out.println("error");
                     }
                     return null;
                 }
