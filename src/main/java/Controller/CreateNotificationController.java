@@ -10,6 +10,7 @@ import com.google.firebase.messaging.Message;
 import javafx.application.Platform;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
+import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -41,7 +42,7 @@ public class CreateNotificationController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         progressIndicator.setVisible(false);
-        statusLabel.setVisible(false);
+        statusLabel.setText(null);
 
         comboBox.setItems(FXCollections.observableList(groupArrayList));
         comboBox.setCellFactory(new Callback<ListView<Group>, ListCell<Group>>() {
@@ -80,7 +81,16 @@ public class CreateNotificationController implements Initializable {
         String titleStr = title_field.getText();
         String messageStr = message_field.getText();
 
-        if(!(titleStr.isEmpty() && messageStr.isEmpty())) {
+        if(titleStr.isEmpty()){
+            statusLabel.setText("Title cannot be empty");
+        }
+        else if( messageStr.isEmpty()){
+            statusLabel.setText("Message body cannot be empty");
+        }
+        else if(comboBox.getSelectionModel().getSelectedItem()==null) {
+            statusLabel.setText("Select a group from drop down list to send notification.");
+        }
+        else{
             progressIndicator.setVisible(true);
             progressIndicator.setProgress(-1.0f);
             send_button.setDisable(true);
@@ -125,8 +135,8 @@ public class CreateNotificationController implements Initializable {
                 message_field.clear();
             });
 
-            progressIndicator.progressProperty().bind(task.progressProperty());
-            statusLabel.textProperty().bind(task.messageProperty());
+            progressIndicator.progressProperty().bindBidirectional((Property<Number>) task.progressProperty());
+            statusLabel.textProperty().bindBidirectional((Property<String>) task.messageProperty());
             new Thread(task).start();
 
         }
