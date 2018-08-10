@@ -5,6 +5,7 @@ import Data.LoginCredentials;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import javafx.beans.property.Property;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -36,9 +38,6 @@ public class LoginFormController implements Initializable {
     public Button loginButton;
     public ProgressIndicator progressIndicator;
     public Label statusLabel;
-    public ImageView configureIcon;
-    public Label configureText;
-    public AnchorPane centerPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -60,15 +59,27 @@ public class LoginFormController implements Initializable {
 
         if(usernameField.getText().trim().isEmpty()){
             setStatusText("Username field can't be empty");
+            reset();
         }
         else if (passwordField.getText().trim().isEmpty()){
             setStatusText("Password field can't be empty");
+            reset();
         }
         else{
             attemptLogin(usernameField.getText().trim(), passwordField.getText().trim());
         }
     }
-    boolean flag = true;
+
+    private void reset() {
+        usernameField.setDisable(false);
+        passwordField.setDisable(false);
+        loginButton.setDisable(false);
+        usernameField.setText(null);
+        passwordField.setText(null);
+        stopProgress();
+    }
+
+    private boolean flag = true;
 
     private void attemptLogin(String username, String password) {
         Task<Void> task = new Task<Void>() {
@@ -92,9 +103,21 @@ public class LoginFormController implements Initializable {
                         flag = false;
                         updateProgress(0,100);
                         updateMessage("Invalid username/password, please try again.");
-
                     }
-                } catch (Exception e) {
+                }
+                catch(NullPointerException e){
+                    flag = false;
+                    e.printStackTrace();
+                    updateProgress(0, 100);
+                    updateMessage("Invalid Credentials. Please try again.");
+                }
+                catch(IOException e){
+                    flag = false;
+                    e.printStackTrace();
+                    updateProgress(0, 100);
+                    updateMessage("Network connection unavailable.");
+                }
+                catch (Exception e) {
                     flag = false;
                     e.printStackTrace();
                     updateProgress(0, 100);
@@ -103,21 +126,18 @@ public class LoginFormController implements Initializable {
             }
         };
         task.setOnSucceeded(taskFinishEvent -> {
-            //TODO: complete onSucceeded method.
             if(flag)  moveToDashboard();
             else{
-                usernameField.setDisable(false);
-                passwordField.setDisable(false);
-                loginButton.setDisable(false);
+                reset();
             }
         });
 
-        progressIndicator.progressProperty().bind(task.progressProperty());
-        statusLabel.textProperty().bind(task.messageProperty());
+        progressIndicator.progressProperty().bindBidirectional((Property<Number>) task.progressProperty());
+        statusLabel.textProperty().bindBidirectional((Property<String>) task.messageProperty());
         new Thread(task).start();
     }
 
-    private boolean verifyCredentials(String username, String password) throws IOException, JSONException, URISyntaxException {
+    private boolean verifyCredentials(String username, String password) throws IOException, JSONException, URISyntaxException,NullPointerException {
 
         SyncClient syncClient = new SyncClient();
         Data data = new Data();
