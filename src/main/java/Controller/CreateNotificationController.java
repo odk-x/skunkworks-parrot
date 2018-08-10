@@ -21,6 +21,7 @@ import javafx.util.StringConverter;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class CreateNotificationController implements Initializable {
@@ -107,7 +108,7 @@ public class CreateNotificationController implements Initializable {
                         updateProgress(100, 100);
                         updateMessage("Message sent successfully.");
                         DatabaseCommunicator dc= new DatabaseCommunicator();
-                        dc.addNotification(new Notification(titleStr,messageStr,selected.getId()));
+                        dc.addNotification(new Notification(titleStr,messageStr,new Date().getTime() ,selected.getId(),null));
                         dc.closeConnection();
 
                     } catch (Exception e) {

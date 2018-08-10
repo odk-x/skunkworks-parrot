@@ -36,8 +36,6 @@ public class DatabaseCommunicator {
 
     public ArrayList<Group> getGroups(){
         ArrayList<Group> groupList = new ArrayList<>();
-        groupList.add(new Group("all","all"));
-
         try{
             this.stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM "+TABLE_GROUPS+";");
@@ -91,7 +89,7 @@ public class DatabaseCommunicator {
                 COLUMN_ID+" Integer PRIMARY KEY AUTOINCREMENT, "+
                 COLUMN_TITLE+" VARCHAR(100), "+
                 COLUMN_MESSAGE+" VARCHAR(1000), "+
-                COLUMN_DATE+" Integer, "+
+                COLUMN_DATE+" VARCHAR(20), "+
                 COLUMN_GRP_ID+" VARCHAR(30), "+
                 COLUMN_STATUS+" VARCHAR(20));");
     }
@@ -113,11 +111,11 @@ public class DatabaseCommunicator {
             while(rs.next()){
                 String title = rs.getString(COLUMN_TITLE);
                 String message = rs.getString(COLUMN_MESSAGE);
-                Integer date = rs.getInt(COLUMN_DATE);
+                String date = rs.getString(COLUMN_DATE);
                 String group_id = rs.getString(COLUMN_GRP_ID);
                 String status = rs.getString(COLUMN_STATUS);
 
-                Notification notification = new Notification(title,message,date,group_id,status );
+                Notification notification = new Notification(title,message,Long.parseLong(date),group_id,status );
                 notifications.add(notification);
             }
         } catch (Exception e){
@@ -127,6 +125,6 @@ public class DatabaseCommunicator {
     }
 
     public void addNotification(Notification notification){
-           executeUpdate("INSERT INTO "+TABLE_NOTIFICATIONS+" ("+COLUMN_TITLE+", "+COLUMN_MESSAGE+", "+COLUMN_DATE+", "+COLUMN_GRP_ID+", "+COLUMN_STATUS+" ) VALUES ('"+notification.getTitle()+"', '"+notification.getMessage()+"', '"+notification.getDate()+"', '"+notification.getGroup_id()+"', '"+notification.getStatus()+"');");
+           executeUpdate("INSERT INTO "+TABLE_NOTIFICATIONS+" ("+COLUMN_TITLE+", "+COLUMN_MESSAGE+", "+COLUMN_DATE+", "+COLUMN_GRP_ID+", "+COLUMN_STATUS+" ) VALUES ('"+notification.getTitle()+"', '"+notification.getMessage()+"', '"+String.valueOf(notification.getDate())+"', '"+notification.getGroup_id()+"', '"+notification.getStatus()+"');");
     }
 }
