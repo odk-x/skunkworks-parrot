@@ -1,6 +1,6 @@
 package Controller;
 
-import Data.Data;
+import Data.*;
 import Model.Group;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -48,6 +48,7 @@ public class CreateGroupController implements Initializable {
     public Button createGroupButton;
     private String groupLink;
     private String groupName;
+    private String groupId;
     private BufferedImage bufferedImage = null;
 
 
@@ -75,11 +76,12 @@ public class CreateGroupController implements Initializable {
                     protected Void call() throws Exception {
                         updateMessage("Please Wait...");
                         updateProgress(-1, 100);
-                        String name = name_field.getText();
-                        groupLink = createNewGroup(name);
+                        groupId = createNewGroup();
+                        groupLink = createGroupLink(groupId);
                         if (groupLink != null) {
                             updateMessage("Group Link: " + groupLink);
                             updateProgress(100, 100);
+                            addGroupToDatabase(new Group(groupId,groupName,groupLink));
                         } else {
                             updateMessage("There is some error in creating the group. Please try again.");
                             updateProgress(0, 100);
@@ -100,12 +102,10 @@ public class CreateGroupController implements Initializable {
             }
         }
     }
-    private String createNewGroup(String groupName) {
-
+    private String createNewGroup() {
         DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("group");
         DatabaseReference pushedPostRef = groupRef.push();
-        groupRef.child(pushedPostRef.getKey()).setValueAsync(new Group(pushedPostRef.getKey(), groupName, null));
-        return createGroupLink(pushedPostRef.getKey());
+        return pushedPostRef.getKey();
     }
 
     private String createGroupLink( String groupId) {
@@ -226,5 +226,15 @@ public class CreateGroupController implements Initializable {
     public void saveImageButtonClicked(MouseEvent mouseEvent) {
         if(bufferedImage!=null) saveQRCodeImage(groupName);
     }
+
+    private void addGroupToDatabase(Group group){
+        DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("group").child(group.getId());
+        groupRef.setValueAsync(group);
+
+        DatabaseCommunicator dc = new DatabaseCommunicator();
+        dc.insertGroup(group);
+        dc.closeConnection();
+    }
+
 }
 

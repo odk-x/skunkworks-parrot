@@ -5,18 +5,18 @@ import java.util.ArrayList;
 public class Group {
     String id;
     String name;
-    ArrayList<String> membersList;
-
+    String groupLink;
 
     public Group(String id, String name) {
         this.id = id;
         this.name = name;
+        this.groupLink = null;
     }
 
-    public Group(String id, String name, ArrayList<String> workerIdArrayList) {
+    public Group(String id, String name, String groupLink) {
         this.id = id;
         this.name = name;
-        this.membersList = workerIdArrayList;
+        this.groupLink = groupLink;
     }
 
     public String getId() {
@@ -33,5 +33,13 @@ public class Group {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getGroupLink() {
+        return groupLink;
+    }
+
+    public void setGroupLink(String groupLink) {
+        this.groupLink = groupLink;
     }
 }
