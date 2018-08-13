@@ -6,31 +6,18 @@ import java.util.Date;
 public class Notification {
     private String title;
     private String message;
-    private int date;
+    private long date;
     private String group_id;
     private String status;
     private String date_str;
 
-    public Notification(String title, String message) {
-        this.title = title;
-        this.message = message;
-    }
-
-    public Notification(String title, String message, String group_id) {
-        this.title = title;
-        this.message = message;
-        this.date = getDate();
-        this.group_id = group_id;
-        this.date_str = getDateStr();
-    }
-
-    public Notification(String title, String message, int date, String group_id, String status) {
+    public Notification(String title, String message, long date, String group_id, String status) {
         this.title = title;
         this.message = message;
         this.date = date;
         this.group_id = group_id;
         this.status = status;
-        this.date_str = getDateStr();
+        this.date_str = getDateStr(this.date);
     }
 
     public String getTitle() {
@@ -69,11 +56,15 @@ public class Notification {
         this.status = status;
     }
 
-    public int getDate(){
-        return  (int) (new Date().getTime()/1000);
+    public String getDate_str(){
+        return date_str;
     }
 
-    private String getDateStr(){
+    public long getDate() {
+        return date;
+    }
+
+    private String getDateStr(long date){
         SimpleDateFormat newFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
         return newFormat.format(date);
     }
