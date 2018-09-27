@@ -54,10 +54,6 @@
                 </HBox>
                 <Accordion blendMode="HARD_LIGHT">
                     <panes>
-                        <TitledPane fx:id="dashboard_tp" collapsible="false" expanded="false" onMouseClicked="#dashboardButtonClicked" text="Dashboard">
-                            <cursor>
-                                <Cursor fx:constant="HAND" />
-                            </cursor></TitledPane>
                         <TitledPane fx:id="createNotification_tp" collapsible="false" expanded="false" layoutX="10.0" layoutY="10.0" onMouseClicked="#createNotificationButtonClicked" text="Create Notification">
                             <cursor>
                                 <Cursor fx:constant="HAND" />

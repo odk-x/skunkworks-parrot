@@ -1,7 +1,8 @@
 package Controller;
 
-import Data.DatabaseCommunicator;
+import Data.*;
 import Model.Group;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.*;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
@@ -15,10 +16,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
+import org.opendatakit.sync.client.SyncClient;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -64,20 +68,21 @@ public class MainController implements Initializable {
                 NotificationGroupButtonClicked(selected);
             }
         });
+        createNotificationButtonClicked();
     }
 
 
     private void NotificationGroupButtonClicked(Group group) {
         System.out.println(group.getName() + " Group button clicked");
-
-    }
-
-    private ArrayList<String> getGroupsNames(ArrayList<Group> groups) {
-        ArrayList<String> groupNameList = new ArrayList<>();
-        for (Group group : groups) {
-            groupNameList.add(group.getName());
+        mainHeading.setText(group.getName());
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/NotificationGroup.fxml"));
+            fxmlLoader.setController(new NotificationGroupController(group.getName()));
+            setCenterScene(fxmlLoader);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return groupNameList;
+
     }
 
     private void getGroups() {
@@ -106,18 +111,6 @@ public class MainController implements Initializable {
         new Thread(task).start();
     }
 
-
-    @FXML
-    private void dashboardButtonClicked() {
-        System.out.println("Dashboard Button Clicked");
-        mainHeading.setText("Dashboard");
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Dashboard.fxml"));
-            setCenterScene(fxmlLoader);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @FXML
     private void createNotificationButtonClicked() {
@@ -174,7 +167,47 @@ public class MainController implements Initializable {
                 updateProgress(-1, 100);
 
                 try {
-                    //TODO: write code to fetch ODK Groups from SyncClient and save them in local Database.
+                    SyncClient syncClient = new SyncClient();
+                    Data data = new Data();
+                    String url = data.getSYNC_CLIENT_URL();
+                    URI uri = new URI(url);
+                    url = url +"/odktables";
+                    String appId = "default";
+                    syncClient.init(uri.getHost(), LoginCredentials.credentials.getUsername(),LoginCredentials.credentials.getPassword());
+                    ArrayList<Map<String, Object>> users = syncClient.getUsers(url, appId);
+                    syncClient.close();
+
+                    databaseCommunicator.clearTable("Groups");
+                    ArrayList<String> groupsList = new ArrayList<>();
+
+                    for (Map<String, Object> user : users) {
+                        ArrayList<String> userGroupList = (ArrayList)user.get("roles");
+                        for(String groupName : userGroupList){
+                            if((groupName.startsWith("GROUP_") || groupName.startsWith("ROLE_"))&& !groupsList.contains(groupName)){
+                                groupsList.add(groupName);
+                                databaseCommunicator.insertGroup(new Group(groupName, groupName));
+                            }
+                        }
+                    }
+
+                    DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("group");
+                    mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            for(DataSnapshot singleGroup : snapshot.getChildren()){
+                                String groupId =(String)singleGroup.child("id").getValue();
+                                String groupName =(String)singleGroup.child("name").getValue();
+                                String groupLink =(String)singleGroup.child("groupLink").getValue();
+                                groupsList.add(groupName);
+                                databaseCommunicator.insertGroup(new Group(groupId, groupName,groupLink));
+                            }
+                            getGroups();
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                     updateProgress(0, 100);
@@ -183,7 +216,6 @@ public class MainController implements Initializable {
             }
         };
         task.setOnSucceeded(taskFinishEvent -> {
-            getGroups();
             progressIndicator.setVisible(false);
         });
 
