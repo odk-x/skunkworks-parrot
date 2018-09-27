@@ -14,6 +14,15 @@
     -fx-background-color: white;
 }
 
+.titled-pane:focused > .title > .text{
+     -fx-fill: white;
+ }
+
+.titled-pane > .title > .text{
+     -fx-fill: b4b4b4;
+ }
+
+
 .titled-pane > *.content{
     -fx-background-color: transparent;
 }
@@ -26,8 +35,6 @@
 
 .titled-pane:focused > .title{
     -fx-background-color:  #00A2D3 ;
-    -fx-text-fill: white;
-    -fx-title-fill: white;
 }
 
 .titled-pane > .title{
@@ -51,8 +58,10 @@
 #listView .list-cell{
     -fx-background-color: transparent;
     -fx-text-fill: #b4b4b4;
+    -fx-cell-size: 24;
 }
 
 #listView{
     -fx-background-color: transparent;
 }
+
