@@ -1,8 +1,9 @@
 package Controller;
 
-import Data.*;
+import Data.Data;
+import Data.DatabaseCommunicator;
+import Data.LoginCredentials;
 import Model.Group;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.*;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
@@ -18,7 +19,6 @@ import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 import org.opendatakit.sync.client.SyncClient;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
