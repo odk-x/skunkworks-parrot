@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ProgressIndicator?>
+<AnchorPane prefHeight="400.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.LoginFormController">
+    <children>
+        <VBox alignment="CENTER_LEFT" layoutX="-1.0" prefHeight="375.0" prefWidth="321.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <Label text="Username" />
+                <TextField fx:id="usernameField">
+                    <VBox.margin>
+                        <Insets top="5.0" />
+                    </VBox.margin></TextField>
+                <Label text="Password">
+                    <VBox.margin>
+                        <Insets top="25.0" />
+                    </VBox.margin></Label>
+                <PasswordField fx:id="passwordField">
+                    <VBox.margin>
+                        <Insets top="5.0" />
+                    </VBox.margin></PasswordField>
+                <HBox>
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                    <children>
+                        <Button fx:id="loginButton" alignment="CENTER_RIGHT" mnemonicParsing="false" onMouseClicked="#loginButtonClicked" text="Login" />
+                        <ProgressIndicator fx:id="progressIndicator" prefHeight="26.0" prefWidth="36.0" progress="0.0">
+                            <HBox.margin>
+                                <Insets left="10.0" />
+                            </HBox.margin>
+                        </ProgressIndicator>
+                    </children>
+                </HBox>
+                <Label fx:id="statusLabel">
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin></Label>
+            </children>
+            <padding>
+                <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+            </padding></VBox>
+    </children>
+</AnchorPane>
