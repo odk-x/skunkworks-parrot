@@ -13,8 +13,7 @@ repositories {
 
 dependencies {
 
-    runtime files ('dependencies/sync-client-2.1.1.jar','dependencies/sync-client-2.1.1-javadoc.jar','dependencies/sync-client-2.1.1-sources.jar')
-    runtime fileTree('target') {include'*.jar'}
+    implementation files ('dependencies/sync-client-2.1.2.jar','dependencies/sync-client-2.1.2-javadoc.jar','dependencies/sync-client-2.1.2-sources.jar')
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation 'com.google.firebase:firebase-admin:6.1.0'
     implementation "org.slf4j:slf4j-api:1.6.1"
