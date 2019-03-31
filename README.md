@@ -39,7 +39,7 @@ It is part of Open Data Kit (ODK), a free and open-source set of tools which hel
 ```bash
             ./gradlew build
 ```
-  3. A JAR will be built inside build/libs/ ,you can run the JAR by
+  3. A JAR will be built inside build/libs/, you can run the JAR by
 ```bash
            java -jar name_of_jar.jar
 ```
