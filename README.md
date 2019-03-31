@@ -35,7 +35,7 @@ It is part of Open Data Kit (ODK), a free and open-source set of tools which hel
 ```bash 
               chmod +x ./gradlew 
 ```                   
-  2. build executable JAR by 
+  2. Build executable JAR by 
 ```bash
             ./gradlew build
 ```
