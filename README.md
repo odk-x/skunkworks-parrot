@@ -26,12 +26,22 @@ It is part of Open Data Kit (ODK), a free and open-source set of tools which hel
 1. Open the project in the folder of your clone from IntelliJ IDEA ide.
 
 2. To run the project, click on the green arrow at the top of the screen. This project uses the Java library,called JavaFX,which is used to develop a desktop application as well as Rich Internet Applications(RIA).This library supports the .fxml files. But JavaFX is not supported in the latest Java version, but is supported in versions like Java 8,Java 9 and Java 10.For java 11, the library package have to be installed seperately. This can be done using the link given below: https://gluonhq.com/products/javafx/
-
 3. Click on the configure option after you run the app for the first time.
 
-4. Create a Firebase project and add necessary data to sync the app with firebase. Step by step instructions for creating a Firebase project can be found [here](https://drive.google.com/open?id=10_9oU_8zrek7lt7BRYmJJwo22rs51uAw). 
+4. Create a Firebase project and add necessary data to sync the app with firebase. Step by step instructions for creating a Firebase project can be found [here](https://drive.google.com/open?id=10_9oU_8zrek7lt7BRYmJJwo22rs51uAw).
 
+###### To build an executable JAR using Gradle
+  1. Build executable JAR by
+```bash
+            ./gradlew build (for Linux)
+            gradlew.bat build (for Windows)
+```
+  2. A JAR will be built inside build/libs/, you can run the JAR by
+```bash
+           java -jar name_of_jar.jar
+```
 
 ## Prerequisites
 
 [ODK Sync Endpoint](https://docs.opendatakit.org/odk2/sync-endpoint/) server is needed for the application to run. Once the server is up, enter the url in configure section of the app. Users with 'SITE_ACCESS_ADMIN' role can only access the application.
+
