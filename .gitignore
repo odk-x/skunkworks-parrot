@@ -1,1 +1,8 @@
 /build/*
+.idea
+.gradle
+out
+keys.json
+FirebaseKeys.json
+local.properties
+database.db
