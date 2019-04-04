@@ -126,7 +126,7 @@ public class CreateGroupController implements Initializable {
         JSONObject androidInfo = new JSONObject();
         androidInfo.put("androidPackageName", Data.data.getANDROID_APP_PACKAGE_NAME());
         JSONObject dynamicLinkInfo = new JSONObject();
-        dynamicLinkInfo.put("dynamicLinkDomain", Data.data.getDYNAMIC_LINK_DOMAIN());
+        dynamicLinkInfo.put("domainUriPrefix", Data.data.getDYNAMIC_LINK_DOMAIN());
         dynamicLinkInfo.put("link", "https://odknotificatons?id="+groupId);
         dynamicLinkInfo.put("androidInfo", androidInfo);
 
