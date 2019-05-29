@@ -6,3 +6,4 @@ keys.json
 FirebaseKeys.json
 local.properties
 database.db
+*.iml
