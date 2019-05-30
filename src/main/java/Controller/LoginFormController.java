@@ -140,11 +140,11 @@ public class LoginFormController implements Initializable {
     }
 
     private void initializeFirebaseSDK() throws IOException{
-
+        Data data = new Data();
         FileInputStream serviceAccount = new FileInputStream(FIREBASE_KEYS_FILE_NAME);
         FirebaseOptions options = new FirebaseOptions.Builder()
                  .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                 .setDatabaseUrl("https://odk-notifications.firebaseio.com/")
+                 .setDatabaseUrl(data.getDATABASE_URL())
                  .build();
         FirebaseApp.initializeApp(options);
 

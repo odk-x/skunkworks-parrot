@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.SettingsController">
+<AnchorPane prefHeight="400.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.SettingsController">
     <children>
         <VBox alignment="CENTER_LEFT" prefHeight="400.0" prefWidth="480.0">
             <padding>
@@ -54,7 +54,21 @@
                     <children>
                         <TextField fx:id="webAPIKeyField" prefHeight="31.0" prefWidth="400.0" />
                     </children>
-                </HBox> <Label text="Dynamic Link Domain">
+                </HBox>
+            <Label text="Database URL">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Label>
+            <HBox>
+               <children>
+                  <TextField fx:id="databaseURLField" prefHeight="31.0" prefWidth="400.0">
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox> <Label text="Dynamic Link Domain">
                 <VBox.margin>
                     <Insets top="10.0" />
                 </VBox.margin></Label>
