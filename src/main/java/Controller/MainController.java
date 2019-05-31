@@ -85,7 +85,7 @@ public class MainController implements Initializable {
 
     }
 
-    private void getGroups() {
+    public void getGroups() {
         groupArrayList = new ArrayList<>();
         Task<Void> task = new Task<Void>() {
             @Override
@@ -132,6 +132,7 @@ public class MainController implements Initializable {
         mainHeading.setText("Create Notification Group");
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/CreateGroup.fxml"));
+            fxmlLoader.setController(new CreateGroupController(this));
             setCenterScene(fxmlLoader);
         } catch (Exception e) {
             e.printStackTrace();

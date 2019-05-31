@@ -50,6 +50,11 @@ public class CreateGroupController implements Initializable {
     private String groupName;
     private String groupId;
     private BufferedImage bufferedImage = null;
+    private MainController mainController;
+
+    public CreateGroupController(MainController mainController){
+        this.mainController = mainController;
+    }
 
 
     @Override
@@ -94,6 +99,7 @@ public class CreateGroupController implements Initializable {
                         clipboardButton.setVisible(true);
                         saveImageButton.setVisible(true);
                     }
+                    mainController.getGroups();
                 });
 
                 progressIndicator.progressProperty().bind(task.progressProperty());
