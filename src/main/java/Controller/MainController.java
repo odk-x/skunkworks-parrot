@@ -144,7 +144,7 @@ public class MainController implements Initializable {
         System.out.println("Settings Button Clicked");
         mainHeading.setText("Settings");
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/settings.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Settings.fxml"));
             setCenterScene(fxmlLoader);
         } catch (Exception e) {
             e.printStackTrace();
