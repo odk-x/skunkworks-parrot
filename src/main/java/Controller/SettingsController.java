@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
 public class SettingsController implements Initializable {
     public TextField serviceAccountKeyPathField;
     public TextField webAPIKeyField;
-    public TextField databaseURLField;
+    public TextField firebaseDatabaseURLField;
     public TextField dynamicLinkDomainField;
     public TextField packageNameField;
     public ImageView folderIcon;
@@ -31,7 +31,7 @@ public class SettingsController implements Initializable {
 
        serviceAccountKeyPathField.setText(Data.data.getSERVICE_ACCOUNT_KEY_PATH());
        webAPIKeyField.setText(Data.data.getWEB_API_KEY());
-       databaseURLField.setText(Data.data.getDATABASE_URL());
+       firebaseDatabaseURLField.setText(Data.data.getFIREBASE_DATABASE_URL());
        dynamicLinkDomainField.setText(Data.data.getDYNAMIC_LINK_DOMAIN());
        packageNameField.setText(Data.data.getANDROID_APP_PACKAGE_NAME());
        syncClientURLField.setText(Data.data.getSYNC_CLIENT_URL());
@@ -65,7 +65,7 @@ public class SettingsController implements Initializable {
         Data.data.setSERVICE_ACCOUNT_KEY_PATH(serviceAccountKeyPathField.getText());
         Data.data.setWEB_API_KEY(webAPIKeyField.getText());
         Data.data.setSYNC_CLIENT_URL(syncClientURLField.getText());
-        Data.data.setDATABASE_URL(databaseURLField.getText());
+        Data.data.setFIREBASE_DATABASE_URL(firebaseDatabaseURLField.getText());
         Data.data.saveKeys();
     }
 }

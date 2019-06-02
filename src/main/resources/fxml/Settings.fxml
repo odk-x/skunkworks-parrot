@@ -55,14 +55,14 @@
                         <TextField fx:id="webAPIKeyField" prefHeight="31.0" prefWidth="400.0" />
                     </children>
                 </HBox>
-            <Label text="Database URL">
+            <Label text="Firebase Database URL">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </Label>
             <HBox>
                <children>
-                  <TextField fx:id="databaseURLField" prefHeight="31.0" prefWidth="400.0">
+                  <TextField fx:id="firebaseDatabaseURLField" prefHeight="31.0" prefWidth="400.0">
                      <HBox.margin>
                         <Insets top="5.0" />
                      </HBox.margin>
