@@ -15,6 +15,7 @@ public class Data {
     private String DYNAMIC_LINK_DOMAIN;
     private String SERVICE_ACCOUNT_KEY_PATH;
     private String SYNC_CLIENT_URL;
+    private String FIREBASE_DATABASE_URL;
     private static final String FILE_NAME = "keys.json";
     public static final String FIREBASE_KEYS_FILE_NAME = "FirebaseKeys.json";
 
@@ -30,6 +31,7 @@ public class Data {
               setDYNAMIC_LINK_DOMAIN((String) mainObject.getString("dynamicLinkDomain"));
               setANDROID_APP_PACKAGE_NAME((String) mainObject.getString("packageName"));
               setSYNC_CLIENT_URL((String) mainObject.getString("syncClientURL"));
+              setFIREBASE_DATABASE_URL(mainObject.getString("firebaseDatabaseURL"));
           }catch (Exception e){
               e.printStackTrace();
           }
@@ -45,6 +47,7 @@ public class Data {
       obj.put("dynamicLinkDomain", DYNAMIC_LINK_DOMAIN);
       obj.put("packageName", ANDROID_APP_PACKAGE_NAME);
       obj.put("syncClientURL", SYNC_CLIENT_URL);
+      obj.put("firebaseDatabaseURL",FIREBASE_DATABASE_URL);
 
       try {
           BufferedWriter out = new BufferedWriter(new FileWriter(FILE_NAME));
@@ -129,11 +132,20 @@ public class Data {
         this.SYNC_CLIENT_URL = SYNC_CLIENT_URL;
     }
 
+    public String getFIREBASE_DATABASE_URL() {
+        return FIREBASE_DATABASE_URL;
+    }
+
+    public void setFIREBASE_DATABASE_URL(String FIREBASE_DATABASE_URL) {
+        this.FIREBASE_DATABASE_URL = FIREBASE_DATABASE_URL;
+    }
+
     @Override
     public String toString() {
         return "Data{" +
                 "SUPERVISOR_ID='" + SUPERVISOR_ID + '\'' +
                 ", WEB_API_KEY='" + WEB_API_KEY + '\'' +
+                ", FIREBASE_DATABASE_URL='" + FIREBASE_DATABASE_URL + '\'' +
                 ", ANDROID_APP_PACKAGE_NAME='" + ANDROID_APP_PACKAGE_NAME + '\'' +
                 ", PLAYSTORE_URL='" + PLAYSTORE_URL + '\'' +
                 ", FIREBASE_INVITES_URL='" + FIREBASE_INVITES_URL + '\'' +
