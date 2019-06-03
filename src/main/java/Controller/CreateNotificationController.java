@@ -83,6 +83,7 @@ public class CreateNotificationController implements Initializable {
 
         if(!(titleStr.isEmpty() && messageStr.isEmpty())) {
             progressIndicator.setVisible(true);
+            statusLabel.setVisible(true);
             send_button.setDisable(true);
             Group selected = comboBox.getSelectionModel().getSelectedItem();
             Task<Void> task = new Task<Void>() {
