@@ -145,7 +145,7 @@ public class Data {
         return "Data{" +
                 "SUPERVISOR_ID='" + SUPERVISOR_ID + '\'' +
                 ", WEB_API_KEY='" + WEB_API_KEY + '\'' +
-                ", DATABASE_URL='" + FIREBASE_DATABASE_URL + '\'' +
+                ", FIREBASE_DATABASE_URL='" + FIREBASE_DATABASE_URL + '\'' +
                 ", ANDROID_APP_PACKAGE_NAME='" + ANDROID_APP_PACKAGE_NAME + '\'' +
                 ", PLAYSTORE_URL='" + PLAYSTORE_URL + '\'' +
                 ", FIREBASE_INVITES_URL='" + FIREBASE_INVITES_URL + '\'' +
