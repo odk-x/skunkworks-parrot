@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.CountDownLatch;
 
 public class MainController implements Initializable {
 
@@ -77,7 +78,7 @@ public class MainController implements Initializable {
         mainHeading.setText(group.getName());
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/NotificationGroup.fxml"));
-            fxmlLoader.setController(new NotificationGroupController(group.getName()));
+            fxmlLoader.setController(new NotificationGroupController(group));
             setCenterScene(fxmlLoader);
         } catch (Exception e) {
             e.printStackTrace();
@@ -162,6 +163,8 @@ public class MainController implements Initializable {
     }
 
     public void syncFromServer() {
+        progressIndicator.setVisible(true);
+        syncIcon.setVisible(false);
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -191,6 +194,7 @@ public class MainController implements Initializable {
                         }
                     }
 
+                    CountDownLatch done = new CountDownLatch(1);
                     DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("group");
                     mRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -203,12 +207,18 @@ public class MainController implements Initializable {
                                 databaseCommunicator.insertGroup(new Group(groupId, groupName,groupLink));
                             }
                             getGroups();
+                            done.countDown();
                         }
                         @Override
                         public void onCancelled(DatabaseError error) {
 
                         }
                     });
+                    try {
+                        done.await(); //it will wait till the response is received from firebase.
+                    } catch(InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     updateProgress(0, 100);
@@ -218,6 +228,7 @@ public class MainController implements Initializable {
         };
         task.setOnSucceeded(taskFinishEvent -> {
             progressIndicator.setVisible(false);
+            syncIcon.setVisible(true);
         });
 
         progressIndicator.progressProperty().bind(task.progressProperty());

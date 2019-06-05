@@ -1,6 +1,7 @@
 package Controller;
 
 import Data.*;
+import Helper.QRCodeHelper;
 import Model.Group;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -51,6 +52,7 @@ public class CreateGroupController implements Initializable {
     private String groupId;
     private BufferedImage bufferedImage = null;
     private MainController mainController;
+    private QRCodeHelper qrCodeHelper = new QRCodeHelper();
 
     public CreateGroupController(MainController mainController){
         this.mainController = mainController;
@@ -161,7 +163,8 @@ public class CreateGroupController implements Initializable {
                 JSONObject responseJSON = new JSONObject(result.toString());
                 groupLink = responseJSON.getString("shortLink");
                 progressIndicator.setVisible(false);
-                createQRCode(groupLink);
+                bufferedImage = qrCodeHelper.createQRCode(groupLink);
+                qrView.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
             }
 
         } catch (Exception e) {
@@ -181,56 +184,8 @@ public class CreateGroupController implements Initializable {
         }
     }
 
-    private void createQRCode(String groupLink){
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        int width = 300;
-        int height = 300;
-        String fileType = "png";
-
-        try {
-            BitMatrix byteMatrix = qrCodeWriter.encode(groupLink, BarcodeFormat.QR_CODE, width, height);
-            bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-            bufferedImage.createGraphics();
-
-            Graphics2D graphics = (Graphics2D) bufferedImage.getGraphics();
-            graphics.setColor(Color.WHITE);
-            graphics.fillRect(0, 0, width, height);
-            graphics.setColor(Color.BLACK);
-
-            for (int i = 0; i < height; i++) {
-                for (int j = 0; j < width; j++) {
-                    if (byteMatrix.get(i, j)) {
-                        graphics.fillRect(i, j, 1, 1);
-                    }
-                }
-            }
-
-            System.out.println("Success...");
-
-        } catch (WriterException ex) {
-            Logger.getLogger(CreateGroupController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        qrView.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
-    }
-
-    private void saveQRCodeImage(String groupName){
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Image");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", ".png",".jpg"));
-        File file = fileChooser.showSaveDialog(new Stage());
-        fileChooser.setInitialFileName(groupName);
-        if (file != null) {
-            try {
-                ImageIO.write(bufferedImage, "png", file);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
     public void saveImageButtonClicked(MouseEvent mouseEvent) {
-        if(bufferedImage!=null) saveQRCodeImage(groupName);
+        if(bufferedImage!=null) qrCodeHelper.saveQRCodeImage(bufferedImage,groupName);
     }
 
     private void addGroupToDatabase(Group group){
