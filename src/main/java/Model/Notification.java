@@ -1,7 +1,6 @@
 package Model;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class Notification {
     private String title;

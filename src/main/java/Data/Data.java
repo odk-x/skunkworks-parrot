@@ -11,7 +11,7 @@ public class Data {
     private String WEB_API_KEY;
     private String ANDROID_APP_PACKAGE_NAME;
     private String PLAYSTORE_URL;
-    private String FIREBASE_INVITES_URL = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + WEB_API_KEY;
+    private String FIREBASE_INVITES_URL;
     private String DYNAMIC_LINK_DOMAIN;
     private String SERVICE_ACCOUNT_KEY_PATH;
     private String SYNC_CLIENT_URL;
@@ -26,11 +26,11 @@ public class Data {
           String content = new String(Files.readAllBytes(Paths.get(FILE_NAME)));
           JSONObject mainObject = new JSONObject(content);
           try {
-              setSERVICE_ACCOUNT_KEY_PATH((String) mainObject.getString("serviceAccountKeyPath"));
-              setWEB_API_KEY((String) mainObject.getString("webAPIKey"));
-              setDYNAMIC_LINK_DOMAIN((String) mainObject.getString("dynamicLinkDomain"));
-              setANDROID_APP_PACKAGE_NAME((String) mainObject.getString("packageName"));
-              setSYNC_CLIENT_URL((String) mainObject.getString("syncClientURL"));
+              setSERVICE_ACCOUNT_KEY_PATH(mainObject.getString("serviceAccountKeyPath"));
+              setWEB_API_KEY(mainObject.getString("webAPIKey"));
+              setDYNAMIC_LINK_DOMAIN(mainObject.getString("dynamicLinkDomain"));
+              setANDROID_APP_PACKAGE_NAME(mainObject.getString("packageName"));
+              setSYNC_CLIENT_URL(mainObject.getString("syncClientURL"));
               setFIREBASE_DATABASE_URL(mainObject.getString("firebaseDatabaseURL"));
           }catch (Exception e){
               e.printStackTrace();

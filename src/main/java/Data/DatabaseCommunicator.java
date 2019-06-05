@@ -2,7 +2,6 @@ package Data;
 
 import Model.Group;
 import Model.Notification;
-import javafx.scene.Cursor;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -125,6 +124,6 @@ public class DatabaseCommunicator {
     }
 
     public void addNotification(Notification notification){
-           executeUpdate("INSERT INTO "+TABLE_NOTIFICATIONS+" ("+COLUMN_TITLE+", "+COLUMN_MESSAGE+", "+COLUMN_DATE+", "+COLUMN_GRP_ID+", "+COLUMN_STATUS+" ) VALUES ('"+notification.getTitle()+"', '"+notification.getMessage()+"', '"+String.valueOf(notification.getDate())+"', '"+notification.getGroup_id()+"', '"+notification.getStatus()+"');");
+           executeUpdate("INSERT INTO "+TABLE_NOTIFICATIONS+" ("+COLUMN_TITLE+", "+COLUMN_MESSAGE+", "+COLUMN_DATE+", "+COLUMN_GRP_ID+", "+COLUMN_STATUS+" ) VALUES ('"+notification.getTitle()+"', '"+notification.getMessage()+"', '"+ notification.getDate() +"', '"+notification.getGroup_id()+"', '"+notification.getStatus()+"');");
     }
 }
