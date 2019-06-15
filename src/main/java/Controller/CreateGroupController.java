@@ -23,10 +23,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
@@ -45,7 +45,6 @@ public class CreateGroupController implements Initializable {
     public Button clipboardButton;
     public ImageView qrView;
     public Button saveImageButton;
-    public Button createGroupButton;
     private String groupLink;
     private String groupName;
     private String groupId;
@@ -74,11 +73,11 @@ public class CreateGroupController implements Initializable {
         saveImageButton.setVisible(false);
 
         if (mouseEvent.getClickCount() == 1) {
-            groupName = name_field.getText().toString().trim();
+            groupName = name_field.getText().trim();
             if (!groupName.equals("")) {
                 Task<Void> task = new Task<Void>() {
                     @Override
-                    protected Void call() throws Exception {
+                    protected Void call() {
                         updateMessage("Please Wait...");
                         updateProgress(-1, 100);
                         groupId = createNewGroup();
@@ -139,8 +138,13 @@ public class CreateGroupController implements Initializable {
         JSONObject mainObject = new JSONObject();
         mainObject.put("dynamicLinkInfo", dynamicLinkInfo);
 
-        HttpClient client = new DefaultHttpClient();
-        HttpConnectionParams.setConnectionTimeout(client.getParams(), 1000); //Timeout Limit
+        int timeout = 1000;
+        RequestConfig config = RequestConfig.custom()
+                .setConnectTimeout(timeout)
+                .setConnectionRequestTimeout(timeout)
+                .setSocketTimeout(timeout).build();
+
+        HttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
         HttpResponse response;
 
         try {
@@ -171,7 +175,7 @@ public class CreateGroupController implements Initializable {
         return groupLink;
     }
 
-    public void copyToClipboardClicked(MouseEvent mouseEvent) {
+    public void copyToClipboardClicked() {
         if(groupLink!=null){
             final Clipboard clipboard = Clipboard.getSystemClipboard();
             final ClipboardContent content = new ClipboardContent();
@@ -229,7 +233,7 @@ public class CreateGroupController implements Initializable {
         }
     }
 
-    public void saveImageButtonClicked(MouseEvent mouseEvent) {
+    public void saveImageButtonClicked() {
         if(bufferedImage!=null) saveQRCodeImage(groupName);
     }
 

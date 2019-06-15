@@ -13,8 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.apache.wink.json4j.JSONException;
 import org.opendatakit.sync.client.SyncClient;
@@ -36,9 +34,6 @@ public class LoginFormController implements Initializable {
     public Button loginButton;
     public ProgressIndicator progressIndicator;
     public Label statusLabel;
-    public ImageView configureIcon;
-    public Label configureText;
-    public AnchorPane centerPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -73,7 +68,7 @@ public class LoginFormController implements Initializable {
     private void attemptLogin(String username, String password) {
         Task<Void> task = new Task<Void>() {
             @Override
-            protected Void call() throws Exception {
+            protected Void call() {
                 flag = true;
                 updateMessage("Please Wait...");
                 updateProgress(-1, 100);
@@ -118,7 +113,6 @@ public class LoginFormController implements Initializable {
     }
 
     private boolean verifyCredentials(String username, String password) throws IOException, JSONException, URISyntaxException {
-
         SyncClient syncClient = new SyncClient();
         Data data = new Data();
         String url = data.getSYNC_CLIENT_URL();
@@ -128,7 +122,6 @@ public class LoginFormController implements Initializable {
         syncClient.init(uri.getHost(),username,password);
         ArrayList<Map<String, Object>> users = syncClient.getUsers(url, appId);
         syncClient.close();
-
         for (Map<String, Object> user : users) {
             if(user.get("user_id").equals("username:"+ username)){
                 if(((ArrayList<String>)(user.get("roles"))).contains("ROLE_SITE_ACCESS_ADMIN")){

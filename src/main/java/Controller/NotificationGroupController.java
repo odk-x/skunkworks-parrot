@@ -1,32 +1,20 @@
 package Controller;
 
 import Data.*;
-import Model.Group;
 import Model.Notification;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
-import javafx.stage.FileChooser;
-import javafx.util.Callback;
-
-import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 public class NotificationGroupController implements Initializable {
 
     private String id;
-    @FXML
-    private
-    TableView tableView;
-    ObservableList observableList = FXCollections.observableArrayList();
+    public TableView tableView;
 
 
     NotificationGroupController(String id) {

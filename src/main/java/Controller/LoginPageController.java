@@ -33,7 +33,7 @@ public class LoginPageController implements Initializable {
         }
     }
 
-    public void configureButtonClicked(javafx.scene.input.MouseEvent mouseEvent) {
+    public void configureButtonClicked() {
 
        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Settings.fxml"));
         try {
@@ -43,7 +43,7 @@ public class LoginPageController implements Initializable {
         }
     }
 
-    public void switchToLoginPage(javafx.scene.input.MouseEvent mouseEvent) {
+    public void switchToLoginPage() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/LoginForm.fxml"));
         try {
             setPane(fxmlLoader.load());
@@ -61,7 +61,7 @@ public class LoginPageController implements Initializable {
         centerPane.getChildren().add(pane);
     }
 
-    public void openHelpPage(javafx.scene.input.MouseEvent mouseEvent) {
+    public void openHelpPage() {
         String url = "https://github.com/opendatakit/skunkworks-parrot/wiki";
 
         if(Desktop.isDesktopSupported()){

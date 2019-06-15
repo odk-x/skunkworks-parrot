@@ -4,16 +4,10 @@ package Controller;
 import Data.DatabaseCommunicator;
 import Model.Group;
 import Model.Notification;
-import com.google.firebase.database.*;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Message;
-import javafx.application.Platform;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.util.Callback;
@@ -36,7 +30,6 @@ public class CreateNotificationController implements Initializable {
 
     public CreateNotificationController(ArrayList<Group> groupArrayList) {
         this.groupArrayList = groupArrayList;
-
     }
 
     @Override
@@ -48,7 +41,7 @@ public class CreateNotificationController implements Initializable {
         comboBox.setCellFactory(new Callback<ListView<Group>, ListCell<Group>>() {
             @Override
             public ListCell<Group> call(ListView<Group> param) {
-                ListCell<Group> cell = new ListCell<Group>(){
+                return new ListCell<Group>(){
 
                     @Override
                     protected void updateItem(Group notificationGroup, boolean bln) {
@@ -58,7 +51,6 @@ public class CreateNotificationController implements Initializable {
                         }
                     }
                 };
-                return cell;
             }
         });
 
@@ -88,7 +80,7 @@ public class CreateNotificationController implements Initializable {
             Group selected = comboBox.getSelectionModel().getSelectedItem();
             Task<Void> task = new Task<Void>() {
                 @Override
-                protected Void call() throws Exception {
+                protected Void call() {
 
                     updateMessage("Please Wait...");
                     updateProgress(-1, 100);
@@ -104,7 +96,7 @@ public class CreateNotificationController implements Initializable {
                     try {
                         String response = FirebaseMessaging.getInstance().send(message);
                         System.out.println("Response:" + response);
-                        System.out.println("Successfully sent message: " + response.toString());
+                        System.out.println("Successfully sent message: " + response);
                         updateProgress(100, 100);
                         updateMessage("Message sent successfully.");
                         DatabaseCommunicator dc= new DatabaseCommunicator();
