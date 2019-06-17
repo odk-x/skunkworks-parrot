@@ -137,7 +137,7 @@ public class LoginFormController implements Initializable {
         FileInputStream serviceAccount = new FileInputStream(FIREBASE_KEYS_FILE_NAME);
         FirebaseOptions options = new FirebaseOptions.Builder()
                  .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                 .setDatabaseUrl(data.getDATABASE_URL())
+                 .setDatabaseUrl(data.getFIREBASE_DATABASE_URL())
                  .build();
         FirebaseApp.initializeApp(options);
 

@@ -70,12 +70,11 @@ public class MainController implements Initializable {
         mainHeading.setText(group.getName());
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/NotificationGroup.fxml"));
-            fxmlLoader.setController(new NotificationGroupController(group.getName()));
+            fxmlLoader.setController(new NotificationGroupController(group.getId()));
             setCenterScene(fxmlLoader);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public void getGroups() {
