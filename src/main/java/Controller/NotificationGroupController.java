@@ -14,6 +14,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -30,6 +31,7 @@ public class NotificationGroupController implements Initializable {
     ObservableList observableList = FXCollections.observableArrayList();
     @FXML private Button clipboardButton;
     @FXML private Button showQRButton;
+    @FXML private Pane grp_detail_pane;
 
 
     NotificationGroupController(Group group) {
@@ -38,6 +40,9 @@ public class NotificationGroupController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if(group.getId().startsWith("ROLE_")||group.getId().startsWith("GROUP_")){
+            grp_detail_pane.setVisible(false);
+        }
         groupLink.setText(group.getGroupLink());
         setListView();
     }
