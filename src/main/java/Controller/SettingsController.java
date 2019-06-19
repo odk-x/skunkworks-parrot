@@ -8,7 +8,6 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import java.io.*;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class SettingsController implements Initializable {
@@ -19,8 +18,6 @@ public class SettingsController implements Initializable {
     public TextField packageNameField;
     public ImageView folderIcon;
     public TextField syncClientURLField;
-    private HashMap<String, String> configure;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         readKeyData();
@@ -41,8 +38,8 @@ public class SettingsController implements Initializable {
     @FXML
     private void openFileChooser() {
         FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extentionFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
-        fileChooser.getExtensionFilters().add(extentionFilter);
+        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
+        fileChooser.getExtensionFilters().add(extensionFilter);
         String userDirectoryString = System.getProperty("user.home");
         File userDirectory = new File(userDirectoryString);
         if(!userDirectory.canRead()) {
@@ -54,8 +51,6 @@ public class SettingsController implements Initializable {
         if(chosenFile != null) {
             path = chosenFile.getPath();
             serviceAccountKeyPathField.setText(path);
-        } else {
-            path = null;
         }
     }
 

@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -26,80 +25,84 @@
 <BorderPane prefHeight="600.0" prefWidth="1024.0" stylesheets="@../styleSheets/stylesheet.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MainController">
     <left>
         <VBox prefHeight="600.0" prefWidth="300.0" styleClass="sidebar">
-            <children>
-                <HBox prefHeight="64.0" prefWidth="300.0" style="-fx-background-color: #00A2D3" styleClass="container" alignment="CENTER_LEFT">
-                    <children>
-                        <Label prefHeight="64.0" prefWidth="235.0" style="-fx-background-color: #00A2D3;" text="Admin Panel" textFill="WHITE">
-                            <padding>
-                                <Insets left="10.0" />
-                            </padding>
-                            <font>
-                                <Font name="Ebrima" size="19.0" />
-                            </font>
-                            <HBox.margin>
-                                <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
-                            </HBox.margin>
-                        </Label>
-                        <ProgressIndicator fx:id="progressIndicator" prefHeight="25.0" prefWidth="110.0" progress="0.0">
-                            <HBox.margin>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                            </HBox.margin>
-                        </ProgressIndicator>
-                        <ImageView fx:id="syncIcon" fitHeight="36.0" fitWidth="36.0" onMouseClicked="#syncFromServer" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/sync_icon.png" />
-                            </image>
-                        </ImageView>
-                    </children>
-                </HBox>
-                <Accordion blendMode="HARD_LIGHT">
-                    <panes>
-                        <TitledPane fx:id="createNotification_tp" collapsible="false" expanded="false" layoutX="10.0" layoutY="10.0" onMouseClicked="#createNotificationButtonClicked" text="Create Notification">
-                            <cursor>
-                                <Cursor fx:constant="HAND" />
-                            </cursor>
-                        </TitledPane>
+            <HBox prefHeight="64.0" prefWidth="300.0" style="-fx-background-color: #00A2D3" styleClass="container"
+                  alignment="CENTER_LEFT">
+                <Label prefHeight="64.0" prefWidth="235.0" style="-fx-background-color: #00A2D3;" text="Admin Panel"
+                       textFill="WHITE">
+                    <padding>
+                        <Insets left="10.0"/>
+                    </padding>
+                    <font>
+                        <Font name="Ebrima" size="19.0"/>
+                    </font>
+                    <HBox.margin>
+                        <Insets bottom="18.0" left="18.0" right="18.0" top="18.0"/>
+                    </HBox.margin>
+                </Label>
+                <ProgressIndicator fx:id="progressIndicator" prefHeight="25.0" prefWidth="110.0" progress="0.0">
+                    <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </HBox.margin>
+                </ProgressIndicator>
+                <ImageView fx:id="syncIcon" fitHeight="36.0" fitWidth="36.0" onMouseClicked="#syncFromServer"
+                           pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../images/sync_icon.png"/>
+                </ImageView>
+            </HBox>
+            <Accordion blendMode="HARD_LIGHT">
+                <panes>
+                    <TitledPane fx:id="createNotification_tp" collapsible="false" expanded="false" layoutX="10.0"
+                                layoutY="10.0" onMouseClicked="#createNotificationButtonClicked"
+                                text="Create Notification">
+                        <cursor>
+                            <Cursor fx:constant="HAND"/>
+                        </cursor>
+                    </TitledPane>
 
-                        <TitledPane fx:id="createNotificationGroups_tp" collapsible="false" expanded="false" layoutX="10.0" layoutY="10.0" onMouseClicked="#createGroupButtonClicked" text="Create Custom Notification Groups">
-                            <cursor>
-                                <Cursor fx:constant="HAND" />
-                            </cursor>
-                        </TitledPane>
+                    <TitledPane collapsible="false" expanded="false" layoutX="10.0"
+                                layoutY="10.0" onMouseClicked="#createGroupButtonClicked"
+                                text="Create Custom Notification Groups">
+                        <cursor>
+                            <Cursor fx:constant="HAND"/>
+                        </cursor>
+                    </TitledPane>
 
-                        <TitledPane fx:id="groups_tp"  prefHeight="576.0" prefWidth="300.0" text="Groups">
-                            <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                    <children>
-                                        <ListView fx:id="listView" layoutX="29.4" layoutY="18.4" prefHeight="383.0" prefWidth="255.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                            <styleClass>
-                                                <String fx:value="mylist" />
-                                            </styleClass></ListView>
-                                    </children></AnchorPane>
-                            </content>
-                        </TitledPane>
-                        <TitledPane fx:id="settings_tp" animated="false" collapsible="false" expanded="false" onMouseClicked="#settingsButtonClicked" text="Settings">
-                            <cursor>
-                                <Cursor fx:constant="HAND" />
-                            </cursor></TitledPane>
-                    </panes>
-                    <VBox.margin>
-                        <Insets top="10.0" />
-                    </VBox.margin>
-                </Accordion>
-            </children></VBox>
+                    <TitledPane fx:id="groups_tp" prefHeight="576.0" prefWidth="300.0" text="Groups">
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <ListView fx:id="listView" layoutX="29.4" layoutY="18.4" prefHeight="383.0"
+                                      prefWidth="255.0" AnchorPane.bottomAnchor="0.0"
+                                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                      AnchorPane.topAnchor="0.0">
+                                <styleClass>
+                                    <String fx:value="mylist"/>
+                                </styleClass>
+                            </ListView>
+                        </AnchorPane>
+                    </TitledPane>
+                    <TitledPane fx:id="settings_tp" animated="false" collapsible="false" expanded="false"
+                                onMouseClicked="#settingsButtonClicked" text="Settings">
+                        <cursor>
+                            <Cursor fx:constant="HAND"/>
+                        </cursor>
+                    </TitledPane>
+                </panes>
+                <VBox.margin>
+                    <Insets top="10.0"/>
+                </VBox.margin>
+            </Accordion>
+        </VBox>
     </left>
     <center>
         <VBox>
             <HBox alignment="CENTER_LEFT" style="-fx-background-color: #cacdd1;" styleClass="parent" VBox.vgrow="NEVER">
-                <children>
-                    <Label fx:id="mainHeading" text="Dashboard" textFill="#000000cd">
-                        <padding>
-                            <Insets bottom="20.0" left="10.0" right="10.0" top="20.0" />
-                        </padding>
-                        <font>
-                            <Font name="Ebrima Bold" size="19.0" />
-                        </font></Label>
-                </children>
+                <Label fx:id="mainHeading" text="Dashboard" textFill="#000000cd">
+                    <padding>
+                        <Insets bottom="20.0" left="10.0" right="10.0" top="20.0"/>
+                    </padding>
+                    <font>
+                        <Font name="Ebrima Bold" size="19.0"/>
+                    </font>
+                </Label>
             </HBox>
             <AnchorPane id="mainPane" fx:id="content" stylesheets="@../styleSheets/stylesheet.css" VBox.vgrow="ALWAYS" />
         </VBox>
