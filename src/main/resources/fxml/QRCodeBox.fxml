@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="328.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="53.0" layoutY="26.0" text="Scan the QR Code to subscribe to the group:" />
+      <ImageView fx:id="qrCodeImage" fitHeight="189.0" fitWidth="209.0" layoutX="94.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="saveImageButton" layoutX="139.0" layoutY="259.0" mnemonicParsing="false" onMouseClicked="#saveImageButtonClicked" text="Save As Image" />
+   </children>
+</AnchorPane>

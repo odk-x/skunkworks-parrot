@@ -1,28 +1,49 @@
 package Controller;
 
 import Data.*;
+import Model.Group;
 import Model.Notification;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class NotificationGroupController implements Initializable {
 
-    private String id;
-    public TableView tableView;
+    private Group group;
+    @FXML
+    private
+    TableView tableView;
+    @FXML private Label groupLink;
+    ObservableList observableList = FXCollections.observableArrayList();
+    @FXML private Button clipboardButton;
+    @FXML private Button showQRButton;
+    @FXML private Pane grp_detail_pane;
 
 
-    NotificationGroupController(String id) {
-        this.id = id;
+    NotificationGroupController(Group group) {
+        this.group = group;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if(group.getId().startsWith("ROLE_")||group.getId().startsWith("GROUP_")){
+            grp_detail_pane.setVisible(false);
+        }
+        groupLink.setText(group.getGroupLink());
         setListView();
     }
 
@@ -30,7 +51,7 @@ public class NotificationGroupController implements Initializable {
     {
         DatabaseCommunicator dc = new DatabaseCommunicator();
 
-        ObservableList<Object> notificationSet = FXCollections.observableArrayList(dc.getNotificationsList(id));
+        ObservableList<Object> notificationSet = FXCollections.observableArrayList(dc.getNotificationsList(group.getId()));
 
         TableColumn<Notification, String> titleColumn = new TableColumn<>("Title");
         titleColumn.setMinWidth(150);
@@ -50,5 +71,29 @@ public class NotificationGroupController implements Initializable {
         tableView.getColumns().addAll(titleColumn,messageColumn,dateColumn);
 
     }
+
+    public void copyToClipboardClicked(MouseEvent mouseEvent) {
+        if(group.getGroupLink()!=null){
+            final Clipboard clipboard = Clipboard.getSystemClipboard();
+            final ClipboardContent content = new ClipboardContent();
+            content.putString(group.getGroupLink());
+            clipboard.setContent(content);
+            clipboardButton.setText("Copied");
+        }
+    }
+
+    public void showQRButtonClicked(MouseEvent mouseEvent) {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/QRCodeBox.fxml"));
+        fxmlLoader.setController(new QRCodeBoxController(group));
+        Stage stage = new Stage();
+        stage.setTitle("Scan the QR Code");
+        try {
+            stage.setScene(new Scene(fxmlLoader.load(),392,328));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stage.show();
+    }
+
 
 }

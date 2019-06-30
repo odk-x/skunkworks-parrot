@@ -94,7 +94,7 @@ public class DatabaseCommunicator {
     }
 
     public void insertGroup(Group group){
-        executeUpdate("INSERT INTO "+TABLE_GROUPS+"("+COLUMN_GRP_ID+", "+COLUMN_NAME+") VALUES ('"+group.getId()+"', '"+group.getName()+"');");
+        executeUpdate("INSERT INTO "+TABLE_GROUPS+"("+COLUMN_GRP_ID+", "+COLUMN_NAME+", "+COLUMN_GRP_LINK+") VALUES ('"+group.getId()+"', '"+group.getName()+"', '"+group.getGroupLink()+"');");
     }
 
     public void clearTable(String tableName){

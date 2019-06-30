@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121"
-            xmlns:fx="http://javafx.com/fxml/1">
-    <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
-               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <columns>
+<AnchorPane prefHeight="406.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+      <AnchorPane fx:id="grp_detail_pane" prefHeight="47.0" prefWidth="614.0" AnchorPane.bottomAnchor="359.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label layoutX="8.0" layoutY="16.0" text="Group Link:" />
+            <Label fx:id="groupLink" layoutX="92.0" layoutY="16.0" prefHeight="16.0" prefWidth="378.0" text="N/A" />
+            <Button fx:id="clipboardButton" layoutX="499.0" layoutY="11.0" mnemonicParsing="false" onMouseClicked="#copyToClipboardClicked" text="Copy" />
+            <Button fx:id="showQRButton" layoutX="560.0" layoutY="11.0" mnemonicParsing="false" onMouseClicked="#showQRButtonClicked" text="Show QR Code" />
+         </children>
+      </AnchorPane>
+      <TableView fx:id="tableView" layoutY="45.0" prefHeight="355.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0">
+        <columns>
 
-      </columns>
-    </TableView>
+        </columns>
+      </TableView>
+    </children>
 </AnchorPane>
