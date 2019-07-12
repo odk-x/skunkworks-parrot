@@ -29,7 +29,6 @@ dependencies {
     compile "org.apache.httpcomponents:httpmime:4.3"
     compile 'com.google.zxing:core:3.2.1'
     implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.27.2.1'
-    testImplementation('org.junit.jupiter:junit-jupiter:5.5.0')
 
 }
 
