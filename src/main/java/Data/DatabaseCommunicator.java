@@ -9,8 +9,8 @@ import java.util.ArrayList;
 public class DatabaseCommunicator {
     private Connection c = null;
     private Statement stmt = null;
-    private static final String TABLE_GROUPS = "Groups";
-    private static final String TABLE_NOTIFICATIONS = "Notifications";
+    static final String TABLE_GROUPS = "Groups";
+    static final String TABLE_NOTIFICATIONS = "Notifications";
 
     private static final String COLUMN_NAME = "grp_name";
     private static final String COLUMN_GRP_ID = "grp_id";
