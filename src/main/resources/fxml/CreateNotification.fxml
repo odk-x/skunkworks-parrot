@@ -2,10 +2,10 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -38,12 +38,12 @@
       </Label>
       <HBox prefHeight="36.0" prefWidth="560.0">
          <children>
-            <CheckBox mnemonicParsing="false" text="Simple" />
-            <CheckBox mnemonicParsing="false" text="Interactive">
+            <RadioButton fx:id="rb_simple" mnemonicParsing="false" text="Simple" />
+            <RadioButton fx:id="rb_interactive" mnemonicParsing="false" text="Interactive">
                <HBox.margin>
-                  <Insets left="15.0" />
+                  <Insets left="20.0" />
                </HBox.margin>
-            </CheckBox>
+            </RadioButton>
          </children>
       </HBox>
         <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="560.0">

@@ -4,6 +4,8 @@ package Controller;
 import Data.DatabaseCommunicator;
 import Model.Group;
 import Model.Notification;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import javafx.collections.FXCollections;
@@ -27,6 +29,10 @@ public class CreateNotificationController implements Initializable {
     public Label statusLabel;
     public ComboBox<Group> comboBox;
     private ArrayList<Group> groupArrayList;
+    public ToggleGroup toggleGroup;
+    public RadioButton rb_simple;
+    public RadioButton rb_interactive;
+
 
     public CreateNotificationController(ArrayList<Group> groupArrayList) {
         this.groupArrayList = groupArrayList;
@@ -65,7 +71,10 @@ public class CreateNotificationController implements Initializable {
                 return null;
             }
         });
-
+        toggleGroup = new ToggleGroup();
+        rb_simple.setToggleGroup(toggleGroup);
+        rb_interactive.setToggleGroup(toggleGroup);
+        rb_simple.setSelected(true);
 
     }
 
@@ -78,6 +87,9 @@ public class CreateNotificationController implements Initializable {
             statusLabel.setVisible(true);
             send_button.setDisable(true);
             Group selected = comboBox.getSelectionModel().getSelectedItem();
+            String type = ((RadioButton)toggleGroup.getSelectedToggle()).getText();
+            DatabaseReference notifRef = FirebaseDatabase.getInstance().getReference("/notifications").push();
+            String notif_id = notifRef.getKey();
             Task<Void> task = new Task<Void>() {
                 @Override
                 protected Void call() {
@@ -87,9 +99,11 @@ public class CreateNotificationController implements Initializable {
                     String topic = selected.getId();
 
                     Message message = Message.builder()
+                            .putData("id", notif_id)
                             .putData("title", titleStr)
                             .putData("message", messageStr)
                             .putData("group", selected.getId())
+                            .putData("type", type)
                             .setTopic(topic)
                             .build();
 
@@ -99,8 +113,10 @@ public class CreateNotificationController implements Initializable {
                         System.out.println("Successfully sent message: " + response);
                         updateProgress(100, 100);
                         updateMessage("Message sent successfully.");
+                        Notification notification = new Notification(notif_id,titleStr,messageStr,new Date().getTime() ,selected.getId(), type, null);
+                        notifRef.setValueAsync(notification);
                         DatabaseCommunicator dc= new DatabaseCommunicator();
-                        dc.addNotification(new Notification(titleStr,messageStr,new Date().getTime() ,selected.getId(),null));
+                        dc.addNotification(notification);
                         dc.closeConnection();
 
                     } catch (Exception e) {
