@@ -9,8 +9,8 @@ import java.util.ArrayList;
 public class DatabaseCommunicator {
     private Connection c = null;
     private Statement stmt = null;
-    private static final String TABLE_GROUPS = "Groups";
-    private static final String TABLE_NOTIFICATIONS = "Notifications";
+    static final String TABLE_GROUPS = "Groups";
+    static final String TABLE_NOTIFICATIONS = "Notifications";
 
     private static final String COLUMN_NAME = "grp_name";
     private static final String COLUMN_GRP_ID = "grp_id";
@@ -112,9 +112,8 @@ public class DatabaseCommunicator {
                 String message = rs.getString(COLUMN_MESSAGE);
                 String date = rs.getString(COLUMN_DATE);
                 String group_id = rs.getString(COLUMN_GRP_ID);
-                String status = rs.getString(COLUMN_STATUS);
 
-                Notification notification = new Notification(title,message,Long.parseLong(date),group_id,status );
+                Notification notification = new Notification(title,message,Long.parseLong(date),group_id, null);
                 notifications.add(notification);
             }
         } catch (Exception e){
