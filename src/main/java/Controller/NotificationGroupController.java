@@ -13,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -69,6 +70,25 @@ public class NotificationGroupController implements Initializable {
         tableView.setItems(notificationSet);
         tableView.getColumns().clear();
         tableView.getColumns().addAll(titleColumn,messageColumn,dateColumn);
+        tableView.setRowFactory(tv->{
+            TableRow<Notification> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (! row.isEmpty() && event.getButton()== MouseButton.PRIMARY && event.getClickCount()==2) {
+                    Notification clickedRow = row.getItem();
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/NotificationResponse.fxml"));
+                    fxmlLoader.setController(new NotificationResponseController(clickedRow));
+                    Stage stage = new Stage();
+                    stage.setTitle("Notification Responses");
+                    try {
+                        stage.setScene(new Scene(fxmlLoader.load(),600,400));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    stage.show();
+                }
+            });
+            return row ;
+        });
 
     }
 

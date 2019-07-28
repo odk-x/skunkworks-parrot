@@ -1,8 +1,11 @@
 package Controller;
 
-import Data.*;
+import Data.DatabaseCommunicator;
 import Model.Group;
 import Model.Notification;
+import Model.Response;
+import com.google.firebase.database.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -20,61 +23,81 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class NotificationGroupController implements Initializable {
+public class NotificationResponseController implements Initializable {
 
-    private Group group;
-    @FXML
-    private
-    TableView tableView;
-    @FXML private Label groupLink;
+    private Notification notification;
+    @FXML private TableView tableView;
+    @FXML private Label title;
+    @FXML private Label message;
+    @FXML private Label time;
     ObservableList observableList = FXCollections.observableArrayList();
-    @FXML private Button clipboardButton;
-    @FXML private Button showQRButton;
     @FXML private Pane grp_detail_pane;
+    private ArrayList<Response> responseArrayList = new ArrayList<>();
 
 
-    NotificationGroupController(Group group) {
-        this.group = group;
+    NotificationResponseController(Notification notification) {
+        this.notification = notification;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if(group.getId().startsWith("ROLE_")||group.getId().startsWith("GROUP_")){
-            grp_detail_pane.setVisible(false);
-        }
-        groupLink.setText(group.getGroupLink());
-        setListView();
+        title.setText(notification.getTitle());
+        message.setText(notification.getMessage());
+        time.setText(notification.getDate_str());
+
+        DatabaseReference responseRef = FirebaseDatabase.getInstance().getReference("/responses/"+notification.getId());
+        responseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                responseArrayList.clear();
+                for(DataSnapshot childSnapshot:snapshot.getChildren()){
+                    Response response = childSnapshot.getValue(Response.class);
+                    response.fetchTime();
+                    responseArrayList.add(response);
+                }
+                Platform.runLater(new Runnable(){
+                    @Override
+                    public void run() {
+                        setTableView();
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
     }
 
-    private void setListView()
+    public void setTableView()
     {
-        DatabaseCommunicator dc = new DatabaseCommunicator();
+        ObservableList<Object> responseSet = FXCollections.observableArrayList(responseArrayList);
 
-        ObservableList<Object> notificationSet = FXCollections.observableArrayList(dc.getNotificationsList(group.getId()));
+        TableColumn<Notification, String> senderIdColumn = new TableColumn<>("Sender ID");
+        senderIdColumn.setMinWidth(100);
+        senderIdColumn.setCellValueFactory(new PropertyValueFactory<>("senderID"));
 
-        TableColumn<Notification, String> titleColumn = new TableColumn<>("Title");
-        titleColumn.setMinWidth(150);
-        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        TableColumn<Notification, String> responseColumn = new TableColumn<>("Response");
+        responseColumn.setMinWidth(300);
+        responseColumn.setCellValueFactory(new PropertyValueFactory<>("response"));
 
-        TableColumn<Notification, String> messageColumn = new TableColumn<>("Message");
-        messageColumn.setMinWidth(300);
-        messageColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
+        TableColumn<Notification, String> timeColumn = new TableColumn<>("Time");
+        timeColumn.setMinWidth(150);
+        timeColumn.setCellValueFactory(new PropertyValueFactory<>("date_str"));
 
-        TableColumn<Notification, String> dateColumn = new TableColumn<>("Date");
-        dateColumn.setMinWidth(150);
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date_str"));
-
-
-        tableView.setItems(notificationSet);
+        tableView.setItems(responseSet);
         tableView.getColumns().clear();
-        tableView.getColumns().addAll(titleColumn,messageColumn,dateColumn);
+        tableView.getColumns().addAll(senderIdColumn,responseColumn,timeColumn);
         tableView.setRowFactory(tv->{
-            TableRow<Notification> row = new TableRow<>();
+            TableRow<Response> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (! row.isEmpty() && event.getButton()== MouseButton.PRIMARY && event.getClickCount()==2) {
-                    Notification clickedRow = row.getItem();
+                    Response clickedRow = row.getItem();
                     System.out.println(clickedRow);
                 }
             });
@@ -82,29 +105,4 @@ public class NotificationGroupController implements Initializable {
         });
 
     }
-
-    public void copyToClipboardClicked(MouseEvent mouseEvent) {
-        if(group.getGroupLink()!=null){
-            final Clipboard clipboard = Clipboard.getSystemClipboard();
-            final ClipboardContent content = new ClipboardContent();
-            content.putString(group.getGroupLink());
-            clipboard.setContent(content);
-            clipboardButton.setText("Copied");
-        }
-    }
-
-    public void showQRButtonClicked(MouseEvent mouseEvent) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/QRCodeBox.fxml"));
-        fxmlLoader.setController(new QRCodeBoxController(group));
-        Stage stage = new Stage();
-        stage.setTitle("Scan the QR Code");
-        try {
-            stage.setScene(new Scene(fxmlLoader.load(),392,328));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        stage.show();
-    }
-
-
 }
