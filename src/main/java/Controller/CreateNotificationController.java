@@ -35,7 +35,6 @@ public class CreateNotificationController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         progressIndicator.setVisible(false);
-        statusLabel.setVisible(false);
 
         comboBox.setItems(FXCollections.observableList(groupArrayList));
         comboBox.setCellFactory(new Callback<ListView<Group>, ListCell<Group>>() {
@@ -75,7 +74,6 @@ public class CreateNotificationController implements Initializable {
 
         if(!(titleStr.isEmpty() && messageStr.isEmpty())) {
             progressIndicator.setVisible(true);
-            statusLabel.setVisible(true);
             send_button.setDisable(true);
             Group selected = comboBox.getSelectionModel().getSelectedItem();
             Task<Void> task = new Task<Void>() {

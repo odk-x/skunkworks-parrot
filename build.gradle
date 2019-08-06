@@ -21,6 +21,7 @@ dependencies {
     implementation 'org.knowm:sundial:2.1.1'
     testCompile "org.testfx:testfx-core:4.0.13-alpha"
     testCompile "org.testfx:testfx-junit:4.0.13-alpha"
+    testCompile group: 'org.loadui', name: 'testFx', version: '3.1.2'
     compile group: 'org.apache.wink', name: 'wink-json4j', version: '1.1.2-incubating'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.6'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'

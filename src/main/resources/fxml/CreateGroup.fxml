@@ -23,7 +23,7 @@
             <VBox.margin>
                 <Insets bottom="10.0" top="30.0"/>
             </VBox.margin>
-            <Button mnemonicParsing="false" onMouseClicked="#createButtonClicked"
+            <Button fx:id="createButton" mnemonicParsing="false" onMouseClicked="#createButtonClicked"
                     prefHeight="31.0" prefWidth="117.0" text="Create"/>
             <ProgressIndicator fx:id="progressIndicator" prefHeight="31.0" prefWidth="63.0" progress="0.0"
                                visible="false">
