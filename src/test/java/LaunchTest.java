@@ -1,9 +1,12 @@
+import Data.DatabaseCommunicator;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.loadui.testfx.GuiTest;
 import org.testfx.util.WaitForAsyncUtils;
 
@@ -13,18 +16,23 @@ import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
 import static org.loadui.testfx.controls.Commons.hasText;
-
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LaunchTest extends GuiTest {
 
     private Parent mainNode;
-
+    private DatabaseCommunicator dc;
     @Before
     public void setUp() throws Exception {
+        dc = new DatabaseCommunicator();
+        dc.clearTable(DatabaseCommunicator.TABLE_GROUPS);
+        dc.clearTable(DatabaseCommunicator.TABLE_NOTIFICATIONS);
     }
 
     @After
     public void tearDown() throws Exception {
-
+        dc.clearTable(DatabaseCommunicator.TABLE_GROUPS);
+        dc.clearTable(DatabaseCommunicator.TABLE_NOTIFICATIONS);
+        dc.closeConnection();
     }
 
     @Override
@@ -39,11 +47,11 @@ public class LaunchTest extends GuiTest {
 
 
     @Test
-    public void loginTest () {
+    public void stage1_loginTest () {
         click("#usernameField");
-        type("hgupta");
+        type(System.getProperty("username","admin"));
         click("#passwordField");
-        type("admin");
+        type(System.getProperty("password","admin"));
         click("#loginButton");
         Label statusLabel = find("#statusLabel");
         waitUntil(statusLabel,hasText("Login Successful"),10);
@@ -52,10 +60,10 @@ public class LaunchTest extends GuiTest {
     }
 
     @Test
-    public void createGroupTest() throws TimeoutException {
+    public void stage2_createGroupTest() throws TimeoutException {
         click("#createGroup_tp");
         click("#name_field");
-        type("test_group");
+        type("test group");
         click("#createButton");
         Label status = find("#statusLabel");
         WaitForAsyncUtils.waitFor(10, TimeUnit.SECONDS,()-> !status.getText().equals("Please Wait..."));
@@ -64,7 +72,7 @@ public class LaunchTest extends GuiTest {
     }
 
     @Test
-    public void createNotificationTest() throws TimeoutException {
+    public void stage3_createNotificationTest() throws TimeoutException {
         click("#createNotification_tp");
         click("#title_field");
         type("Test Notification");

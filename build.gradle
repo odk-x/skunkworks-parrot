@@ -44,6 +44,8 @@ jar {
 
 }
 test {
+    systemProperty 'username', System.getProperty('username')
+    systemProperty 'password', System.getProperty('password')
     useJUnit()
     maxHeapSize = '1G'
 }
