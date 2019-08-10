@@ -22,14 +22,14 @@ public class LaunchTest extends GuiTest {
     private Parent mainNode;
     private DatabaseCommunicator dc;
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         dc = new DatabaseCommunicator();
         dc.clearTable(DatabaseCommunicator.TABLE_GROUPS);
         dc.clearTable(DatabaseCommunicator.TABLE_NOTIFICATIONS);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         dc.clearTable(DatabaseCommunicator.TABLE_GROUPS);
         dc.clearTable(DatabaseCommunicator.TABLE_NOTIFICATIONS);
         dc.closeConnection();
@@ -86,8 +86,4 @@ public class LaunchTest extends GuiTest {
         String status = statusLabel.getText();
         assertEquals("Message sent successfully.",status);
     }
-
-
-
-
 }
