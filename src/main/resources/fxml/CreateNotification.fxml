@@ -5,45 +5,58 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121"
-            xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../styleSheets/CreateNotificationStyleSheet.css">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../styleSheets/CreateNotificationStyleSheet.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
     <VBox prefHeight="400.0" prefWidth="600.0">
         <padding>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
         </padding>
-        <Label text="Title"/>
-        <TextField fx:id="title_field" prefHeight="31.0" prefWidth="450.0"/>
+        <Label text="Title" />
+        <TextField fx:id="title_field" prefHeight="31.0" prefWidth="450.0" />
         <Label text="Message">
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="10.0" />
             </VBox.margin>
         </Label>
-        <TextField fx:id="message_field" prefHeight="31.0" prefWidth="450.0"/>
+        <TextField fx:id="message_field" prefHeight="31.0" prefWidth="450.0" />
 
         <HBox layoutX="30.0" layoutY="144.0">
             <VBox.margin>
-                <Insets top="20.0"/>
+                <Insets top="20.0" />
             </VBox.margin>
-            <ComboBox fx:id="comboBox" prefHeight="31.0" prefWidth="235.0"
-                      promptText="Select Notification Group"/>
+            <ComboBox fx:id="comboBox" prefHeight="31.0" prefWidth="235.0" promptText="Select Notification Group" />
         </HBox>
+      <Label prefHeight="35.0" prefWidth="160.0" text="Select Notification Type">
+         <VBox.margin>
+            <Insets top="15.0" />
+         </VBox.margin>
+      </Label>
+      <HBox prefHeight="36.0" prefWidth="560.0">
+         <children>
+            <RadioButton fx:id="rb_simple" mnemonicParsing="false" text="Simple" />
+            <RadioButton fx:id="rb_interactive" mnemonicParsing="false" text="Interactive">
+               <HBox.margin>
+                  <Insets left="20.0" />
+               </HBox.margin>
+            </RadioButton>
+         </children>
+      </HBox>
         <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="560.0">
             <VBox.margin>
-                <Insets bottom="10.0" top="30.0"/>
+                <Insets bottom="10.0" top="30.0" />
             </VBox.margin>
-            <Button fx:id="send_button" mnemonicParsing="false" onMouseClicked="#sendButtonClicked"
-                    prefHeight="31.0" prefWidth="60.0" text="Send"/>
+            <Button fx:id="send_button" mnemonicParsing="false" onMouseClicked="#sendButtonClicked" prefHeight="31.0" prefWidth="60.0" text="Send" />
             <ProgressIndicator fx:id="progressIndicator" prefHeight="24.0" prefWidth="36.0" progress="0.0">
                 <HBox.margin>
-                    <Insets left="20.0" right="20.0"/>
+                    <Insets left="20.0" right="20.0" />
                 </HBox.margin>
             </ProgressIndicator>
-            <Label fx:id="statusLabel" prefHeight="21.0" prefWidth="415.0"/>
+            <Label fx:id="statusLabel" prefHeight="21.0" prefWidth="415.0" />
         </HBox>
 
     </VBox>

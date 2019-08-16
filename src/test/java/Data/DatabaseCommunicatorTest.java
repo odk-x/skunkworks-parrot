@@ -45,7 +45,7 @@ public class DatabaseCommunicatorTest {
 
     @Test
     public void addNotificationTest() {
-        Notification notification = new Notification("test_notification","This is a test notification", Calendar.getInstance().getTimeInMillis(),"test_group",null);
+        Notification notification = new Notification("test_id","test_notification","This is a test notification", Calendar.getInstance().getTimeInMillis(),"test_group","Simple",null);
         dc.addNotification(notification);
         List<Notification> notifications = dc.getNotificationsList("test_group");
         Assert.assertTrue(EqualsBuilder.reflectionEquals(notification,notifications.get(0)));

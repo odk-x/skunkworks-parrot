@@ -15,11 +15,13 @@ public class DatabaseCommunicator {
     private static final String COLUMN_NAME = "grp_name";
     private static final String COLUMN_GRP_ID = "grp_id";
     private static final String COLUMN_ID = "id";
+    private static final String COLUMN_NOTIF_ID = "notif_id";
     private static final String COLUMN_TITLE = "title";
     private static final String COLUMN_MESSAGE = "message";
     private static final String COLUMN_DATE = "date_int";
     private static final String COLUMN_STATUS = "status_str";
     private static final String COLUMN_GRP_LINK="group_link";
+    private static final String COLUMN_TYPE = "type";
 
     public DatabaseCommunicator(){
         try {
@@ -86,10 +88,12 @@ public class DatabaseCommunicator {
     private void createNotificationsTable(){
         executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_NOTIFICATIONS+" (" +
                 COLUMN_ID+" Integer PRIMARY KEY AUTOINCREMENT, "+
+                COLUMN_NOTIF_ID+ " VARCHAR(30), "+
                 COLUMN_TITLE+" VARCHAR(100), "+
                 COLUMN_MESSAGE+" VARCHAR(1000), "+
                 COLUMN_DATE+" VARCHAR(20), "+
                 COLUMN_GRP_ID+" VARCHAR(30), "+
+                COLUMN_TYPE+" VARCHAR(30), "+
                 COLUMN_STATUS+" VARCHAR(20));");
     }
 
@@ -108,12 +112,15 @@ public class DatabaseCommunicator {
             ResultSet rs = stmt.executeQuery("SELECT * FROM "+TABLE_NOTIFICATIONS+" WHERE "+COLUMN_GRP_ID+" = '"+groupId+"';");
             System.out.println(rs);
             while(rs.next()){
+                String id = rs.getString(COLUMN_NOTIF_ID);
                 String title = rs.getString(COLUMN_TITLE);
                 String message = rs.getString(COLUMN_MESSAGE);
                 String date = rs.getString(COLUMN_DATE);
                 String group_id = rs.getString(COLUMN_GRP_ID);
+                String type = rs.getString(COLUMN_TYPE);
+                String status = rs.getString(COLUMN_STATUS);
 
-                Notification notification = new Notification(title,message,Long.parseLong(date),group_id, null);
+                Notification notification = new Notification(id,title,message,Long.parseLong(date),group_id, type,null);
                 notifications.add(notification);
             }
         } catch (Exception e){
@@ -123,6 +130,6 @@ public class DatabaseCommunicator {
     }
 
     public void addNotification(Notification notification){
-           executeUpdate("INSERT INTO "+TABLE_NOTIFICATIONS+" ("+COLUMN_TITLE+", "+COLUMN_MESSAGE+", "+COLUMN_DATE+", "+COLUMN_GRP_ID+", "+COLUMN_STATUS+" ) VALUES ('"+notification.getTitle()+"', '"+notification.getMessage()+"', '"+ notification.getDate() +"', '"+notification.getGroup_id()+"', '"+notification.getStatus()+"');");
+           executeUpdate("INSERT INTO "+TABLE_NOTIFICATIONS+" ("+COLUMN_NOTIF_ID+", "+COLUMN_TITLE+", "+COLUMN_MESSAGE+", "+COLUMN_DATE+", "+COLUMN_GRP_ID+", "+COLUMN_TYPE+", "+COLUMN_STATUS+" ) VALUES ('"+notification.getId()+"', '"+notification.getTitle()+"', '"+notification.getMessage()+"', '"+ notification.getDate() +"', '"+notification.getGroup_id()+"', '"+notification.getType()+"', '"+notification.getStatus()+"');");
     }
 }
