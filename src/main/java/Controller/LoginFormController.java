@@ -148,7 +148,7 @@ public class LoginFormController implements Initializable {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainUI.fxml"));
         Stage stage = new Stage();
-        stage.setTitle("ODK Notifications Admin Panel");
+        stage.setTitle("ODK-X Notify Admin Panel");
         try {
             stage.setScene(new Scene(fxmlLoader.load(),    1024, 600));
         } catch (IOException e) {
