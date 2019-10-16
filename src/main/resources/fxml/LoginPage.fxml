@@ -18,66 +18,58 @@
    </center>
    <left>
        <AnchorPane prefHeight="400.0" prefWidth="260.0" style="-fx-background-color: #333645">
-             <children>
-                  <ImageView fitHeight="135.0" fitWidth="280.0" layoutX="29.0" layoutY="133.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../drawable/odk_icon.png" />
-                     </image>
-                  </ImageView>
-            <VBox alignment="CENTER_LEFT" layoutY="289.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-               <children>
-                      <HBox alignment="CENTER_LEFT" prefHeight="2.0" prefWidth="260.0">
-                         <children>
-                            <ImageView fx:id="loginIcon" fitHeight="24.0" fitWidth="24.0" onMouseClicked="#switchToLoginPage" pickOnBounds="true" preserveRatio="true">
-                               <image>
-                                  <Image url="@../images/profile_icon.png" />
-                               </image>
-                        </ImageView>
-
-                        <TitledPane fx:id="loginText" collapsible="false" expanded="false" onMouseClicked="#switchToLoginPage" prefHeight="29.0" prefWidth="73.0" styleClass="text" text="Login">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </TitledPane>
-                         </children>
-                  </HBox>
-                      <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="27.0" prefWidth="320.0">
-                     <children>
-                        <ImageView fx:id="configureIcon" fitHeight="24.0" fitWidth="24.0" onMouseClicked="#configureButtonClicked" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../drawable/settings_icon.png" />
-                           </image>
-                        </ImageView>
-                        <TitledPane fx:id="configureText" collapsible="false" expanded="false" onMouseClicked="#configureButtonClicked" styleClass="text" text="Configure">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </TitledPane>
-                     </children>
-                  </HBox>
-                      <HBox alignment="CENTER_LEFT" prefHeight="2.0" prefWidth="260.0">
-                       <children>
-                           <ImageView fx:id="helpIcon" fitHeight="24.0" fitWidth="24.0" onMouseClicked="#openHelpPage" pickOnBounds="true" preserveRatio="true">
-                               <image>
-                                   <Image url="@../images/help.png" />
-                               </image>
-                           </ImageView>
-
-                           <TitledPane fx:id="helpText" collapsible="false" expanded="false" onMouseClicked="#openHelpPage" prefHeight="29.0" prefWidth="73.0" styleClass="text" text="Help">
-                               <cursor>
-                                   <Cursor fx:constant="HAND" />
-                               </cursor>
-                           </TitledPane>
-                       </children>
-                   </HBox>
-
-               </children>
+           <ImageView fitHeight="135.0" fitWidth="280.0" layoutX="29.0" layoutY="133.0" pickOnBounds="true"
+                      preserveRatio="true">
+               <Image url="@../drawable/odk_icon.png"/>
+           </ImageView>
+           <VBox alignment="CENTER_LEFT" layoutY="289.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="0.0"
+                 AnchorPane.rightAnchor="0.0">
                <padding>
-                  <Insets left="75.0" />
+                   <Insets left="75.0"/>
                </padding>
-            </VBox>
+               <HBox alignment="CENTER_LEFT" prefHeight="2.0" prefWidth="260.0">
+                   <ImageView fx:id="loginIcon" fitHeight="24.0" fitWidth="24.0"
+                              onMouseClicked="#switchToLoginPage" pickOnBounds="true" preserveRatio="true">
+                       <Image url="@../images/profile_icon.png"/>
+                   </ImageView>
 
-             </children>
-            </AnchorPane>
+                   <TitledPane fx:id="loginText" collapsible="false" expanded="false"
+                               onMouseClicked="#switchToLoginPage" prefHeight="29.0" prefWidth="73.0"
+                               styleClass="text" text="Login">
+                       <cursor>
+                           <Cursor fx:constant="HAND"/>
+                       </cursor>
+                   </TitledPane>
+               </HBox>
+               <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="27.0" prefWidth="320.0">
+                   <ImageView fx:id="configureIcon" fitHeight="24.0" fitWidth="24.0"
+                              onMouseClicked="#configureButtonClicked" pickOnBounds="true" preserveRatio="true">
+                       <Image url="@../drawable/settings_icon.png"/>
+                   </ImageView>
+                   <TitledPane fx:id="configureText" collapsible="false" expanded="false"
+                               onMouseClicked="#configureButtonClicked" styleClass="text" text="Configure">
+                       <cursor>
+                           <Cursor fx:constant="HAND"/>
+                       </cursor>
+                   </TitledPane>
+               </HBox>
+               <HBox alignment="CENTER_LEFT" prefHeight="2.0" prefWidth="260.0">
+                   <ImageView fitHeight="24.0" fitWidth="24.0" onMouseClicked="#openHelpPage"
+                              pickOnBounds="true" preserveRatio="true">
+                       <Image url="@../images/help.png"/>
+                   </ImageView>
+
+                   <TitledPane collapsible="false" expanded="false"
+                               onMouseClicked="#openHelpPage" prefHeight="29.0" prefWidth="73.0"
+                               styleClass="text" text="Help">
+                       <cursor>
+                           <Cursor fx:constant="HAND"/>
+                       </cursor>
+                   </TitledPane>
+               </HBox>
+
+           </VBox>
+
+       </AnchorPane>
    </left>
 </BorderPane>

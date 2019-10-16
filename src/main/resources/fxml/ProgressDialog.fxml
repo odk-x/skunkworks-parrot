@@ -4,12 +4,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane prefHeight="64.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.ProgressDialog">
-   <children>
-      <HBox layoutX="0.0" layoutY="0.0" prefHeight="100.0" prefWidth="249.0" >
-         <children>
-            <ProgressIndicator prefHeight="40.0" prefWidth="40.0" progress="0.0" />
-         </children>
-      </HBox>
-   </children>
+<AnchorPane prefHeight="64.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.121">
+    <HBox prefHeight="100.0" prefWidth="249.0">
+        <ProgressIndicator prefHeight="40.0" prefWidth="40.0" progress="0.0"/>
+    </HBox>
 </AnchorPane>

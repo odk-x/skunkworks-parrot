@@ -8,18 +8,16 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import java.io.*;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class SettingsController implements Initializable {
     public TextField serviceAccountKeyPathField;
     public TextField webAPIKeyField;
+    public TextField firebaseDatabaseURLField;
     public TextField dynamicLinkDomainField;
     public TextField packageNameField;
     public ImageView folderIcon;
     public TextField syncClientURLField;
-    private HashMap<String, String> configure;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         readKeyData();
@@ -30,6 +28,7 @@ public class SettingsController implements Initializable {
 
        serviceAccountKeyPathField.setText(Data.data.getSERVICE_ACCOUNT_KEY_PATH());
        webAPIKeyField.setText(Data.data.getWEB_API_KEY());
+       firebaseDatabaseURLField.setText(Data.data.getFIREBASE_DATABASE_URL());
        dynamicLinkDomainField.setText(Data.data.getDYNAMIC_LINK_DOMAIN());
        packageNameField.setText(Data.data.getANDROID_APP_PACKAGE_NAME());
        syncClientURLField.setText(Data.data.getSYNC_CLIENT_URL());
@@ -39,8 +38,8 @@ public class SettingsController implements Initializable {
     @FXML
     private void openFileChooser() {
         FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extentionFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
-        fileChooser.getExtensionFilters().add(extentionFilter);
+        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
+        fileChooser.getExtensionFilters().add(extensionFilter);
         String userDirectoryString = System.getProperty("user.home");
         File userDirectory = new File(userDirectoryString);
         if(!userDirectory.canRead()) {
@@ -52,8 +51,6 @@ public class SettingsController implements Initializable {
         if(chosenFile != null) {
             path = chosenFile.getPath();
             serviceAccountKeyPathField.setText(path);
-        } else {
-            path = null;
         }
     }
 
@@ -63,6 +60,7 @@ public class SettingsController implements Initializable {
         Data.data.setSERVICE_ACCOUNT_KEY_PATH(serviceAccountKeyPathField.getText());
         Data.data.setWEB_API_KEY(webAPIKeyField.getText());
         Data.data.setSYNC_CLIENT_URL(syncClientURLField.getText());
+        Data.data.setFIREBASE_DATABASE_URL(firebaseDatabaseURLField.getText());
         Data.data.saveKeys();
     }
 }

@@ -13,8 +13,7 @@ repositories {
 
 dependencies {
 
-    runtime files ('target/sync-client-2.1.1.jar','target/sync-client-2.1.1-javadoc.jar','target/sync-client-2.1.1-sources.jar')
-    runtime fileTree('target') {include'*.jar'}
+    implementation fileTree(dir: 'dependencies', include: ['*.jar'])
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation 'com.google.firebase:firebase-admin:6.1.0'
     implementation "org.slf4j:slf4j-api:1.6.1"
@@ -29,5 +28,21 @@ dependencies {
     compile "org.apache.httpcomponents:httpcore:4.2.4"
     compile "org.apache.httpcomponents:httpmime:4.3"
     compile 'com.google.zxing:core:3.2.1'
+    implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.27.2.1'
+    implementation 'org.apache.commons:commons-lang3:3.6'
+}
 
+
+jar {
+    manifest {
+        attributes "Main-Class": "Launch"
+    }
+    from {
+        configurations.runtimeClasspath.files.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+}
+test {
+    useJUnit()
+    maxHeapSize = '1G'
 }

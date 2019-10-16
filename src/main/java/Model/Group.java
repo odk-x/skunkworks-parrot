@@ -1,11 +1,9 @@
 package Model;
 
-import java.util.ArrayList;
-
 public class Group {
-    String id;
-    String name;
-    String groupLink;
+    private String id;
+    private String name;
+    private String groupLink;
 
     public Group(String id, String name) {
         this.id = id;
