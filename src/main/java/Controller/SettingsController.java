@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SettingsController implements Initializable {
+    public static LoginPageController loginPageController;
     public TextField serviceAccountKeyPathField;
     public TextField webAPIKeyField;
     public TextField firebaseDatabaseURLField;
@@ -62,5 +63,6 @@ public class SettingsController implements Initializable {
         Data.data.setSYNC_CLIENT_URL(syncClientURLField.getText());
         Data.data.setFIREBASE_DATABASE_URL(firebaseDatabaseURLField.getText());
         Data.data.saveKeys();
+        loginPageController.switchToLoginPage();
     }
 }
