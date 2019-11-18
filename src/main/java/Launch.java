@@ -3,6 +3,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import Controller.SettingsController;
 
 public class Launch extends Application {
 
@@ -12,7 +13,9 @@ public class Launch extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("fxml/LoginPage.fxml"));
+        FXMLLoader loader= new FXMLLoader(getClass().getResource("fxml/LoginPage.fxml"));
+        Parent root = loader.load();
+        SettingsController.loginPageController=loader.getController();
         primaryStage.setTitle("ODK-X Notify Admin Panel");
         primaryStage.setScene(new Scene(root,740,420));
         primaryStage.show();
