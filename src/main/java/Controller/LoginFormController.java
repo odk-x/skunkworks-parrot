@@ -78,8 +78,10 @@ public class LoginFormController implements Initializable {
                 try {
                     if(verifyCredentials(username,password)) {
                         LoginCredentials.credentials = new LoginCredentials(username,password);
+                        updateProgress(40,100);
                         try {
                             initializeFirebaseSDK();
+                            updateProgress(80,100);
                         }catch (IOException e){
                             flag = false;
                             updateProgress(0,100);
@@ -99,6 +101,11 @@ public class LoginFormController implements Initializable {
                     flag = false;
                     e.printStackTrace();
                     updateProgress(0, 100);
+                    updateMessage("Error: "+e.getMessage());
+                }
+                if(flag){
+                    updateProgress(100,100);
+                    updateMessage("Login Successful");
                 }
                 return null;
             }

@@ -59,7 +59,7 @@
                         </cursor>
                     </TitledPane>
 
-                    <TitledPane collapsible="false" expanded="false" layoutX="10.0"
+                    <TitledPane fx:id="createGroup_tp" collapsible="false" expanded="false" layoutX="10.0"
                                 layoutY="10.0" onMouseClicked="#createGroupButtonClicked"
                                 text="Create Custom Notification Groups">
                         <cursor>
