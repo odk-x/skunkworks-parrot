@@ -79,6 +79,7 @@ public class NotificationGroupController implements Initializable {
                     fxmlLoader.setController(new NotificationResponseController(clickedRow));
                     Stage stage = new Stage();
                     stage.setTitle("Notification Responses");
+                    stage.setAlwaysOnTop(true);
                     try {
                         stage.setScene(new Scene(fxmlLoader.load(),600,400));
                     } catch (IOException e) {
@@ -89,7 +90,7 @@ public class NotificationGroupController implements Initializable {
             });
             return row ;
         });
-
+.
     }
 
     public void copyToClipboardClicked(MouseEvent mouseEvent) {
