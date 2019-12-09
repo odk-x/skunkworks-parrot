@@ -16,6 +16,7 @@ public class Data {
     private String SERVICE_ACCOUNT_KEY_PATH;
     private String SYNC_CLIENT_URL;
     private String FIREBASE_DATABASE_URL;
+    private String STORAGE_BUCKET;
     private static final String FILE_NAME = "keys.json";
     public static final String FIREBASE_KEYS_FILE_NAME = "FirebaseKeys.json";
 
@@ -32,6 +33,7 @@ public class Data {
               setANDROID_APP_PACKAGE_NAME(mainObject.getString("packageName"));
               setSYNC_CLIENT_URL(mainObject.getString("syncClientURL"));
               setFIREBASE_DATABASE_URL(mainObject.getString("firebaseDatabaseURL"));
+              setSTORAGE_BUCKET(mainObject.getString("storageBucket"));
           }catch (Exception e){
               e.printStackTrace();
           }
@@ -48,6 +50,7 @@ public class Data {
       obj.put("packageName", ANDROID_APP_PACKAGE_NAME);
       obj.put("syncClientURL", SYNC_CLIENT_URL);
       obj.put("firebaseDatabaseURL",FIREBASE_DATABASE_URL);
+      obj.put("storageBucket",STORAGE_BUCKET);
 
       try {
           BufferedWriter out = new BufferedWriter(new FileWriter(FILE_NAME));
@@ -139,7 +142,12 @@ public class Data {
     public void setFIREBASE_DATABASE_URL(String FIREBASE_DATABASE_URL) {
         this.FIREBASE_DATABASE_URL = FIREBASE_DATABASE_URL;
     }
-
+    public String getSTORAGE_BUCKET(){
+       return STORAGE_BUCKET;
+    }
+    public void setSTORAGE_BUCKET(String STORAGE_BUCKET){
+       this.STORAGE_BUCKET = STORAGE_BUCKET;
+    }
     @Override
     public String toString() {
         return "Data{" +
@@ -152,6 +160,7 @@ public class Data {
                 ", DYNAMIC_LINK_DOMAIN='" + DYNAMIC_LINK_DOMAIN + '\'' +
                 ", SERVICE_ACCOUNT_KEY_PATH='" + SERVICE_ACCOUNT_KEY_PATH + '\'' +
                 ", SYNC_CLIENT_URL='" + SYNC_CLIENT_URL + '\'' +
+                ", STORAGE_BUCKET='" + STORAGE_BUCKET + '\'' +
                 '}';
     }
 }
