@@ -83,6 +83,17 @@
             </VBox.margin>
             <TextField fx:id="packageNameField" prefHeight="31.0" prefWidth="400.0"/>
         </HBox>
+        <Label text="Storage Bucket ">
+            <VBox.margin>
+                <Insets top="10.0"/>
+            </VBox.margin>
+        </Label>
+        <HBox>
+            <VBox.margin>
+                <Insets top="5.0"/>
+            </VBox.margin>
+            <TextField fx:id="storageBucketField" prefHeight="31.0" prefWidth="400.0"/>
+        </HBox>
         <Button mnemonicParsing="false" onMouseClicked="#saveButtonClicked" text="Save">
             <VBox.margin>
                 <Insets bottom="10.0" right="10.0" top="10.0"/>
