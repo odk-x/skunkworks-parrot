@@ -81,12 +81,12 @@ public class CreateNotificationController implements Initializable {
     public void sendButtonClicked() {
         String titleStr = title_field.getText();
         String messageStr = message_field.getText();
+        Group selected = comboBox.getSelectionModel().getSelectedItem();
 
-        if(!(titleStr.isEmpty() && messageStr.isEmpty())) {
+        if(!(titleStr.isEmpty() && messageStr.isEmpty()) && !selected.equals(null)) {
             progressIndicator.setVisible(true);
             statusLabel.setVisible(true);
             send_button.setDisable(true);
-            Group selected = comboBox.getSelectionModel().getSelectedItem();
             String type = ((RadioButton)toggleGroup.getSelectedToggle()).getText();
             DatabaseReference notifRef = FirebaseDatabase.getInstance().getReference("/notifications").push();
             String notif_id = notifRef.getKey();
