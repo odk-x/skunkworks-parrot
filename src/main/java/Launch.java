@@ -17,7 +17,7 @@ public class Launch extends Application {
         Parent root = loader.load();
         SettingsController.loginPageController=loader.getController();
         primaryStage.setTitle("ODK-X Notify Admin Panel");
-        primaryStage.setScene(new Scene(root,740,420));
+        primaryStage.setScene(new Scene(root,740,520));
         primaryStage.show();
 
     }
