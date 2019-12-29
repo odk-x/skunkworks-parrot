@@ -201,15 +201,18 @@ public class CreateNotificationController implements Initializable {
             new EventHandler<ActionEvent>() {
 
                 public void handle(ActionEvent event)
-                {   imageIsSelected=true;
+                {   FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png");
                     FileChooser fileChooser= new FileChooser();
+                    fileChooser.getExtensionFilters().add(imageFilter);
                     Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
                     // get the file selected
                     File file = fileChooser.showOpenDialog(stage);
                     file_name = file.getName();
 
-                    if (file != null) {
+                    if (file.exists()) {
+                        imageIsSelected=true;
                         image_path.setText(file.getAbsolutePath());
+
                     }
                 }
             };
