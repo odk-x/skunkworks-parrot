@@ -24,20 +24,23 @@ public class Data {
 
    public Data(){
       try {
-          String content = new String(Files.readAllBytes(Paths.get(FILE_NAME)));
-          JSONObject mainObject = new JSONObject(content);
-          try {
-              setSERVICE_ACCOUNT_KEY_PATH(mainObject.getString("serviceAccountKeyPath"));
-              setWEB_API_KEY(mainObject.getString("webAPIKey"));
-              setDYNAMIC_LINK_DOMAIN(mainObject.getString("dynamicLinkDomain"));
-              setANDROID_APP_PACKAGE_NAME(mainObject.getString("packageName"));
-              setSYNC_CLIENT_URL(mainObject.getString("syncClientURL"));
-              setFIREBASE_DATABASE_URL(mainObject.getString("firebaseDatabaseURL"));
-              setSTORAGE_BUCKET(mainObject.getString("storageBucket"));
-          }catch (Exception e){
-              e.printStackTrace();
+             if (Files.exists(Paths.get(FILE_NAME))) {
+              String content = new String(Files.readAllBytes(Paths.get(FILE_NAME)));
+              JSONObject mainObject = new JSONObject(content);
+              try {
+                  setSERVICE_ACCOUNT_KEY_PATH(mainObject.getString("serviceAccountKeyPath"));
+                  setWEB_API_KEY(mainObject.getString("webAPIKey"));
+                  setDYNAMIC_LINK_DOMAIN(mainObject.getString("dynamicLinkDomain"));
+                  setANDROID_APP_PACKAGE_NAME(mainObject.getString("packageName"));
+                  setSYNC_CLIENT_URL(mainObject.getString("syncClientURL"));
+                  setFIREBASE_DATABASE_URL(mainObject.getString("firebaseDatabaseURL"));
+                  setSTORAGE_BUCKET(mainObject.getString("storageBucket"));
+              } catch (Exception e) {
+                  e.printStackTrace();
+              }
           }
-      } catch (IOException | JSONException e) {
+      }
+       catch (IOException | JSONException e) {
           e.printStackTrace();
       }
    }
