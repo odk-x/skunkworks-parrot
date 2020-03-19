@@ -37,6 +37,10 @@ public class LoginFormController implements Initializable {
     public ProgressIndicator progressIndicator;
     public Label statusLabel;
 
+    private static final int INVALID_CREDENTIALS = 0;
+    private static final int USER_WITH_ADMIN_ACCESS = 1;
+    private static final int USER_WITHOUT_ADMIN_ACCESS = 2;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         stopProgress();
@@ -76,7 +80,7 @@ public class LoginFormController implements Initializable {
                 updateProgress(-1, 100);
 
                 try {
-                    if(verifyCredentials(username,password)) {
+                    if(verifyCredentials(username,password) == USER_WITH_ADMIN_ACCESS) {
                         LoginCredentials.credentials = new LoginCredentials(username,password);
                         try {
                             initializeFirebaseSDK();
@@ -85,11 +89,16 @@ public class LoginFormController implements Initializable {
                             updateProgress(0,100);
                             updateMessage("Error: Firebase key file not found.");
                         }
-                    }else{
+                    }else if(verifyCredentials(username,password) == USER_WITHOUT_ADMIN_ACCESS){
+                        flag = false;
+                        updateProgress(0,100);
+                        updateMessage("Error: Only users with default group 'ROLE_SITE_ACCESS_ADMIN' is allowed.\n" +
+                                "Please change the default group and try again");
+                    }
+                    else {
                         flag = false;
                         updateProgress(0,100);
                         updateMessage("Invalid username/password, please try again.");
-
                     }
                 } catch (ConnectException e){
                     flag = false;
@@ -118,7 +127,7 @@ public class LoginFormController implements Initializable {
         new Thread(task).start();
     }
 
-    private boolean verifyCredentials(String username, String password) throws IOException, JSONException, URISyntaxException {
+    private int verifyCredentials(String username, String password) throws IOException, JSONException, URISyntaxException {
         SyncClient syncClient = new SyncClient();
         Data data = new Data();
         String url = data.getSYNC_CLIENT_URL();
@@ -128,14 +137,17 @@ public class LoginFormController implements Initializable {
         syncClient.init(uri.getHost(),username,password);
         ArrayList<Map<String, Object>> users = syncClient.getUsers(url, appId);
         syncClient.close();
-        for (Map<String, Object> user : users) {
-            if(user.get("user_id").equals("username:"+ username)){
-                if(((ArrayList<String>)(user.get("roles"))).contains("ROLE_SITE_ACCESS_ADMIN")){
-                    return true;
+        if(users!=null){
+            for (Map<String, Object> user : users) {
+                if (user.get("user_id").equals("username:" + username)) {
+                    if (((ArrayList<String>) (user.get("roles"))).contains("ROLE_SITE_ACCESS_ADMIN")) {
+                        return USER_WITH_ADMIN_ACCESS;
+                    }
+                    else return USER_WITHOUT_ADMIN_ACCESS;
                 }
             }
         }
-        return false;
+        return INVALID_CREDENTIALS;
     }
 
     private void initializeFirebaseSDK() throws IOException{
