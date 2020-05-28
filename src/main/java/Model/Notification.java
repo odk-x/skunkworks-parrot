@@ -11,6 +11,7 @@ public class Notification {
     private String type;
     private String status;
     private String date_str;
+    private String attachmentPath;
 
     public Notification(String id, String title, String message, long date, String group_id, String type, String status) {
         this.id = id;
@@ -86,5 +87,13 @@ public class Notification {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setAttachmentPath(String attachmentPath){
+        this.attachmentPath = attachmentPath;
+    }
+
+    public String getAttachmentPath(){
+        return this.attachmentPath;
     }
 }

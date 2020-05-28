@@ -6,14 +6,13 @@ import org.apache.wink.json4j.JSONArray;
 import org.apache.wink.json4j.JSONException;
 import org.apache.wink.json4j.JSONObject;
 import org.opendatakit.aggregate.odktables.rest.entity.Column;
+import org.opendatakit.aggregate.odktables.rest.entity.Row;
 import org.opendatakit.sync.client.SyncClient;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 public class ServerDatabaseCommunicator {
@@ -22,7 +21,7 @@ public class ServerDatabaseCommunicator {
 
     private static final String APP_ID = "default";
 
-    private static Data data = new Data();
+    private static final Data data = new Data();
 
     private static final String SERVER_URL = data.getSYNC_CLIENT_URL() + "/odktables";
 
@@ -35,7 +34,7 @@ public class ServerDatabaseCommunicator {
             "NotificationsList","UsersList","PendingRequestsList");
 
     private static final List<String> NOTIFICATIONS_TABLE_COLUMNS_LIST = Arrays.asList("NotificationId",
-            "NotificationTitle","NotificationText","GroupName","NotificationType","ResponseList");
+            "NotificationTitle","NotificationMessage","GroupId","NotificationType","ResponseList");
 
     private static final List<String> RESPONSES_TABLE_COLUMNS_LIST = Arrays.asList("ResponseId",
             "ResponseText","NotificationId","UserId");
@@ -43,78 +42,205 @@ public class ServerDatabaseCommunicator {
     private static final List<String> USERS_TABLE_COLUMNS_LIST = Arrays.asList("UserId",
             "Username","GroupList","DeviceRegistrationToken");
 
+    // JSON constants
+    private static final String RESPONSES_LIST_KEY = "Responses";
+    private static final String USERS_LIST_KEY = "Users";
+    private static final String NOTIFICATIONS_LIST_KEY = "Notifications";
+    private static final String PENDING_REQUESTS_LIST_KEY = "PendingRequests";
+
+    private static final String RELATIVE_PATH_FOR_ATTACHMENT = "/attachment";
+
+
+
     /**
-     * Initialize SyncClient with given username and password
+     * Initializes SyncClient with given username and password
      * This method should be called only after verifying the credentials
      *
      * @param username
      *              the user name to use for initializing SyncClient
      * @param password
      *              the password to use for initializing SyncClient
+     *
+     * @throws IOException
+     *              Input errors while calling SyncClient methods
+     * @throws JSONException
+     *              JSON error while parsing the data
      */
-    public static void init(String username , String password){
+
+    public static void init(String username , String password) throws IOException, JSONException {
         syncClient = new SyncClient();
         syncClient.init(getServerHost() , username ,password);
         checkTables();
     }
 
     /**
-     * Initialize SyncClient with default parameters
+     * Initializes SyncClient with default parameters
      *
      */
     public static void initAnonymous(){
         syncClient = new SyncClient();
         syncClient.initAnonymous(getServerHost());
-
         //TODO:Check if anonymous user can create tables or not
     }
-    public static void uploadNotification(Notification notification){
-
-    }
-    public static void uploadGroup(Group group){
-
-    }
-    public static void uploadAttachment(String filepath, String tableId , String rowId){
-
-    }
-
 
     /**
-     * Check if server database has all the required tables or not
-     * If some table is not present on server creates that table
+     * Uploads the notification to the server database
+     * Adds notification Id to the group's notifications list
+     *
+     * @param notification
+     *              the Notification object to upload
+     *
+     * @throws IOException
+     *              Due to input errors while calling SyncClient methods
+     * @throws JSONException
+     *              Due to JSON errors while parsing the data
+     */
+
+    public static void uploadNotification(Notification notification) throws JSONException, IOException {
+        Row row = new Row();
+
+        String rowId = "notification:" + UUID.randomUUID().toString();
+        row.setRowId(rowId);
+
+        JSONObject responseList = new JSONObject();
+        JSONArray responses = new JSONArray();
+
+        responseList.put(RESPONSES_LIST_KEY,responses);
+
+        Map<String,String> map = new HashMap<>();
+
+        List<String> columnValues = Arrays.asList(rowId,notification.getTitle(),notification.getMessage(),
+                notification.getGroup_id(),notification.getType(),responseList.toString());
+
+        for(int i=0;i<columnValues.size();i++){
+            map.put(NOTIFICATIONS_TABLE_COLUMNS_LIST.get(i),columnValues.get(i));
+        }
+
+        row.setValues(Row.convertFromMap(map));
+
+        ArrayList<Row> rowArrayList = new ArrayList<>();
+        rowArrayList.add(row);
+
+        String schemaETag = syncClient.getSchemaETagForTable(SERVER_URL,APP_ID,NOTIFICATIONS_TABLE_ID);
+
+        syncClient.createRowsUsingBulkUpload(SERVER_URL,APP_ID,NOTIFICATIONS_TABLE_ID,schemaETag,rowArrayList,1);
+
+        //uploads the attachment
+        if(!notification.getAttachmentPath().equals("") && notification.getAttachmentPath() != null){
+            syncClient.putFileForRow(SERVER_URL,APP_ID,NOTIFICATIONS_TABLE_ID,schemaETag,rowId,notification.getAttachmentPath(),RELATIVE_PATH_FOR_ATTACHMENT);
+        }
+        addNotificationToGroup(notification.getGroup_id() ,rowId);
+    }
+
+    /**
+     * Uploads the notification to the server database
+     * Adds notification Id to the group's notifications list
+     *
+     * @param group
+     *            The Group object to upload
+     *
+     * @throws IOException
+     *            Due to input errors while calling SyncClient methods
+     * @throws JSONException
+     *            Due to JSON errors while parsing the data
+     */
+
+    public static void uploadGroup(Group group) throws JSONException, IOException {
+        Row row = new Row();
+
+        String rowId = "group:" + UUID.randomUUID().toString();
+        row.setRowId(rowId);
+
+        JSONObject usersList = new JSONObject();
+        JSONArray users = new JSONArray();
+        usersList.put(USERS_LIST_KEY,users);
+
+        JSONObject notificationsList = new JSONObject();
+        JSONArray notifications = new JSONArray();
+        notificationsList.put(NOTIFICATIONS_LIST_KEY,notifications);
+
+        JSONObject pendingRequestsList = new JSONObject();
+        JSONArray pendingRequests = new JSONArray();
+        pendingRequestsList.put(PENDING_REQUESTS_LIST_KEY,pendingRequests);
+
+        Map<String,String>map = new HashMap<>();
+
+        List<String>columnValues = Arrays.asList(rowId,group.getName(),notificationsList.toString(),
+                usersList.toString(), pendingRequestsList.toString());
+
+        for(int i=0;i<columnValues.size();i++){
+            map.put(GROUPS_TABLE_COLUMNS_LIST.get(i),columnValues.get(i));
+        }
+
+        row.setValues(Row.convertFromMap(map));
+        ArrayList<Row>rowArrayList = new ArrayList<>();
+        rowArrayList.add(row);
+
+        String schemaETag = syncClient.getSchemaETagForTable(SERVER_URL,APP_ID,GROUPS_TABLE_ID);
+
+        syncClient.createRowsUsingBulkUpload(SERVER_URL,APP_ID,GROUPS_TABLE_ID,schemaETag,rowArrayList,1);
+
+    }
+
+    /**
+     * Adds created notifications ID to corresponding Notifications List of group
      *
      */
-    private static void checkTables (){
-        try {
-            JSONObject tablesObject = syncClient.getTables(SERVER_URL,APP_ID);
-            JSONArray tablesArray = tablesObject.getJSONArray("tables");
-            ArrayList<String> tablesList = new ArrayList<>();
+    private static void addNotificationToGroup(String groupId , String notificationId) throws IOException, JSONException {
+        String schemaETag = syncClient.getSchemaETagForTable(SERVER_URL,APP_ID,GROUPS_TABLE_ID);
 
-            for(int i = 0; i<tablesArray.length(); i++){
-                tablesList.add((String) tablesArray.getJSONObject(i).get("tableId"));
-            }
+        JSONObject rowObject = syncClient.getRow(SERVER_URL,APP_ID,GROUPS_TABLE_ID,schemaETag,groupId);
+        JSONArray data = rowObject.getJSONArray("orderedColumns");
 
-            if(!tablesList.contains(USERS_TABLE_ID))createTable(USERS_TABLE_ID,USERS_TABLE_COLUMNS_LIST);
-
-            if(!tablesList.contains(NOTIFICATIONS_TABLE_ID))createTable(NOTIFICATIONS_TABLE_ID,NOTIFICATIONS_TABLE_COLUMNS_LIST);
-
-            if(!tablesList.contains(RESPONSES_TABLE_ID))createTable(RESPONSES_TABLE_ID,RESPONSES_TABLE_COLUMNS_LIST);
-
-            if(!tablesList.contains(GROUPS_TABLE_ID))createTable(GROUPS_TABLE_ID,GROUPS_TABLE_COLUMNS_LIST);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        Map<String,String> map = new HashMap<>();
+        for(int i=0;i<data.length();i++){
+            map.put(data.getJSONObject(i).get("column").toString(),data.getJSONObject(i).get("value").toString());
         }
+
+        JSONObject temp = new JSONObject(map.get("NotificationsList"));
+        JSONArray tempArray = temp.getJSONArray(NOTIFICATIONS_LIST_KEY);
+        tempArray.add(notificationId);
+        temp.put(NOTIFICATIONS_LIST_KEY,tempArray);
+
+        map.put("NotificationsList",temp.toString());
+
+        Row row = getRowFromJSON(rowObject);
+        row.setValues(Row.convertFromMap(map));
+        ArrayList<Row> rowArrayList = new ArrayList<>();
+        rowArrayList.add(row);
+
+        String dataETag = syncClient.getTableDataETag(SERVER_URL,APP_ID,GROUPS_TABLE_ID);
+        schemaETag = syncClient.getSchemaETagForTable(SERVER_URL,APP_ID,GROUPS_TABLE_ID);
+
+        syncClient.updateRowsUsingBulkUpload(SERVER_URL,APP_ID,GROUPS_TABLE_ID,schemaETag,dataETag,rowArrayList,1);
     }
 
     /**
-     * Create table on server database with given tableId and column list
-     * @param tableId
-     *              Id of table to create
-     * @param columnsList
-     *              List of column names for a table
+     * Checks if server database has all the required tables or not
+     * If some tables are not present on server then creates that table
+     *
+     */
+    private static void checkTables () throws JSONException, IOException {
+
+        JSONObject tablesObject = syncClient.getTables(SERVER_URL,APP_ID);
+        JSONArray tablesArray = tablesObject.getJSONArray("tables");
+        ArrayList<String> tablesList = new ArrayList<>();
+
+        for(int i = 0; i<tablesArray.length(); i++){
+            tablesList.add((String) tablesArray.getJSONObject(i).get("tableId"));
+        }
+
+        if(!tablesList.contains(USERS_TABLE_ID))createTable(USERS_TABLE_ID,USERS_TABLE_COLUMNS_LIST);
+
+        if(!tablesList.contains(NOTIFICATIONS_TABLE_ID))createTable(NOTIFICATIONS_TABLE_ID,NOTIFICATIONS_TABLE_COLUMNS_LIST);
+
+        if(!tablesList.contains(RESPONSES_TABLE_ID))createTable(RESPONSES_TABLE_ID,RESPONSES_TABLE_COLUMNS_LIST);
+
+        if(!tablesList.contains(GROUPS_TABLE_ID))createTable(GROUPS_TABLE_ID,GROUPS_TABLE_COLUMNS_LIST);
+    }
+
+    /**
+     * Creates a table on server database with given tableId and column list
      *
      */
     private static void createTable(String tableId , List<String>columnsList) throws IOException, JSONException {
@@ -128,6 +254,10 @@ public class ServerDatabaseCommunicator {
         syncClient.createTable(SERVER_URL,APP_ID,tableId,null,columns);
     }
 
+    /**
+     * Returns server host
+     *
+     */
     private static String getServerHost(){
         String url = data.getSYNC_CLIENT_URL();
         URI uri = null;
@@ -139,5 +269,24 @@ public class ServerDatabaseCommunicator {
             e.printStackTrace();
         }
         return uri.getHost();
+    }
+
+    /**
+     * Converts JSONObject with rowData to row object
+     * Use for updating the row
+     * Does not copy columns data from JSONObject to row
+     *
+     */
+    private static Row getRowFromJSON(JSONObject jsonObject) throws JSONException {
+        Row row = new Row();
+        if(jsonObject.get("formId") != null)row.setFormId(jsonObject.get("formId").toString());
+        if(jsonObject.get("locale") != null)row.setLocale(jsonObject.get("locale").toString());
+        if(jsonObject.get("rowETag") != null)row.setRowETag(jsonObject.get("rowETag").toString());
+        if(jsonObject.get("dataETagAtModification") != null)row.setDataETagAtModification(jsonObject.get("dataETagAtModification").toString());
+        if(jsonObject.get("savepointCreator") != null)row.setSavepointCreator(jsonObject.get("savepointCreator").toString());
+        if(jsonObject.get("createUser") != null)row.setCreateUser(jsonObject.get("createUser").toString());
+        if(jsonObject.get("id") != null)row.setRowId(jsonObject.get("id").toString());
+        if(jsonObject.get("savepointTimestamp") != null)row.setSavepointTimestamp(jsonObject.get("savepointTimestamp").toString());
+        return row;
     }
 }
