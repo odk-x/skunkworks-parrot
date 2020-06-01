@@ -2,6 +2,7 @@ package Data;
 
 import Model.Group;
 import Model.Notification;
+import Model.Response;
 import org.apache.wink.json4j.JSONArray;
 import org.apache.wink.json4j.JSONException;
 import org.apache.wink.json4j.JSONObject;
@@ -12,6 +13,8 @@ import org.opendatakit.sync.client.SyncClient;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 
@@ -37,10 +40,10 @@ public class ServerDatabaseCommunicator {
             "NotificationTitle","NotificationMessage","GroupId","NotificationType","ResponseList");
 
     private static final List<String> RESPONSES_TABLE_COLUMNS_LIST = Arrays.asList("ResponseId",
-            "ResponseText","NotificationId","UserId");
+            "ResponseText","NotificationId","UserName");
 
     private static final List<String> USERS_TABLE_COLUMNS_LIST = Arrays.asList("UserId",
-            "Username","GroupList","DeviceRegistrationToken");
+            "UserName","GroupList","DeviceRegistrationToken");
 
     // JSON constants
     private static final String RESPONSES_LIST_KEY = "Responses";
@@ -95,7 +98,6 @@ public class ServerDatabaseCommunicator {
      * @throws JSONException
      *              Due to JSON errors while parsing the data
      */
-
     public static void uploadNotification(Notification notification) throws JSONException, IOException {
         Row row = new Row();
 
@@ -144,7 +146,6 @@ public class ServerDatabaseCommunicator {
      * @throws JSONException
      *            Due to JSON errors while parsing the data
      */
-
     public static void uploadGroup(Group group) throws JSONException, IOException {
         Row row = new Row();
 
@@ -240,6 +241,74 @@ public class ServerDatabaseCommunicator {
     }
 
     /**
+     * Returns a List of groups present in a server Database
+     *
+     * @throws JSONException
+     *              Due to JSON errors while parsing the data
+     */
+    public static ArrayList<Group>getGroups() throws JSONException {
+        ArrayList<Group>groupArrayList = new ArrayList<>();
+        String schemaETag = syncClient.getSchemaETagForTable(SERVER_URL,APP_ID,GROUPS_TABLE_ID);
+        JSONObject jsonObject = syncClient.getRows(SERVER_URL,APP_ID,GROUPS_TABLE_ID,schemaETag,null,null);
+
+        JSONArray groupObjectsArray = jsonObject.getJSONArray("rows");
+        for(int i=0;i<groupObjectsArray.size();i++){
+            groupArrayList.add(getGroupFromJson(groupObjectsArray.getJSONObject(i).getJSONArray("orderedColumns")));
+        }
+        return groupArrayList;
+    }
+
+    /**
+     * Returns a notification object for a given notification Id
+     *
+     * @param notificationId
+     *                  Id for a Notification
+     *
+     * @throws IOException
+     *             Due to input errors while calling SyncClient methods
+     * @throws JSONException
+     *             Due to JSON errors while parsing the data
+     *
+     */
+    public static Notification getNotification(String notificationId) throws IOException, JSONException {
+        String schemaETag = syncClient.getSchemaETagForTable(SERVER_URL,APP_ID,NOTIFICATIONS_TABLE_ID);
+
+        JSONObject notificationObject = syncClient.getRow(SERVER_URL,APP_ID,NOTIFICATIONS_TABLE_ID,schemaETag,notificationId);
+        JSONArray notificationArray = notificationObject.getJSONArray("orderedColumns");
+
+        Notification notification =  getNotificationFromJSON(notificationArray);
+        LocalDateTime localDateTime = LocalDateTime.parse(notificationObject.get("savepointTimestamp").toString());
+        notification.setDate(localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+
+        return notification;
+    }
+
+    /**
+     * Returns a Response object for a given response Id
+     *
+     * @param responseId
+     *              Id for a Response
+     *
+     *  @throws IOException
+     *             Due to input errors while calling SyncClient methods
+     *  @throws JSONException
+     *             Due to JSON errors while parsing the data
+     *
+     */
+    public static Response getResponse(String responseId) throws IOException, JSONException {
+        String schemaETag = syncClient.getSchemaETagForTable(SERVER_URL,APP_ID,RESPONSES_TABLE_ID);
+
+        JSONObject responseObject = syncClient.getRow(SERVER_URL,APP_ID,RESPONSES_TABLE_ID,schemaETag,responseId);
+
+        Response response = getResponseFromJSON(responseObject.getJSONArray("orderedColumns"));
+
+        LocalDateTime localDateTime = LocalDateTime.parse(responseObject.get("savepointTimestamp").toString());
+        response.setTime(localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+
+        return response;
+    }
+
+    /**
      * Creates a table on server database with given tableId and column list
      *
      */
@@ -252,6 +321,105 @@ public class ServerDatabaseCommunicator {
             columns.add(column);
         }
         syncClient.createTable(SERVER_URL,APP_ID,tableId,null,columns);
+    }
+
+    /**
+     * Converts JSONObject with rowData to row object
+     * Use for updating the row
+     * Does not copy columns data from JSONObject to row
+     *
+     */
+    private static Row getRowFromJSON(JSONObject jsonObject) throws JSONException {
+        Row row = new Row();
+        if(jsonObject.get("formId") != null)row.setFormId(jsonObject.get("formId").toString());
+        if(jsonObject.get("locale") != null)row.setLocale(jsonObject.get("locale").toString());
+        if(jsonObject.get("rowETag") != null)row.setRowETag(jsonObject.get("rowETag").toString());
+        if(jsonObject.get("dataETagAtModification") != null)row.setDataETagAtModification(jsonObject.get("dataETagAtModification").toString());
+        if(jsonObject.get("savepointCreator") != null)row.setSavepointCreator(jsonObject.get("savepointCreator").toString());
+        if(jsonObject.get("createUser") != null)row.setCreateUser(jsonObject.get("createUser").toString());
+        if(jsonObject.get("id") != null)row.setRowId(jsonObject.get("id").toString());
+        if(jsonObject.get("savepointTimestamp") != null)row.setSavepointTimestamp(jsonObject.get("savepointTimestamp").toString());
+        return row;
+    }
+
+    /**
+     * Converts a JSONArray containing group data to Group object
+     *
+     */
+    private static Group getGroupFromJson(JSONArray jsonArray) throws JSONException {
+        Group group = new Group();
+        for(int i=0;i<jsonArray.size();i++){
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("GroupId")){
+                group.setId(jsonArray.getJSONObject(i).get("value").toString());
+            }
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("GroupName")){
+                group.setName(jsonArray.getJSONObject(i).get("value").toString());
+            }
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("NotificationsList")){
+                JSONObject jsonObject = new JSONObject(jsonArray.getJSONObject(i).get("value").toString());
+                group.setNotificationsList(getListFromJsonArray(jsonObject.getJSONArray(NOTIFICATIONS_LIST_KEY)));
+            }
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("UsersList")){
+                JSONObject jsonObject = new JSONObject(jsonArray.getJSONObject(i).get("value").toString());
+                group.setUsersList(getListFromJsonArray(jsonObject.getJSONArray(USERS_LIST_KEY)));
+            }
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("PendingRequestsList")){
+                JSONObject jsonObject = new JSONObject(jsonArray.getJSONObject(i).get("value").toString());
+                group.setPendingRequestsList(getListFromJsonArray(jsonObject.getJSONArray(PENDING_REQUESTS_LIST_KEY)));
+            }
+        }
+        return group;
+    }
+
+    /**
+     * Converts a JSONArray containing Notification data to Notification object
+     *
+     */
+    private static Notification getNotificationFromJSON(JSONArray jsonArray) throws JSONException {
+        Notification notification = new Notification();
+
+        for(int i=0;i<jsonArray.size();i++){
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("NotificationId")){
+               notification.setId(jsonArray.getJSONObject(i).get("value").toString());
+            }
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("NotificationTitle")){
+                notification.setTitle(jsonArray.getJSONObject(i).get("value").toString());
+            }
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("NotificationMessage")){
+                notification.setMessage(jsonArray.getJSONObject(i).get("value").toString());
+            }
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("GroupId")){
+                notification.setGroup_id(jsonArray.getJSONObject(i).get("value").toString());
+            }
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("NotificationType")){
+                notification.setType(jsonArray.getJSONObject(i).get("value").toString());
+            }
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("ResponseList")) {
+                JSONObject jsonObject = new JSONObject(jsonArray.getJSONObject(i).get("value").toString());
+                notification.setResponseList(getListFromJsonArray(jsonObject.getJSONArray(RESPONSES_LIST_KEY)));
+            }
+        }
+        return notification;
+    }
+
+    /**
+     * Converts a JSONArray containing Response data to Response object
+     *
+     */
+    private static Response getResponseFromJSON(JSONArray jsonArray) throws JSONException {
+        Response response = new Response();
+        for(int i=0;i<jsonArray.size();i++){
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("ResponseText")){
+                response.setResponse(jsonArray.getJSONObject(i).get("value").toString());
+            }
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("NotificationId")){
+                response.setNotificationId(jsonArray.getJSONObject(i).get("value").toString());
+            }
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("UserName")){
+                response.setSenderName(jsonArray.getJSONObject(i).get("value").toString());
+            }
+        }
+        return response;
     }
 
     /**
@@ -272,21 +440,14 @@ public class ServerDatabaseCommunicator {
     }
 
     /**
-     * Converts JSONObject with rowData to row object
-     * Use for updating the row
-     * Does not copy columns data from JSONObject to row
+     * Converts a JSONArray to ArrayList
      *
      */
-    private static Row getRowFromJSON(JSONObject jsonObject) throws JSONException {
-        Row row = new Row();
-        if(jsonObject.get("formId") != null)row.setFormId(jsonObject.get("formId").toString());
-        if(jsonObject.get("locale") != null)row.setLocale(jsonObject.get("locale").toString());
-        if(jsonObject.get("rowETag") != null)row.setRowETag(jsonObject.get("rowETag").toString());
-        if(jsonObject.get("dataETagAtModification") != null)row.setDataETagAtModification(jsonObject.get("dataETagAtModification").toString());
-        if(jsonObject.get("savepointCreator") != null)row.setSavepointCreator(jsonObject.get("savepointCreator").toString());
-        if(jsonObject.get("createUser") != null)row.setCreateUser(jsonObject.get("createUser").toString());
-        if(jsonObject.get("id") != null)row.setRowId(jsonObject.get("id").toString());
-        if(jsonObject.get("savepointTimestamp") != null)row.setSavepointTimestamp(jsonObject.get("savepointTimestamp").toString());
-        return row;
+    private static ArrayList<String> getListFromJsonArray(JSONArray jsonArray){
+        ArrayList<String>arrayList = new ArrayList<>();
+        for(int i=0;i<jsonArray.size();i++){
+            arrayList.add(jsonArray.get(i).toString());
+        }
+        return arrayList;
     }
 }
