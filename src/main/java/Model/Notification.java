@@ -1,6 +1,7 @@
 package Model;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class Notification {
     private String id;
@@ -12,7 +13,11 @@ public class Notification {
     private String status;
     private String date_str;
     private String attachmentPath;
+    private ArrayList<String>responseList;
 
+    public Notification(){
+
+    }
     public Notification(String id, String title, String message, long date, String group_id, String type, String status) {
         this.id = id;
         this.title = title;
@@ -40,8 +45,9 @@ public class Notification {
         this.message = message;
     }
 
-    public void setDate(int date) {
+    public void setDate(long date) {
         this.date = date;
+        this.date_str = getDateStr(date);
     }
 
     public String getGroup_id() {
@@ -95,5 +101,11 @@ public class Notification {
 
     public String getAttachmentPath(){
         return this.attachmentPath;
+    }
+    public void setResponseList(ArrayList<String>responseList){
+        this.responseList = responseList;
+    }
+    public ArrayList<String> getResponseList(){
+        return this.responseList;
     }
 }

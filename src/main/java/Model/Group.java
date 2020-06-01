@@ -1,10 +1,20 @@
 package Model;
 
+import java.util.ArrayList;
+
 public class Group {
     private String id;
     private String name;
     private String groupLink;
+    private ArrayList<String> notificationsList;
+    private ArrayList<String> pendingRequestsList;
+    private ArrayList<String> usersList;
 
+    public Group(){
+        this.id = null;
+        this.name = null;
+        this.groupLink = null;
+    }
     public Group(String id, String name) {
         this.id = id;
         this.name = name;
@@ -39,5 +49,26 @@ public class Group {
 
     public void setGroupLink(String groupLink) {
         this.groupLink = groupLink;
+    }
+    public void setNotificationsList(ArrayList<String> notificationsList){
+        this.notificationsList = notificationsList;
+    }
+    public void setPendingRequestsList(ArrayList<String> pendingRequestsList){
+        this.pendingRequestsList = pendingRequestsList;
+    }
+    public void setUsersList(ArrayList<String> usersList){
+        this.usersList = usersList;
+    }
+
+    public ArrayList<String>getNotificationsList(){
+        return this.notificationsList;
+    }
+
+    public ArrayList<String>getPendingRequestsList(){
+        return this.pendingRequestsList;
+    }
+
+    public ArrayList<String>getUsersList(){
+        return this.usersList;
     }
 }
