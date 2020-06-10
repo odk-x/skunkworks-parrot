@@ -18,7 +18,7 @@
         </padding>
         <Label layoutX="30.0" layoutY="56.0" text="Sync Client URL"/>
         <HBox layoutX="30.0" layoutY="82.0">
-            <TextField fx:id="syncClientURLField" prefHeight="31.0" prefWidth="400.0"/>
+            <TextField fx:id="syncClientURLField" prefHeight="31.0" prefWidth="400.0" promptText="URL on which sync-endpoint server is running"/>
         </HBox>
         <Label text="Path to ServiceAccountKey.JSON">
             <VBox.margin>
@@ -47,7 +47,7 @@
             <VBox.margin>
                 <Insets top="5.0"/>
             </VBox.margin>
-            <TextField fx:id="webAPIKeyField" prefHeight="31.0" prefWidth="400.0"/>
+            <TextField fx:id="webAPIKeyField" prefHeight="31.0" prefWidth="400.0" promptText="Go to firebase project console -> project settings"/>
         </HBox>
         <Label text="Firebase Database URL">
             <VBox.margin>
@@ -55,7 +55,7 @@
             </VBox.margin>
         </Label>
         <HBox>
-            <TextField fx:id="firebaseDatabaseURLField" prefHeight="31.0" prefWidth="400.0">
+            <TextField fx:id="firebaseDatabaseURLField" prefHeight="31.0" prefWidth="400.0" promptText="https://project-Id.firebaseio.com/">
                 <HBox.margin>
                     <Insets top="5.0"/>
                 </HBox.margin>
@@ -70,7 +70,7 @@
             <VBox.margin>
                 <Insets top="5.0"/>
             </VBox.margin>
-            <TextField fx:id="dynamicLinkDomainField" prefHeight="31.0" prefWidth="400.0"/>
+            <TextField fx:id="dynamicLinkDomainField" prefHeight="31.0" prefWidth="400.0" promptText="https://grouplink.page.link"/>
         </HBox>
         <Label text="Android Application Package Name ">
             <VBox.margin>
@@ -81,7 +81,7 @@
             <VBox.margin>
                 <Insets top="5.0"/>
             </VBox.margin>
-            <TextField fx:id="packageNameField" prefHeight="31.0" prefWidth="400.0"/>
+            <TextField fx:id="packageNameField" prefHeight="31.0" prefWidth="400.0" promptText="org.odk.odknotifications"/>
         </HBox>
         <Label text="Storage Bucket ">
             <VBox.margin>
@@ -92,7 +92,7 @@
             <VBox.margin>
                 <Insets top="5.0"/>
             </VBox.margin>
-            <TextField fx:id="storageBucketField" prefHeight="31.0" prefWidth="400.0"/>
+            <TextField fx:id="storageBucketField" prefHeight="31.0" prefWidth="400.0" promptText="project-Id.appspot.com"/>
         </HBox>
         <Button mnemonicParsing="false" onMouseClicked="#saveButtonClicked" text="Save">
             <VBox.margin>
