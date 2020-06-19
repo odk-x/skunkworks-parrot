@@ -13,7 +13,7 @@ public class Notification {
     private String status;
     private String date_str;
     private String attachmentPath;
-    private ArrayList<String>responseList;
+    private ArrayList<String> responseList;
 
     public Notification(){
 
@@ -102,9 +102,11 @@ public class Notification {
     public String getAttachmentPath(){
         return this.attachmentPath;
     }
+
     public void setResponseList(ArrayList<String>responseList){
         this.responseList = responseList;
     }
+
     public ArrayList<String> getResponseList(){
         return this.responseList;
     }
