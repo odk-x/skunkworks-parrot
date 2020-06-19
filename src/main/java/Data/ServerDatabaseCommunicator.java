@@ -13,8 +13,6 @@ import org.opendatakit.sync.client.SyncClient;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 
@@ -34,22 +32,16 @@ public class ServerDatabaseCommunicator {
     private static final String USERS_TABLE_ID = "UsersTable";
 
     private static final List<String> GROUPS_TABLE_COLUMNS_LIST = Arrays.asList("GroupId","GroupName",
-            "NotificationsList","UsersList","PendingRequestsList");
+            "GroupLink","NotificationsList");
 
     private static final List<String> NOTIFICATIONS_TABLE_COLUMNS_LIST = Arrays.asList("NotificationId",
-            "NotificationTitle","NotificationMessage","GroupId","NotificationType","ResponseList");
+            "NotificationTitle","NotificationMessage","GroupId","NotificationType","NotificationTime","ResponseList");
 
     private static final List<String> RESPONSES_TABLE_COLUMNS_LIST = Arrays.asList("ResponseId",
-            "ResponseText","NotificationId","UserName");
+            "ResponseText","NotificationId","UserName","ResponseTime");
 
     private static final List<String> USERS_TABLE_COLUMNS_LIST = Arrays.asList("UserId",
-            "UserName","GroupList","DeviceRegistrationToken");
-
-    // JSON constants
-    private static final String RESPONSES_LIST_KEY = "Responses";
-    private static final String USERS_LIST_KEY = "Users";
-    private static final String NOTIFICATIONS_LIST_KEY = "Notifications";
-    private static final String PENDING_REQUESTS_LIST_KEY = "PendingRequests";
+            "UserName","GroupList");
 
     private static final String RELATIVE_PATH_FOR_ATTACHMENT = "/attachment";
 
@@ -74,21 +66,13 @@ public class ServerDatabaseCommunicator {
         syncClient = new SyncClient();
         syncClient.init(getServerHost() , username ,password);
         checkTables();
-    }
-
-    /**
-     * Initializes SyncClient with default parameters
-     *
-     */
-    public static void initAnonymous(){
-        syncClient = new SyncClient();
-        syncClient.initAnonymous(getServerHost());
-        //TODO:Check if anonymous user can create tables or not
+        uploadDefaultGroups();
     }
 
     /**
      * Uploads the notification to the server database
      * Adds notification Id to the group's notifications list
+     * Returns Id for uploaded notification
      *
      * @param notification
      *              the Notification object to upload
@@ -98,21 +82,17 @@ public class ServerDatabaseCommunicator {
      * @throws JSONException
      *              Due to JSON errors while parsing the data
      */
-    public static void uploadNotification(Notification notification) throws JSONException, IOException {
+    public static String uploadNotification(Notification notification) throws JSONException, IOException {
         Row row = new Row();
 
-        String rowId = "notification:" + UUID.randomUUID().toString();
+        String rowId = UUID.randomUUID().toString();
         row.setRowId(rowId);
-
-        JSONObject responseList = new JSONObject();
-        JSONArray responses = new JSONArray();
-
-        responseList.put(RESPONSES_LIST_KEY,responses);
+        String responseList = "";
 
         Map<String,String> map = new HashMap<>();
 
         List<String> columnValues = Arrays.asList(rowId,notification.getTitle(),notification.getMessage(),
-                notification.getGroup_id(),notification.getType(),responseList.toString());
+                notification.getGroup_id(),notification.getType(),String.valueOf(notification.getDate()),responseList);
 
         for(int i=0;i<columnValues.size();i++){
             map.put(NOTIFICATIONS_TABLE_COLUMNS_LIST.get(i),columnValues.get(i));
@@ -128,46 +108,53 @@ public class ServerDatabaseCommunicator {
         syncClient.createRowsUsingBulkUpload(SERVER_URL,APP_ID,NOTIFICATIONS_TABLE_ID,schemaETag,rowArrayList,1);
 
         //uploads the attachment
-        if(!notification.getAttachmentPath().equals("") && notification.getAttachmentPath() != null){
+        if(notification.getAttachmentPath() != null && !notification.getAttachmentPath().equals("")){
             syncClient.putFileForRow(SERVER_URL,APP_ID,NOTIFICATIONS_TABLE_ID,schemaETag,rowId,notification.getAttachmentPath(),RELATIVE_PATH_FOR_ATTACHMENT);
         }
         addNotificationToGroup(notification.getGroup_id() ,rowId);
+
+        return rowId;
     }
 
     /**
      * Uploads the notification to the server database
      * Adds notification Id to the group's notifications list
+     * Returns Id for uploaded group
+     * If group with the given group name already exists, then returns a null string
      *
      * @param group
      *            The Group object to upload
+     *
+     * @return String
+     *            Group Id of created group
      *
      * @throws IOException
      *            Due to input errors while calling SyncClient methods
      * @throws JSONException
      *            Due to JSON errors while parsing the data
      */
-    public static void uploadGroup(Group group) throws JSONException, IOException {
+    public static String uploadGroup(Group group) throws JSONException, IOException {
+
+        if(isGroupPresent(group)){
+            System.out.println("Group with the Group Name: " + group.getName() + " is already present in the database");
+            return null;
+        }
+
         Row row = new Row();
+        String rowId;
+        if(group.getId() == null || group.getId().equals("")) {
+            rowId = UUID.randomUUID().toString();
+            row.setRowId(rowId);
+        }
+        else {
+            rowId = group.getId();
+            row.setRowId(group.getId());
+        }
 
-        String rowId = "group:" + UUID.randomUUID().toString();
-        row.setRowId(rowId);
-
-        JSONObject usersList = new JSONObject();
-        JSONArray users = new JSONArray();
-        usersList.put(USERS_LIST_KEY,users);
-
-        JSONObject notificationsList = new JSONObject();
-        JSONArray notifications = new JSONArray();
-        notificationsList.put(NOTIFICATIONS_LIST_KEY,notifications);
-
-        JSONObject pendingRequestsList = new JSONObject();
-        JSONArray pendingRequests = new JSONArray();
-        pendingRequestsList.put(PENDING_REQUESTS_LIST_KEY,pendingRequests);
-
+        String notificationList = "";
         Map<String,String>map = new HashMap<>();
 
-        List<String>columnValues = Arrays.asList(rowId,group.getName(),notificationsList.toString(),
-                usersList.toString(), pendingRequestsList.toString());
+        List<String>columnValues = Arrays.asList(rowId,group.getName(),group.getGroupLink(),notificationList);
 
         for(int i=0;i<columnValues.size();i++){
             map.put(GROUPS_TABLE_COLUMNS_LIST.get(i),columnValues.get(i));
@@ -180,7 +167,23 @@ public class ServerDatabaseCommunicator {
         String schemaETag = syncClient.getSchemaETagForTable(SERVER_URL,APP_ID,GROUPS_TABLE_ID);
 
         syncClient.createRowsUsingBulkUpload(SERVER_URL,APP_ID,GROUPS_TABLE_ID,schemaETag,rowArrayList,1);
+        return rowId;
+    }
 
+    /**
+     * Checks if given group is already present in database or not
+     *
+     */
+    private static boolean isGroupPresent(Group group) throws JSONException {
+        ArrayList<Group>groupArrayList = getGroups();
+        boolean present = false;
+        for(int i=0;i<groupArrayList.size();i++){
+            if (groupArrayList.get(i).getName().equals(group.getName())) {
+                present = true;
+                break;
+            }
+        }
+        return present;
     }
 
     /**
@@ -198,11 +201,9 @@ public class ServerDatabaseCommunicator {
             map.put(data.getJSONObject(i).get("column").toString(),data.getJSONObject(i).get("value").toString());
         }
 
-        JSONObject temp = new JSONObject(map.get("NotificationsList"));
-        JSONArray tempArray = temp.getJSONArray(NOTIFICATIONS_LIST_KEY);
-        tempArray.add(notificationId);
-        temp.put(NOTIFICATIONS_LIST_KEY,tempArray);
-
+        String temp = map.get("NotificationsList");
+        if(!temp.equals("")) temp += ",";
+        temp += notificationId;
         map.put("NotificationsList",temp.toString());
 
         Row row = getRowFromJSON(rowObject);
@@ -238,6 +239,26 @@ public class ServerDatabaseCommunicator {
         if(!tablesList.contains(RESPONSES_TABLE_ID))createTable(RESPONSES_TABLE_ID,RESPONSES_TABLE_COLUMNS_LIST);
 
         if(!tablesList.contains(GROUPS_TABLE_ID))createTable(GROUPS_TABLE_ID,GROUPS_TABLE_COLUMNS_LIST);
+    }
+
+    /**
+     * Uploads the user default groups to the database if not present
+     *
+     */
+    private static void uploadDefaultGroups() throws IOException, JSONException {
+        ArrayList<Map<String, Object>> users = syncClient.getUsers(SERVER_URL, APP_ID);
+        for (Map<String, Object> user : users) {
+            ArrayList<String> userGroupList = (ArrayList<String>)user.get("roles");
+            for(String groupName : userGroupList){
+                if((groupName.startsWith("GROUP_") || groupName.startsWith("ROLE_"))){
+                    Group group = new Group();
+                    group.setName(groupName);
+                    group.setId(groupName);
+                    group.setGroupLink("");
+                    uploadGroup(group);
+                }
+            }
+        }
     }
 
     /**
@@ -277,9 +298,6 @@ public class ServerDatabaseCommunicator {
         JSONArray notificationArray = notificationObject.getJSONArray("orderedColumns");
 
         Notification notification =  getNotificationFromJSON(notificationArray);
-        LocalDateTime localDateTime = LocalDateTime.parse(notificationObject.get("savepointTimestamp").toString());
-        notification.setDate(localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-
         return notification;
     }
 
@@ -301,10 +319,6 @@ public class ServerDatabaseCommunicator {
         JSONObject responseObject = syncClient.getRow(SERVER_URL,APP_ID,RESPONSES_TABLE_ID,schemaETag,responseId);
 
         Response response = getResponseFromJSON(responseObject.getJSONArray("orderedColumns"));
-
-        LocalDateTime localDateTime = LocalDateTime.parse(responseObject.get("savepointTimestamp").toString());
-        response.setTime(localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-
         return response;
     }
 
@@ -355,17 +369,16 @@ public class ServerDatabaseCommunicator {
             if(jsonArray.getJSONObject(i).get("column").toString().equals("GroupName")){
                 group.setName(jsonArray.getJSONObject(i).get("value").toString());
             }
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("GroupLink")){
+                if(jsonArray.getJSONObject(i).get("value") != null) {
+                    group.setGroupLink(jsonArray.getJSONObject(i).get("value").toString());
+                }
+            }
             if(jsonArray.getJSONObject(i).get("column").toString().equals("NotificationsList")){
-                JSONObject jsonObject = new JSONObject(jsonArray.getJSONObject(i).get("value").toString());
-                group.setNotificationsList(getListFromJsonArray(jsonObject.getJSONArray(NOTIFICATIONS_LIST_KEY)));
-            }
-            if(jsonArray.getJSONObject(i).get("column").toString().equals("UsersList")){
-                JSONObject jsonObject = new JSONObject(jsonArray.getJSONObject(i).get("value").toString());
-                group.setUsersList(getListFromJsonArray(jsonObject.getJSONArray(USERS_LIST_KEY)));
-            }
-            if(jsonArray.getJSONObject(i).get("column").toString().equals("PendingRequestsList")){
-                JSONObject jsonObject = new JSONObject(jsonArray.getJSONObject(i).get("value").toString());
-                group.setPendingRequestsList(getListFromJsonArray(jsonObject.getJSONArray(PENDING_REQUESTS_LIST_KEY)));
+                String temp = jsonArray.getJSONObject(i).get("value").toString();
+                String[] notificationList = temp.split(",");
+                ArrayList<String> notificationArrayList = new ArrayList<>(Arrays.asList(notificationList));
+                group.setNotificationsList(notificationArrayList);
             }
         }
         return group;
@@ -395,8 +408,13 @@ public class ServerDatabaseCommunicator {
                 notification.setType(jsonArray.getJSONObject(i).get("value").toString());
             }
             if(jsonArray.getJSONObject(i).get("column").toString().equals("ResponseList")) {
-                JSONObject jsonObject = new JSONObject(jsonArray.getJSONObject(i).get("value").toString());
-                notification.setResponseList(getListFromJsonArray(jsonObject.getJSONArray(RESPONSES_LIST_KEY)));
+                String temp = jsonArray.getJSONObject(i).get("value").toString();
+                String[] responseList = temp.split(",");
+                ArrayList<String> responseArrayList = new ArrayList<>(Arrays.asList(responseList));
+                notification.setResponseList(responseArrayList);
+            }
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("NotificationTime")){
+                notification.setDate(Long.parseLong(jsonArray.getJSONObject(i).get("value").toString()));
             }
         }
         return notification;
@@ -418,6 +436,9 @@ public class ServerDatabaseCommunicator {
             if(jsonArray.getJSONObject(i).get("column").toString().equals("UserName")){
                 response.setSenderName(jsonArray.getJSONObject(i).get("value").toString());
             }
+            if(jsonArray.getJSONObject(i).get("column").toString().equals("ResponseTime")){
+                response.setTime(Long.parseLong(jsonArray.getJSONObject(i).get("value").toString()));
+            }
         }
         return response;
     }
@@ -437,17 +458,5 @@ public class ServerDatabaseCommunicator {
             e.printStackTrace();
         }
         return uri.getHost();
-    }
-
-    /**
-     * Converts a JSONArray to ArrayList
-     *
-     */
-    private static ArrayList<String> getListFromJsonArray(JSONArray jsonArray){
-        ArrayList<String>arrayList = new ArrayList<>();
-        for(int i=0;i<jsonArray.size();i++){
-            arrayList.add(jsonArray.get(i).toString());
-        }
-        return arrayList;
     }
 }
