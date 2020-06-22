@@ -2,6 +2,7 @@ package Controller;
 
 import Data.Data;
 import Data.LoginCredentials;
+import Data.ServerDatabaseCommunicator;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -19,14 +20,13 @@ import org.opendatakit.sync.client.SyncClient;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.net.ConnectException;
-
 
 import static Data.Data.FIREBASE_KEYS_FILE_NAME;
 
@@ -82,6 +82,7 @@ public class LoginFormController implements Initializable {
                 try {
                     if(verifyCredentials(username,password) == USER_WITH_ADMIN_ACCESS) {
                         LoginCredentials.credentials = new LoginCredentials(username,password);
+                        ServerDatabaseCommunicator.init(username,password);
                         try {
                             initializeFirebaseSDK();
                         }catch (IOException e){
