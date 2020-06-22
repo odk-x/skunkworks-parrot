@@ -1,10 +1,8 @@
 package Controller;
 
-import Data.Data;
 import Data.DatabaseCommunicator;
-import Data.LoginCredentials;
+import Data.ServerDatabaseCommunicator;
 import Model.Group;
-import com.google.firebase.database.*;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -15,14 +13,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
-import org.opendatakit.sync.client.SyncClient;
 
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.concurrent.CountDownLatch;
 
 public class MainController implements Initializable {
 
@@ -86,7 +80,7 @@ public class MainController implements Initializable {
                 updateProgress(-1, 100);
 
                 try {
-                    groupArrayList = databaseCommunicator.getGroups();
+                    groupArrayList = ServerDatabaseCommunicator.getGroups();
                     updateProgress(100,100);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -112,6 +106,7 @@ public class MainController implements Initializable {
         mainHeading.setText("Create Notification");
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/CreateNotification.fxml"));
+            groupArrayList = ServerDatabaseCommunicator.getGroups();
             fxmlLoader.setController(new CreateNotificationController(groupArrayList));
             setCenterScene(fxmlLoader);
         } catch (Exception e) {
@@ -163,54 +158,7 @@ public class MainController implements Initializable {
                 updateProgress(-1, 100);
 
                 try {
-                    SyncClient syncClient = new SyncClient();
-                    Data data = new Data();
-                    String url = data.getSYNC_CLIENT_URL();
-                    URI uri = new URI(url);
-                    url = url +"/odktables";
-                    String appId = "default";
-                    syncClient.init(uri.getHost(), LoginCredentials.credentials.getUsername(),LoginCredentials.credentials.getPassword());
-                    ArrayList<Map<String, Object>> users = syncClient.getUsers(url, appId);
-                    syncClient.close();
-
-                    databaseCommunicator.clearTable("Groups");
-                    ArrayList<String> groupsList = new ArrayList<>();
-
-                    for (Map<String, Object> user : users) {
-                        ArrayList<String> userGroupList = (ArrayList<String>)user.get("roles");
-                        for(String groupName : userGroupList){
-                            if((groupName.startsWith("GROUP_") || groupName.startsWith("ROLE_"))&& !groupsList.contains(groupName)){
-                                groupsList.add(groupName);
-                                databaseCommunicator.insertGroup(new Group(groupName, groupName));
-                            }
-                        }
-                    }
-
-                    CountDownLatch done = new CountDownLatch(1);
-                    DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("group");
-                    mRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            for(DataSnapshot singleGroup : snapshot.getChildren()){
-                                String groupId =(String)singleGroup.child("id").getValue();
-                                String groupName =(String)singleGroup.child("name").getValue();
-                                String groupLink =(String)singleGroup.child("groupLink").getValue();
-                                groupsList.add(groupName);
-                                databaseCommunicator.insertGroup(new Group(groupId, groupName,groupLink));
-                            }
-                            getGroups();
-                            done.countDown();
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError error) {
-
-                        }
-                    });
-                    try {
-                        done.await(); //it will wait till the response is received from firebase.
-                    } catch(InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    getGroups();
                 } catch (Exception e) {
                     e.printStackTrace();
                     updateProgress(0, 100);
