@@ -1,25 +1,20 @@
 package Controller;
 
-import Data.DatabaseCommunicator;
-import Model.Group;
+import Data.ServerDatabaseCommunicator;
 import Model.Notification;
 import Model.Response;
-import com.google.firebase.database.*;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
+import org.apache.wink.json4j.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,31 +42,13 @@ public class NotificationResponseController implements Initializable {
         title.setText(notification.getTitle());
         message.setText(notification.getMessage());
         time.setText(notification.getDate_str());
-
-        DatabaseReference responseRef = FirebaseDatabase.getInstance().getReference("/responses/"+notification.getId());
-        responseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                responseArrayList.clear();
-                for(DataSnapshot childSnapshot:snapshot.getChildren()){
-                    Response response = childSnapshot.getValue(Response.class);
-                    response.fetchTime();
-                    responseArrayList.add(response);
-                }
-                Platform.runLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        setTableView();
-                    }
-                });
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
+        try {
+            responseArrayList = ServerDatabaseCommunicator.getResponsesList(notification);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setTableView()
