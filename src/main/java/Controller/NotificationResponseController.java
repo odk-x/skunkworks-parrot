@@ -49,6 +49,7 @@ public class NotificationResponseController implements Initializable {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        setTableView();
     }
 
     public void setTableView()
@@ -57,7 +58,7 @@ public class NotificationResponseController implements Initializable {
 
         TableColumn<Notification, String> senderIdColumn = new TableColumn<>("Sender ID");
         senderIdColumn.setMinWidth(100);
-        senderIdColumn.setCellValueFactory(new PropertyValueFactory<>("senderID"));
+        senderIdColumn.setCellValueFactory(new PropertyValueFactory<>("senderName"));
 
         TableColumn<Notification, String> responseColumn = new TableColumn<>("Response");
         responseColumn.setMinWidth(300);

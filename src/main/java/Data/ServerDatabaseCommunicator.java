@@ -346,36 +346,39 @@ public class ServerDatabaseCommunicator {
      */
     public static ArrayList<Response> getResponsesList (Notification notification) throws IOException, JSONException {
         ArrayList<Response> responseArrayList = new ArrayList<>();
-        ArrayList<String> responsesIdList = notification.getResponseList();
+        ArrayList<Response> completeResponsesList = getResponses();
 
-        for(String s : responsesIdList){
-            if(s != null && !s.equals("")){
-                responseArrayList.add(getResponse(s));
+        for (Response response : completeResponsesList) {
+            if (response.getNotificationId().equals(notification.getId())) {
+                responseArrayList.add(response);
+                System.out.println(response.getNotificationId());
             }
         }
-
+        System.out.println(responseArrayList.size());
         return responseArrayList;
     }
 
     /**
-     * Returns a Response object for a given response Id
+     * Returns a List of all the responses present in a database
      *
-     * @param responseId
-     *              Id for a Response
      *
-     *  @throws IOException
-     *             Due to input errors while calling SyncClient methods
      *  @throws JSONException
      *             Due to JSON errors while parsing the data
      *
      */
-    public static Response getResponse(String responseId) throws IOException, JSONException {
+    public static ArrayList<Response> getResponses() throws JSONException {
+
+        ArrayList<Response> responseArrayList = new ArrayList<>();
         String schemaETag = syncClient.getSchemaETagForTable(SERVER_URL,APP_ID,RESPONSES_TABLE_ID);
 
-        JSONObject responseObject = syncClient.getRow(SERVER_URL,APP_ID,RESPONSES_TABLE_ID,schemaETag,responseId);
+        JSONObject responseObject = syncClient.getRows(SERVER_URL,APP_ID,RESPONSES_TABLE_ID,schemaETag,null,null);
 
-        Response response = getResponseFromJSON(responseObject.getJSONArray("orderedColumns"));
-        return response;
+        JSONArray responsesJsonArray = responseObject.getJSONArray("rows");
+
+        for(int i=0;i<responsesJsonArray.size();i++) {
+            responseArrayList.add(getResponseFromJSON(responsesJsonArray.getJSONObject(i).getJSONArray("orderedColumns")));
+        }
+        return responseArrayList;
     }
 
     /**
