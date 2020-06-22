@@ -85,7 +85,15 @@ public class ServerDatabaseCommunicator {
     public static String uploadNotification(Notification notification) throws JSONException, IOException {
         Row row = new Row();
 
-        String rowId = UUID.randomUUID().toString();
+        String rowId;
+
+        if(notification.getId() != null && !notification.getId().equals("")){
+            rowId = notification.getId();
+        }
+        else {
+            rowId = UUID.randomUUID().toString();
+        }
+
         row.setRowId(rowId);
         String responseList = "";
 

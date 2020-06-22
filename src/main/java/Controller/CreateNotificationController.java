@@ -1,15 +1,13 @@
 package Controller;
 
 
-import Data.DatabaseCommunicator;
+import Data.ServerDatabaseCommunicator;
 import Model.Group;
 import Model.Notification;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.firebase.cloud.StorageClient;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -24,6 +22,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import org.apache.wink.json4j.JSONException;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +32,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 public class CreateNotificationController implements Initializable {
 
@@ -108,8 +108,7 @@ public class CreateNotificationController implements Initializable {
             statusLabel.setVisible(true);
             send_button.setDisable(true);
             String type = ((RadioButton)toggleGroup.getSelectedToggle()).getText();
-            DatabaseReference notifRef = FirebaseDatabase.getInstance().getReference("/notifications").push();
-            String notif_id = notifRef.getKey();
+            String notificationId = UUID.randomUUID().toString();
             Task<Void> task = new Task<Void>() {
                 @Override
                 protected Void call() {
@@ -124,7 +123,7 @@ public class CreateNotificationController implements Initializable {
                             byte[] data = Files.readAllBytes(Paths.get(image_path.getText()));
                             Blob blob=bucket.create(file_name, data, Bucket.BlobTargetOption.predefinedAcl(Storage.PredefinedAcl.PUBLIC_READ));
                             message = Message.builder()
-                                    .putData("id", notif_id)
+                                    .putData("id", notificationId)
                                     .putData("title", titleStr)
                                     .putData("message", messageStr)
                                     .putData("group", selected.getId())
@@ -137,14 +136,12 @@ public class CreateNotificationController implements Initializable {
                             System.out.println("Successfully sent message: " + response);
                             updateProgress(100, 100);
                             updateMessage("Message sent successfully.");
-                            Notification notification = new Notification(notif_id,titleStr,messageStr,new Date().getTime() ,selected.getId(), type, null);
-                            notifRef.setValueAsync(notification);
-                            DatabaseCommunicator dc= new DatabaseCommunicator();
-                            dc.addNotification(notification);
-                            dc.closeConnection();
+                            Notification notification = new Notification(notificationId,titleStr,messageStr,new Date().getTime() ,selected.getId(), type, null);
+                            notification.setAttachmentPath(path);
+                            ServerDatabaseCommunicator.uploadNotification(notification);
 
                         }
-                        catch (IOException | FirebaseMessagingException e) {
+                        catch (IOException | FirebaseMessagingException | JSONException e) {
                             e.printStackTrace();
                             updateProgress(0, 100);
                             updateMessage("Error in sending message please try again.");
@@ -157,7 +154,7 @@ public class CreateNotificationController implements Initializable {
 
                         try {
                             message = Message.builder()
-                                    .putData("id", notif_id)
+                                    .putData("id", notificationId)
                                     .putData("title", titleStr)
                                     .putData("message", messageStr)
                                     .putData("group", selected.getId())
@@ -169,11 +166,8 @@ public class CreateNotificationController implements Initializable {
                             System.out.println("Successfully sent message: " + response);
                             updateProgress(100, 100);
                             updateMessage("Message sent successfully.");
-                            Notification notification = new Notification(notif_id,titleStr,messageStr,new Date().getTime() ,selected.getId(), type, null);
-                            notifRef.setValueAsync(notification);
-                            DatabaseCommunicator dc= new DatabaseCommunicator();
-                            dc.addNotification(notification);
-                            dc.closeConnection();
+                            Notification notification = new Notification(notificationId,titleStr,messageStr,new Date().getTime() ,selected.getId(), type, null);
+                            ServerDatabaseCommunicator.uploadNotification(notification);
 
                         } catch (Exception e) {
                             e.printStackTrace();
