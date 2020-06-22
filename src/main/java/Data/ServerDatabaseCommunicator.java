@@ -280,6 +280,29 @@ public class ServerDatabaseCommunicator {
     }
 
     /**
+     * Returns a Array list of notification objects for given group
+     *
+     * @param group
+     *            group object whose notification list is required
+     *
+     * @throws IOException
+     *             Due to input errors while calling SyncClient methods
+     * @throws JSONException
+     *             Due to JSON errors while parsing the data
+     *
+     */
+    public static ArrayList<Notification> getNotificationsList(Group group) throws IOException, JSONException {
+        ArrayList<Notification> notificationArrayList = new ArrayList<>();
+        ArrayList<String>notificationsIdList = group.getNotificationsList();
+        for (String s : notificationsIdList) {
+            if(s != null && !s.equals("")){
+                notificationArrayList.add(getNotification(s));
+            }
+        }
+        return notificationArrayList;
+    }
+
+    /**
      * Returns a notification object for a given notification Id
      *
      * @param notificationId
@@ -299,6 +322,31 @@ public class ServerDatabaseCommunicator {
 
         Notification notification =  getNotificationFromJSON(notificationArray);
         return notification;
+    }
+
+    /**
+     * Returns a array list of responses for given notification
+     *
+     * @param notification
+     *              Notification object whose response list is required
+     *
+     *  @throws IOException
+     *             Due to input errors while calling SyncClient methods
+     *  @throws JSONException
+     *             Due to JSON errors while parsing the data
+     *
+     */
+    public static ArrayList<Response> getResponsesList (Notification notification) throws IOException, JSONException {
+        ArrayList<Response> responseArrayList = new ArrayList<>();
+        ArrayList<String> responsesIdList = notification.getResponseList();
+
+        for(String s : responsesIdList){
+            if(s != null && !s.equals("")){
+                responseArrayList.add(getResponse(s));
+            }
+        }
+
+        return responseArrayList;
     }
 
     /**
