@@ -1,6 +1,6 @@
 package Controller;
 
-import Data.*;
+import Data.ServerDatabaseCommunicator;
 import Model.Group;
 import Model.Notification;
 import javafx.collections.FXCollections;
@@ -17,6 +17,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.apache.wink.json4j.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -50,9 +51,12 @@ public class NotificationGroupController implements Initializable {
 
     private void setListView()
     {
-        DatabaseCommunicator dc = new DatabaseCommunicator();
-
-        ObservableList<Object> notificationSet = FXCollections.observableArrayList(dc.getNotificationsList(group.getId()));
+        ObservableList<Object> notificationSet = null;
+        try {
+            notificationSet = FXCollections.observableArrayList(ServerDatabaseCommunicator.getNotificationsList(group));
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
 
         TableColumn<Notification, String> titleColumn = new TableColumn<>("Title");
         titleColumn.setMinWidth(150);
