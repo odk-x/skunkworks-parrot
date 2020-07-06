@@ -138,7 +138,7 @@ public class CreateNotificationController implements Initializable {
                             updateMessage("Message sent successfully.");
                             Notification notification = new Notification(notificationId,titleStr,messageStr,new Date().getTime() ,selected.getId(), type, null);
                             notification.setAttachmentPath(path);
-                            ServerDatabaseCommunicator.uploadNotification(notification);
+                            ServerDatabaseCommunicator.getInstance().uploadNotification(notification);
 
                         }
                         catch (IOException | FirebaseMessagingException | JSONException e) {
@@ -167,7 +167,7 @@ public class CreateNotificationController implements Initializable {
                             updateProgress(100, 100);
                             updateMessage("Message sent successfully.");
                             Notification notification = new Notification(notificationId,titleStr,messageStr,new Date().getTime() ,selected.getId(), type, null);
-                            ServerDatabaseCommunicator.uploadNotification(notification);
+                            ServerDatabaseCommunicator.getInstance().uploadNotification(notification);
 
                         } catch (Exception e) {
                             e.printStackTrace();

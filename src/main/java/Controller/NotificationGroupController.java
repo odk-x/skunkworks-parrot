@@ -53,7 +53,7 @@ public class NotificationGroupController implements Initializable {
     {
         ObservableList<Object> notificationSet = null;
         try {
-            notificationSet = FXCollections.observableArrayList(ServerDatabaseCommunicator.getNotificationsList(group));
+            notificationSet = FXCollections.observableArrayList(ServerDatabaseCommunicator.getInstance().getNotificationsList(group));
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }

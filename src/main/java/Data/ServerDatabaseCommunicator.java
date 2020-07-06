@@ -18,7 +18,7 @@ import java.util.*;
 
 public class ServerDatabaseCommunicator {
 
-    private static SyncClient syncClient;
+    private SyncClient syncClient;
 
     private static final String APP_ID = "default";
 
@@ -45,7 +45,19 @@ public class ServerDatabaseCommunicator {
 
     private static final String RELATIVE_PATH_FOR_ATTACHMENT = "/attachment";
 
+    private static ServerDatabaseCommunicator serverDatabaseCommunicator;
 
+    private ServerDatabaseCommunicator(){
+
+    }
+
+    public static ServerDatabaseCommunicator getInstance(){
+
+        if(serverDatabaseCommunicator == null){
+            serverDatabaseCommunicator = new ServerDatabaseCommunicator();
+        }
+        return serverDatabaseCommunicator;
+    }
 
     /**
      * Initializes SyncClient with given username and password
@@ -62,7 +74,7 @@ public class ServerDatabaseCommunicator {
      *              JSON error while parsing the data
      */
 
-    public static void init(String username , String password) throws IOException, JSONException {
+    public void init(String username , String password) throws IOException, JSONException {
         syncClient = new SyncClient();
         syncClient.init(getServerHost() , username ,password);
         checkTables();
@@ -82,7 +94,7 @@ public class ServerDatabaseCommunicator {
      * @throws JSONException
      *              Due to JSON errors while parsing the data
      */
-    public static String uploadNotification(Notification notification) throws JSONException, IOException {
+    public String uploadNotification(Notification notification) throws JSONException, IOException {
         Row row = new Row();
 
         String rowId;
@@ -141,7 +153,7 @@ public class ServerDatabaseCommunicator {
      * @throws JSONException
      *            Due to JSON errors while parsing the data
      */
-    public static String uploadGroup(Group group) throws JSONException, IOException {
+    public String uploadGroup(Group group) throws JSONException, IOException {
 
         if(isGroupPresent(group)){
             System.out.println("Group with the Group Name: " + group.getName() + " is already present in the database");
@@ -182,7 +194,7 @@ public class ServerDatabaseCommunicator {
      * Checks if given group is already present in database or not
      *
      */
-    private static boolean isGroupPresent(Group group) throws JSONException {
+    private boolean isGroupPresent(Group group) throws JSONException {
         ArrayList<Group>groupArrayList = getGroups();
         boolean present = false;
         for(int i=0;i<groupArrayList.size();i++){
@@ -198,7 +210,7 @@ public class ServerDatabaseCommunicator {
      * Adds created notifications ID to corresponding Notifications List of group
      *
      */
-    private static void addNotificationToGroup(String groupId , String notificationId) throws IOException, JSONException {
+    private void addNotificationToGroup(String groupId , String notificationId) throws IOException, JSONException {
         String schemaETag = syncClient.getSchemaETagForTable(SERVER_URL,APP_ID,GROUPS_TABLE_ID);
 
         JSONObject rowObject = syncClient.getRow(SERVER_URL,APP_ID,GROUPS_TABLE_ID,schemaETag,groupId);
@@ -230,7 +242,7 @@ public class ServerDatabaseCommunicator {
      * If some tables are not present on server then creates that table
      *
      */
-    private static void checkTables () throws JSONException, IOException {
+    private void checkTables () throws JSONException, IOException {
 
         JSONObject tablesObject = syncClient.getTables(SERVER_URL,APP_ID);
         JSONArray tablesArray = tablesObject.getJSONArray("tables");
@@ -253,7 +265,7 @@ public class ServerDatabaseCommunicator {
      * Uploads the user default groups to the database if not present
      *
      */
-    private static void uploadDefaultGroups() throws IOException, JSONException {
+    private void uploadDefaultGroups() throws IOException, JSONException {
         ArrayList<Map<String, Object>> users = syncClient.getUsers(SERVER_URL, APP_ID);
         for (Map<String, Object> user : users) {
             ArrayList<String> userGroupList = (ArrayList<String>)user.get("roles");
@@ -275,7 +287,7 @@ public class ServerDatabaseCommunicator {
      * @throws JSONException
      *              Due to JSON errors while parsing the data
      */
-    public static ArrayList<Group>getGroups() throws JSONException {
+    public ArrayList<Group>getGroups() throws JSONException {
         ArrayList<Group>groupArrayList = new ArrayList<>();
         String schemaETag = syncClient.getSchemaETagForTable(SERVER_URL,APP_ID,GROUPS_TABLE_ID);
         JSONObject jsonObject = syncClient.getRows(SERVER_URL,APP_ID,GROUPS_TABLE_ID,schemaETag,null,null);
@@ -299,7 +311,7 @@ public class ServerDatabaseCommunicator {
      *             Due to JSON errors while parsing the data
      *
      */
-    public static ArrayList<Notification> getNotificationsList(Group group) throws IOException, JSONException {
+    public ArrayList<Notification> getNotificationsList(Group group) throws IOException, JSONException {
         ArrayList<Notification> notificationArrayList = new ArrayList<>();
         ArrayList<String>notificationsIdList = group.getNotificationsList();
         for (String s : notificationsIdList) {
@@ -322,7 +334,7 @@ public class ServerDatabaseCommunicator {
      *             Due to JSON errors while parsing the data
      *
      */
-    public static Notification getNotification(String notificationId) throws IOException, JSONException {
+    public Notification getNotification(String notificationId) throws IOException, JSONException {
         String schemaETag = syncClient.getSchemaETagForTable(SERVER_URL,APP_ID,NOTIFICATIONS_TABLE_ID);
 
         JSONObject notificationObject = syncClient.getRow(SERVER_URL,APP_ID,NOTIFICATIONS_TABLE_ID,schemaETag,notificationId);
@@ -344,7 +356,7 @@ public class ServerDatabaseCommunicator {
      *             Due to JSON errors while parsing the data
      *
      */
-    public static ArrayList<Response> getResponsesList (Notification notification) throws IOException, JSONException {
+    public ArrayList<Response> getResponsesList (Notification notification) throws IOException, JSONException {
         ArrayList<Response> responseArrayList = new ArrayList<>();
         ArrayList<Response> completeResponsesList = getResponses();
 
@@ -366,7 +378,7 @@ public class ServerDatabaseCommunicator {
      *             Due to JSON errors while parsing the data
      *
      */
-    public static ArrayList<Response> getResponses() throws JSONException {
+    public ArrayList<Response> getResponses() throws JSONException {
 
         ArrayList<Response> responseArrayList = new ArrayList<>();
         String schemaETag = syncClient.getSchemaETagForTable(SERVER_URL,APP_ID,RESPONSES_TABLE_ID);
@@ -385,7 +397,7 @@ public class ServerDatabaseCommunicator {
      * Creates a table on server database with given tableId and column list
      *
      */
-    private static void createTable(String tableId , List<String>columnsList) throws IOException, JSONException {
+    private void createTable(String tableId , List<String>columnsList) throws IOException, JSONException {
         ArrayList<Column>columns = new ArrayList<>();
 
         for(int i=0;i<columnsList.size();i++){
@@ -402,7 +414,7 @@ public class ServerDatabaseCommunicator {
      * Does not copy columns data from JSONObject to row
      *
      */
-    private static Row getRowFromJSON(JSONObject jsonObject) throws JSONException {
+    private Row getRowFromJSON(JSONObject jsonObject) throws JSONException {
         Row row = new Row();
         if(jsonObject.get("formId") != null)row.setFormId(jsonObject.get("formId").toString());
         if(jsonObject.get("locale") != null)row.setLocale(jsonObject.get("locale").toString());
@@ -419,7 +431,7 @@ public class ServerDatabaseCommunicator {
      * Converts a JSONArray containing group data to Group object
      *
      */
-    private static Group getGroupFromJson(JSONArray jsonArray) throws JSONException {
+    private Group getGroupFromJson(JSONArray jsonArray) throws JSONException {
         Group group = new Group();
         for(int i=0;i<jsonArray.size();i++){
             if(jsonArray.getJSONObject(i).get("column").toString().equals("GroupId")){
@@ -447,7 +459,7 @@ public class ServerDatabaseCommunicator {
      * Converts a JSONArray containing Notification data to Notification object
      *
      */
-    private static Notification getNotificationFromJSON(JSONArray jsonArray) throws JSONException {
+    private Notification getNotificationFromJSON(JSONArray jsonArray) throws JSONException {
         Notification notification = new Notification();
 
         for(int i=0;i<jsonArray.size();i++){
@@ -483,7 +495,7 @@ public class ServerDatabaseCommunicator {
      * Converts a JSONArray containing Response data to Response object
      *
      */
-    private static Response getResponseFromJSON(JSONArray jsonArray) throws JSONException {
+    private Response getResponseFromJSON(JSONArray jsonArray) throws JSONException {
         Response response = new Response();
         for(int i=0;i<jsonArray.size();i++){
             if(jsonArray.getJSONObject(i).get("column").toString().equals("ResponseText")){
@@ -506,7 +518,7 @@ public class ServerDatabaseCommunicator {
      * Returns server host
      *
      */
-    private static String getServerHost(){
+    private String getServerHost(){
         String url = data.getSYNC_CLIENT_URL();
         URI uri = null;
         try {

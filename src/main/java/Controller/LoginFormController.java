@@ -82,7 +82,7 @@ public class LoginFormController implements Initializable {
                 try {
                     if(verifyCredentials(username,password) == USER_WITH_ADMIN_ACCESS) {
                         LoginCredentials.credentials = new LoginCredentials(username,password);
-                        ServerDatabaseCommunicator.init(username,password);
+                        ServerDatabaseCommunicator.getInstance().init(username,password);
                         try {
                             initializeFirebaseSDK();
                         }catch (IOException e){

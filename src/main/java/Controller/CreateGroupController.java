@@ -82,7 +82,7 @@ public class CreateGroupController implements Initializable {
                             updateMessage("Group Link: " + groupLink);
                             updateProgress(100, 100);
                             try {
-                                ServerDatabaseCommunicator.uploadGroup(new Group(groupId,groupName,groupLink));
+                                ServerDatabaseCommunicator.getInstance().uploadGroup(new Group(groupId,groupName,groupLink));
                             } catch (JSONException | IOException e) {
                                 e.printStackTrace();
                             }

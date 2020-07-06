@@ -80,7 +80,7 @@ public class MainController implements Initializable {
                 updateProgress(-1, 100);
 
                 try {
-                    groupArrayList = ServerDatabaseCommunicator.getGroups();
+                    groupArrayList = ServerDatabaseCommunicator.getInstance().getGroups();
                     updateProgress(100,100);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -106,7 +106,7 @@ public class MainController implements Initializable {
         mainHeading.setText("Create Notification");
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/CreateNotification.fxml"));
-            groupArrayList = ServerDatabaseCommunicator.getGroups();
+            groupArrayList = ServerDatabaseCommunicator.getInstance().getGroups();
             fxmlLoader.setController(new CreateNotificationController(groupArrayList));
             setCenterScene(fxmlLoader);
         } catch (Exception e) {

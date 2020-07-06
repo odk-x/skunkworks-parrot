@@ -43,7 +43,7 @@ public class NotificationResponseController implements Initializable {
         message.setText(notification.getMessage());
         time.setText(notification.getDate_str());
         try {
-            responseArrayList = ServerDatabaseCommunicator.getResponsesList(notification);
+            responseArrayList = ServerDatabaseCommunicator.getInstance().getResponsesList(notification);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
