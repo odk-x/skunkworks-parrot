@@ -60,13 +60,13 @@ public class CreateNotificationController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         progressIndicator.setVisible(false);
         statusLabel.setVisible(false);
-        imageIsSelected=false;
+        imageIsSelected = false;
 
         comboBox.setItems(FXCollections.observableList(groupArrayList));
         comboBox.setCellFactory(new Callback<ListView<Group>, ListCell<Group>>() {
             @Override
             public ListCell<Group> call(ListView<Group> param) {
-                return new ListCell<Group>(){
+                return new ListCell<Group>() {
 
                     @Override
                     protected void updateItem(Group notificationGroup, boolean bln) {
@@ -103,11 +103,11 @@ public class CreateNotificationController implements Initializable {
         String messageStr = message_field.getText();
         Group selected = comboBox.getSelectionModel().getSelectedItem();
 
-        if(!(titleStr.isEmpty() && messageStr.isEmpty()) && !selected.equals(null)) {
+        if (!(titleStr.isEmpty() && messageStr.isEmpty()) && !selected.equals(null)) {
             progressIndicator.setVisible(true);
             statusLabel.setVisible(true);
             send_button.setDisable(true);
-            String type = ((RadioButton)toggleGroup.getSelectedToggle()).getText();
+            String type = ((RadioButton) toggleGroup.getSelectedToggle()).getText();
             String notificationId = UUID.randomUUID().toString();
             Task<Void> task = new Task<Void>() {
                 @Override
@@ -116,19 +116,20 @@ public class CreateNotificationController implements Initializable {
                     updateMessage("Please Wait...");
                     updateProgress(-1, 100);
                     String topic = selected.getId();
-                    if(imageIsSelected) {
+                    if (imageIsSelected) {
                         Bucket bucket = StorageClient.getInstance().bucket();
-                        String path=image_path.getText();
+                        String path = image_path.getText();
                         try {
                             byte[] data = Files.readAllBytes(Paths.get(image_path.getText()));
-                            Blob blob=bucket.create(file_name, data, Bucket.BlobTargetOption.predefinedAcl(Storage.PredefinedAcl.PUBLIC_READ));
+                            Blob blob = bucket.create(file_name, data,
+                                    Bucket.BlobTargetOption.predefinedAcl(Storage.PredefinedAcl.PUBLIC_READ));
                             message = Message.builder()
                                     .putData("id", notificationId)
                                     .putData("title", titleStr)
                                     .putData("message", messageStr)
                                     .putData("group", selected.getId())
                                     .putData("type", type)
-                                    .putData("img", blob.getMediaLink() )
+                                    .putData("img", blob.getMediaLink())
                                     .setTopic(topic)
                                     .build();
                             String response = FirebaseMessaging.getInstance().send(message);
@@ -136,20 +137,19 @@ public class CreateNotificationController implements Initializable {
                             System.out.println("Successfully sent message: " + response);
                             updateProgress(100, 100);
                             updateMessage("Message sent successfully.");
-                            Notification notification = new Notification(notificationId,titleStr,messageStr,new Date().getTime() ,selected.getId(), type, null);
+                            Notification notification = new Notification(notificationId, titleStr, messageStr,
+                                    new Date().getTime(), selected.getId(), type, null);
                             notification.setAttachmentPath(path);
                             ServerDatabaseCommunicator.getInstance().uploadNotification(notification);
 
-                        }
-                        catch (IOException | FirebaseMessagingException | JSONException e) {
+                        } catch (IOException | FirebaseMessagingException | JSONException e) {
                             e.printStackTrace();
                             updateProgress(0, 100);
                             updateMessage("Error in sending message please try again.");
                             System.out.println("error");
                         }
 
-                    }
-                    else {
+                    } else {
 
 
                         try {
@@ -166,7 +166,8 @@ public class CreateNotificationController implements Initializable {
                             System.out.println("Successfully sent message: " + response);
                             updateProgress(100, 100);
                             updateMessage("Message sent successfully.");
-                            Notification notification = new Notification(notificationId,titleStr,messageStr,new Date().getTime() ,selected.getId(), type, null);
+                            Notification notification = new Notification(notificationId, titleStr, messageStr,
+                                    new Date().getTime(), selected.getId(), type, null);
                             ServerDatabaseCommunicator.getInstance().uploadNotification(notification);
 
                         } catch (Exception e) {
@@ -191,20 +192,22 @@ public class CreateNotificationController implements Initializable {
 
         }
     }
+
     EventHandler<ActionEvent> event =
             new EventHandler<ActionEvent>() {
 
-                public void handle(ActionEvent event)
-                {   FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png");
-                    FileChooser fileChooser= new FileChooser();
+                public void handle(ActionEvent event) {
+                    FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Image Files", "*.jpg",
+                            "*.png");
+                    FileChooser fileChooser = new FileChooser();
                     fileChooser.getExtensionFilters().add(imageFilter);
-                    Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
+                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                     // get the file selected
                     File file = fileChooser.showOpenDialog(stage);
                     file_name = file.getName();
 
                     if (file.exists()) {
-                        imageIsSelected=true;
+                        imageIsSelected = true;
                         image_path.setText(file.getAbsolutePath());
 
                     }

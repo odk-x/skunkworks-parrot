@@ -47,7 +47,7 @@ public class CreateGroupController implements Initializable {
     private MainController mainController;
     private QRCodeHelper qrCodeHelper = new QRCodeHelper();
 
-    public CreateGroupController(MainController mainController){
+    public CreateGroupController(MainController mainController) {
         this.mainController = mainController;
     }
 
@@ -82,7 +82,8 @@ public class CreateGroupController implements Initializable {
                             updateMessage("Group Link: " + groupLink);
                             updateProgress(100, 100);
                             try {
-                                ServerDatabaseCommunicator.getInstance().uploadGroup(new Group(groupId,groupName,groupLink));
+                                ServerDatabaseCommunicator.getInstance().uploadGroup(new Group(groupId, groupName,
+                                        groupLink));
                             } catch (JSONException | IOException e) {
                                 e.printStackTrace();
                             }
@@ -94,7 +95,7 @@ public class CreateGroupController implements Initializable {
                     }
                 };
                 task.setOnSucceeded(taskFinishEvent -> {
-                    if(groupLink!=null) {
+                    if (groupLink != null) {
                         clipboardButton.setVisible(true);
                         saveImageButton.setVisible(true);
                     }
@@ -108,7 +109,7 @@ public class CreateGroupController implements Initializable {
         }
     }
 
-    private String createGroupLink( String groupId) {
+    private String createGroupLink(String groupId) {
         String link = null;
         try {
             link = createDynamicLink(groupId);
@@ -121,13 +122,13 @@ public class CreateGroupController implements Initializable {
 
     private String createDynamicLink(String groupId) {
 
-        if(Data.data == null) Data.data = new Data();
+        if (Data.data == null) Data.data = new Data();
 
         JSONObject androidInfo = new JSONObject();
         androidInfo.put("androidPackageName", Data.data.getANDROID_APP_PACKAGE_NAME());
         JSONObject dynamicLinkInfo = new JSONObject();
         dynamicLinkInfo.put("domainUriPrefix", Data.data.getDYNAMIC_LINK_DOMAIN());
-        dynamicLinkInfo.put("link", "https://odknotificatons?id="+groupId);
+        dynamicLinkInfo.put("link", "https://odknotificatons?id=" + groupId);
         dynamicLinkInfo.put("androidInfo", androidInfo);
 
         JSONObject mainObject = new JSONObject();
@@ -143,8 +144,8 @@ public class CreateGroupController implements Initializable {
         HttpResponse response;
 
         try {
-            String Url =  Data.data.getFIREBASE_INVITES_URL().trim();
-            HttpPost post = new HttpPost(Url);
+            String url = Data.data.getFIREBASE_INVITES_URL().trim();
+            HttpPost post = new HttpPost(url);
             StringEntity se = new StringEntity(mainObject.toString());
             post.setEntity(se);
             response = client.execute(post);
@@ -154,7 +155,7 @@ public class CreateGroupController implements Initializable {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                 StringBuilder result = new StringBuilder();
                 String line;
-                while((line = reader.readLine()) != null) {
+                while ((line = reader.readLine()) != null) {
                     result.append(line);
                 }
                 System.out.println(result.toString());
@@ -167,13 +168,13 @@ public class CreateGroupController implements Initializable {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Error"+ " Cannot Establish Connection");
+            System.out.println("Error" + " Cannot Establish Connection");
         }
         return groupLink;
     }
 
     public void copyToClipboardClicked() {
-        if(groupLink!=null){
+        if (groupLink != null) {
             final Clipboard clipboard = Clipboard.getSystemClipboard();
             final ClipboardContent content = new ClipboardContent();
             content.putString(groupLink);
@@ -183,7 +184,7 @@ public class CreateGroupController implements Initializable {
     }
 
     public void saveImageButtonClicked(MouseEvent mouseEvent) {
-        if(bufferedImage!=null) qrCodeHelper.saveQRCodeImage(bufferedImage,groupName);
+        if (bufferedImage != null) qrCodeHelper.saveQRCodeImage(bufferedImage, groupName);
     }
 
 }

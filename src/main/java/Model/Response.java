@@ -24,16 +24,18 @@ public class Response {
     public void setSenderName(String senderName) {
         this.senderName = senderName;
     }
-    public void setTime(long time){
+
+    public void setTime(long time) {
         this.time = time;
         SimpleDateFormat newFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
         this.date_str = newFormat.format(time);
     }
+
     public long getTime() {
         return time;
     }
 
-    public void fetchTime(){
+    public void fetchTime() {
         SimpleDateFormat newFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
         date_str = newFormat.format(time);
     }
@@ -46,10 +48,11 @@ public class Response {
         this.date_str = date_str;
     }
 
-    public void setNotificationId(String notificationId){
+    public void setNotificationId(String notificationId) {
         this.notificationId = notificationId;
     }
-    public String getNotificationId(){
+
+    public String getNotificationId() {
         return this.notificationId;
     }
 }

@@ -39,7 +39,7 @@ public class MainController implements Initializable {
         listView.setCellFactory(new Callback<ListView<Group>, ListCell<Group>>() {
             @Override
             public ListCell<Group> call(ListView<Group> param) {
-                return new ListCell<Group>(){
+                return new ListCell<Group>() {
 
                     @Override
                     protected void updateItem(Group notificationGroup, boolean bln) {
@@ -81,7 +81,7 @@ public class MainController implements Initializable {
 
                 try {
                     groupArrayList = ServerDatabaseCommunicator.getInstance().getGroups();
-                    updateProgress(100,100);
+                    updateProgress(100, 100);
                 } catch (Exception e) {
                     e.printStackTrace();
                     updateProgress(0, 100);
@@ -139,12 +139,12 @@ public class MainController implements Initializable {
         }
     }
 
-    private void setCenterScene(FXMLLoader fxmlLoader) throws Exception{
+    private void setCenterScene(FXMLLoader fxmlLoader) throws Exception {
         Pane pane = fxmlLoader.load();
-        AnchorPane.setTopAnchor(pane,0.0);
-        AnchorPane.setBottomAnchor(pane,0.0);
-        AnchorPane.setLeftAnchor(pane,0.0);
-        AnchorPane.setRightAnchor(pane,0.0);
+        AnchorPane.setTopAnchor(pane, 0.0);
+        AnchorPane.setBottomAnchor(pane, 0.0);
+        AnchorPane.setLeftAnchor(pane, 0.0);
+        AnchorPane.setRightAnchor(pane, 0.0);
         content.getChildren().clear();
         content.getChildren().add(pane);
     }

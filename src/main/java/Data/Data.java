@@ -2,7 +2,10 @@ package Data;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.*;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -22,57 +25,56 @@ public class Data {
 
     public static Data data;
 
-   public Data(){
-      try {
-             if (Files.exists(Paths.get(FILE_NAME))) {
-              String content = new String(Files.readAllBytes(Paths.get(FILE_NAME)));
-              JSONObject mainObject = new JSONObject(content);
-              try {
-                  setSERVICE_ACCOUNT_KEY_PATH(mainObject.getString("serviceAccountKeyPath"));
-                  setWEB_API_KEY(mainObject.getString("webAPIKey"));
-                  setDYNAMIC_LINK_DOMAIN(mainObject.getString("dynamicLinkDomain"));
-                  setANDROID_APP_PACKAGE_NAME(mainObject.getString("packageName"));
-                  setSYNC_CLIENT_URL(mainObject.getString("syncClientURL"));
-                  setFIREBASE_DATABASE_URL(mainObject.getString("firebaseDatabaseURL"));
-                  setSTORAGE_BUCKET(mainObject.getString("storageBucket"));
-              } catch (Exception e) {
-                  e.printStackTrace();
-              }
-          }
-      }
-       catch (IOException | JSONException e) {
-          e.printStackTrace();
-      }
-   }
+    public Data() {
+        try {
+            if (Files.exists(Paths.get(FILE_NAME))) {
+                String content = new String(Files.readAllBytes(Paths.get(FILE_NAME)));
+                JSONObject mainObject = new JSONObject(content);
+                try {
+                    setSERVICE_ACCOUNT_KEY_PATH(mainObject.getString("serviceAccountKeyPath"));
+                    setWEB_API_KEY(mainObject.getString("webAPIKey"));
+                    setDYNAMIC_LINK_DOMAIN(mainObject.getString("dynamicLinkDomain"));
+                    setANDROID_APP_PACKAGE_NAME(mainObject.getString("packageName"));
+                    setSYNC_CLIENT_URL(mainObject.getString("syncClientURL"));
+                    setFIREBASE_DATABASE_URL(mainObject.getString("firebaseDatabaseURL"));
+                    setSTORAGE_BUCKET(mainObject.getString("storageBucket"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
-  public void saveKeys(){
-      JSONObject obj = new JSONObject();
-      obj.put("serviceAccountKeyPath", SERVICE_ACCOUNT_KEY_PATH);
-      obj.put("webAPIKey", WEB_API_KEY);
-      obj.put("dynamicLinkDomain", DYNAMIC_LINK_DOMAIN);
-      obj.put("packageName", ANDROID_APP_PACKAGE_NAME);
-      obj.put("syncClientURL", SYNC_CLIENT_URL);
-      obj.put("firebaseDatabaseURL",FIREBASE_DATABASE_URL);
-      obj.put("storageBucket",STORAGE_BUCKET);
+    public void saveKeys() {
+        JSONObject obj = new JSONObject();
+        obj.put("serviceAccountKeyPath", SERVICE_ACCOUNT_KEY_PATH);
+        obj.put("webAPIKey", WEB_API_KEY);
+        obj.put("dynamicLinkDomain", DYNAMIC_LINK_DOMAIN);
+        obj.put("packageName", ANDROID_APP_PACKAGE_NAME);
+        obj.put("syncClientURL", SYNC_CLIENT_URL);
+        obj.put("firebaseDatabaseURL", FIREBASE_DATABASE_URL);
+        obj.put("storageBucket", STORAGE_BUCKET);
 
-      try {
-          BufferedWriter out = new BufferedWriter(new FileWriter(FILE_NAME));
-          out.write(obj.toString());
-          out.close();
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter(FILE_NAME));
+            out.write(obj.toString());
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-      try {
-          String FirebaseKeysContent = new String(Files.readAllBytes(Paths.get(SERVICE_ACCOUNT_KEY_PATH)));
-          BufferedWriter out = new BufferedWriter(new FileWriter(FIREBASE_KEYS_FILE_NAME));
-          out.write(FirebaseKeysContent);
-          out.close();
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
+        try {
+            String FirebaseKeysContent = new String(Files.readAllBytes(Paths.get(SERVICE_ACCOUNT_KEY_PATH)));
+            BufferedWriter out = new BufferedWriter(new FileWriter(FIREBASE_KEYS_FILE_NAME));
+            out.write(FirebaseKeysContent);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-  }
+    }
 
     public String getSUPERVISOR_ID() {
         return SUPERVISOR_ID;
@@ -145,12 +147,15 @@ public class Data {
     public void setFIREBASE_DATABASE_URL(String FIREBASE_DATABASE_URL) {
         this.FIREBASE_DATABASE_URL = FIREBASE_DATABASE_URL;
     }
-    public String getSTORAGE_BUCKET(){
-       return STORAGE_BUCKET;
+
+    public String getSTORAGE_BUCKET() {
+        return STORAGE_BUCKET;
     }
-    public void setSTORAGE_BUCKET(String STORAGE_BUCKET){
-       this.STORAGE_BUCKET = STORAGE_BUCKET;
+
+    public void setSTORAGE_BUCKET(String STORAGE_BUCKET) {
+        this.STORAGE_BUCKET = STORAGE_BUCKET;
     }
+
     @Override
     public String toString() {
         return "Data{" +

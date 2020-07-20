@@ -4,7 +4,7 @@ public class LoginCredentials {
     private String username;
     private String password;
 
-   public static LoginCredentials credentials;
+    public static LoginCredentials credentials;
 
     public LoginCredentials(String username, String password) {
         this.username = username;

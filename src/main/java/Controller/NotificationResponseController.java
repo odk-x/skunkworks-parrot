@@ -24,12 +24,17 @@ import java.util.ResourceBundle;
 public class NotificationResponseController implements Initializable {
 
     private Notification notification;
-    @FXML private TableView tableView;
-    @FXML private Label title;
-    @FXML private Label message;
-    @FXML private Label time;
+    @FXML
+    private TableView tableView;
+    @FXML
+    private Label title;
+    @FXML
+    private Label message;
+    @FXML
+    private Label time;
     ObservableList observableList = FXCollections.observableArrayList();
-    @FXML private Pane grp_detail_pane;
+    @FXML
+    private Pane grp_detail_pane;
     private ArrayList<Response> responseArrayList = new ArrayList<>();
 
 
@@ -52,8 +57,7 @@ public class NotificationResponseController implements Initializable {
         setTableView();
     }
 
-    public void setTableView()
-    {
+    public void setTableView() {
         ObservableList<Object> responseSet = FXCollections.observableArrayList(responseArrayList);
 
         TableColumn<Notification, String> senderIdColumn = new TableColumn<>("Sender ID");
@@ -70,16 +74,16 @@ public class NotificationResponseController implements Initializable {
 
         tableView.setItems(responseSet);
         tableView.getColumns().clear();
-        tableView.getColumns().addAll(senderIdColumn,responseColumn,timeColumn);
-        tableView.setRowFactory(tv->{
+        tableView.getColumns().addAll(senderIdColumn, responseColumn, timeColumn);
+        tableView.setRowFactory(tv -> {
             TableRow<Response> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
-                if (! row.isEmpty() && event.getButton()== MouseButton.PRIMARY && event.getClickCount()==2) {
+                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     Response clickedRow = row.getItem();
                     System.out.println(clickedRow);
                 }
             });
-            return row ;
+            return row;
         });
 
     }

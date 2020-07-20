@@ -2,7 +2,7 @@ package Controller;
 
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -35,9 +35,9 @@ public class LoginPageController implements Initializable {
 
     public void configureButtonClicked() {
 
-       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Settings.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Settings.fxml"));
         try {
-          setPane(fxmlLoader.load());
+            setPane(fxmlLoader.load());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,11 +52,11 @@ public class LoginPageController implements Initializable {
         }
     }
 
-    private void setPane(Pane pane){
-        AnchorPane.setTopAnchor(pane,0.0);
-        AnchorPane.setBottomAnchor(pane,0.0);
-        AnchorPane.setLeftAnchor(pane,0.0);
-        AnchorPane.setRightAnchor(pane,0.0);
+    private void setPane(Pane pane) {
+        AnchorPane.setTopAnchor(pane, 0.0);
+        AnchorPane.setBottomAnchor(pane, 0.0);
+        AnchorPane.setLeftAnchor(pane, 0.0);
+        AnchorPane.setRightAnchor(pane, 0.0);
         centerPane.getChildren().clear();
         centerPane.getChildren().add(pane);
     }
@@ -64,14 +64,14 @@ public class LoginPageController implements Initializable {
     public void openHelpPage() {
         String url = "https://github.com/opendatakit/skunkworks-parrot/wiki";
 
-        if(Desktop.isDesktopSupported()){
+        if (Desktop.isDesktopSupported()) {
             Desktop desktop = Desktop.getDesktop();
             try {
                 desktop.browse(new URI(url));
             } catch (IOException | URISyntaxException e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             Runtime runtime = Runtime.getRuntime();
             try {
                 runtime.exec("xdg-open " + url);

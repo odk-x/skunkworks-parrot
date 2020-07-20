@@ -29,11 +29,15 @@ public class NotificationGroupController implements Initializable {
     @FXML
     private
     TableView tableView;
-    @FXML private Label groupLink;
+    @FXML
+    private Label groupLink;
     ObservableList observableList = FXCollections.observableArrayList();
-    @FXML private Button clipboardButton;
-    @FXML private Button showQRButton;
-    @FXML private Pane grp_detail_pane;
+    @FXML
+    private Button clipboardButton;
+    @FXML
+    private Button showQRButton;
+    @FXML
+    private Pane grp_detail_pane;
 
 
     NotificationGroupController(Group group) {
@@ -42,18 +46,18 @@ public class NotificationGroupController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if(group.getId().startsWith("ROLE_")||group.getId().startsWith("GROUP_")){
+        if (group.getId().startsWith("ROLE_") || group.getId().startsWith("GROUP_")) {
             grp_detail_pane.setVisible(false);
         }
         groupLink.setText(group.getGroupLink());
         setListView();
     }
 
-    private void setListView()
-    {
+    private void setListView() {
         ObservableList<Object> notificationSet = null;
         try {
-            notificationSet = FXCollections.observableArrayList(ServerDatabaseCommunicator.getInstance().getNotificationsList(group));
+            notificationSet =
+                    FXCollections.observableArrayList(ServerDatabaseCommunicator.getInstance().getNotificationsList(group));
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -73,31 +77,31 @@ public class NotificationGroupController implements Initializable {
 
         tableView.setItems(notificationSet);
         tableView.getColumns().clear();
-        tableView.getColumns().addAll(titleColumn,messageColumn,dateColumn);
-        tableView.setRowFactory(tv->{
+        tableView.getColumns().addAll(titleColumn, messageColumn, dateColumn);
+        tableView.setRowFactory(tv -> {
             TableRow<Notification> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
-                if (! row.isEmpty() && event.getButton()== MouseButton.PRIMARY && event.getClickCount()==2) {
+                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     Notification clickedRow = row.getItem();
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/NotificationResponse.fxml"));
                     fxmlLoader.setController(new NotificationResponseController(clickedRow));
                     Stage stage = new Stage();
                     stage.setTitle("Notification Responses");
                     try {
-                        stage.setScene(new Scene(fxmlLoader.load(),600,400));
+                        stage.setScene(new Scene(fxmlLoader.load(), 600, 400));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     stage.show();
                 }
             });
-            return row ;
+            return row;
         });
 
     }
 
     public void copyToClipboardClicked(MouseEvent mouseEvent) {
-        if(group.getGroupLink()!=null){
+        if (group.getGroupLink() != null) {
             final Clipboard clipboard = Clipboard.getSystemClipboard();
             final ClipboardContent content = new ClipboardContent();
             content.putString(group.getGroupLink());
@@ -112,7 +116,7 @@ public class NotificationGroupController implements Initializable {
         Stage stage = new Stage();
         stage.setTitle("Scan the QR Code");
         try {
-            stage.setScene(new Scene(fxmlLoader.load(),392,328));
+            stage.setScene(new Scene(fxmlLoader.load(), 392, 328));
         } catch (IOException e) {
             e.printStackTrace();
         }

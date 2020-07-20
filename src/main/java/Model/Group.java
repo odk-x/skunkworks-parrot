@@ -10,7 +10,7 @@ public class Group {
     private ArrayList<String> pendingRequestsList;
     private ArrayList<String> usersList;
 
-    public Group(){
+    public Group() {
 
     }
 
@@ -50,27 +50,27 @@ public class Group {
         this.groupLink = groupLink;
     }
 
-    public void setNotificationsList(ArrayList<String> notificationsList){
+    public void setNotificationsList(ArrayList<String> notificationsList) {
         this.notificationsList = notificationsList;
     }
 
-    public void setPendingRequestsList(ArrayList<String> pendingRequestsList){
+    public void setPendingRequestsList(ArrayList<String> pendingRequestsList) {
         this.pendingRequestsList = pendingRequestsList;
     }
 
-    public void setUsersList(ArrayList<String> usersList){
+    public void setUsersList(ArrayList<String> usersList) {
         this.usersList = usersList;
     }
 
-    public ArrayList<String> getNotificationsList(){
+    public ArrayList<String> getNotificationsList() {
         return this.notificationsList;
     }
 
-    public ArrayList<String> getPendingRequestsList(){
+    public ArrayList<String> getPendingRequestsList() {
         return this.pendingRequestsList;
     }
 
-    public ArrayList<String> getUsersList(){
+    public ArrayList<String> getUsersList() {
         return this.usersList;
     }
 }

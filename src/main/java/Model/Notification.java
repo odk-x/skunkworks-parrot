@@ -15,10 +15,12 @@ public class Notification {
     private String attachmentPath;
     private ArrayList<String> responseList;
 
-    public Notification(){
+    public Notification() {
 
     }
-    public Notification(String id, String title, String message, long date, String group_id, String type, String status) {
+
+    public Notification(String id, String title, String message, long date, String group_id, String type,
+                        String status) {
         this.id = id;
         this.title = title;
         this.message = message;
@@ -66,7 +68,7 @@ public class Notification {
         this.status = status;
     }
 
-    public String getDate_str(){
+    public String getDate_str() {
         return date_str;
     }
 
@@ -74,7 +76,7 @@ public class Notification {
         return date;
     }
 
-    private String getDateStr(long date){
+    private String getDateStr(long date) {
         SimpleDateFormat newFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
         return newFormat.format(date);
     }
@@ -95,19 +97,19 @@ public class Notification {
         this.id = id;
     }
 
-    public void setAttachmentPath(String attachmentPath){
+    public void setAttachmentPath(String attachmentPath) {
         this.attachmentPath = attachmentPath;
     }
 
-    public String getAttachmentPath(){
+    public String getAttachmentPath() {
         return this.attachmentPath;
     }
 
-    public void setResponseList(ArrayList<String>responseList){
+    public void setResponseList(ArrayList<String> responseList) {
         this.responseList = responseList;
     }
 
-    public ArrayList<String> getResponseList(){
+    public ArrayList<String> getResponseList() {
         return this.responseList;
     }
 }
