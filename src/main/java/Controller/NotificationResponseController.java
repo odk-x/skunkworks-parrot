@@ -16,7 +16,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import org.apache.wink.json4j.JSONException;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -49,8 +48,6 @@ public class NotificationResponseController implements Initializable {
         time.setText(notification.getDate_str());
         try {
             responseArrayList = ServerDatabaseCommunicator.getInstance().getResponsesList(notification);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }

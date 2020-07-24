@@ -10,6 +10,7 @@ import org.opendatakit.aggregate.odktables.rest.entity.Column;
 import org.opendatakit.aggregate.odktables.rest.entity.Row;
 import org.opendatakit.sync.client.SyncClient;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -70,7 +71,7 @@ public class ServerDatabaseCommunicator {
      * @throws JSONException JSON error while parsing the data
      */
 
-    public void init(String username, String password) throws IOException, JSONException {
+    public void init(@Nonnull String username, @Nonnull String password) throws IOException, JSONException {
         syncClient = new SyncClient();
         syncClient.init(getServerHost(), username, password);
         checkTables();
@@ -195,7 +196,7 @@ public class ServerDatabaseCommunicator {
     /**
      * Adds created notifications ID to corresponding Notifications List of group
      */
-    private void addNotificationToGroup(String groupId, String notificationId) throws IOException, JSONException {
+    private void addNotificationToGroup(@Nonnull String groupId, @Nonnull String notificationId) throws IOException, JSONException {
         String schemaETag = syncClient.getSchemaETagForTable(SERVER_URL, APP_ID, GROUPS_TABLE_ID);
 
         JSONObject rowObject = syncClient.getRow(SERVER_URL, APP_ID, GROUPS_TABLE_ID, schemaETag, groupId);
@@ -308,7 +309,7 @@ public class ServerDatabaseCommunicator {
      * @throws IOException   Due to input errors while calling SyncClient methods
      * @throws JSONException Due to JSON errors while parsing the data
      */
-    public Notification getNotification(String notificationId) throws IOException, JSONException {
+    public Notification getNotification(@Nonnull String notificationId) throws IOException, JSONException {
         String schemaETag = syncClient.getSchemaETagForTable(SERVER_URL, APP_ID, NOTIFICATIONS_TABLE_ID);
 
         JSONObject notificationObject = syncClient.getRow(SERVER_URL, APP_ID, NOTIFICATIONS_TABLE_ID, schemaETag,
