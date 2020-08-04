@@ -7,7 +7,6 @@ public class Group {
     private String name;
     private String groupLink;
     private ArrayList<String> notificationsList;
-    private ArrayList<String> pendingRequestsList;
     private ArrayList<String> usersList;
 
     public Group() {
@@ -54,20 +53,12 @@ public class Group {
         this.notificationsList = notificationsList;
     }
 
-    public void setPendingRequestsList(ArrayList<String> pendingRequestsList) {
-        this.pendingRequestsList = pendingRequestsList;
-    }
-
     public void setUsersList(ArrayList<String> usersList) {
         this.usersList = usersList;
     }
 
     public ArrayList<String> getNotificationsList() {
         return this.notificationsList;
-    }
-
-    public ArrayList<String> getPendingRequestsList() {
-        return this.pendingRequestsList;
     }
 
     public ArrayList<String> getUsersList() {

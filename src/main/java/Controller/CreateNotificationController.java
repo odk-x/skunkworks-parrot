@@ -184,6 +184,8 @@ public class CreateNotificationController implements Initializable {
                 send_button.setDisable(false);
                 title_field.clear();
                 message_field.clear();
+                image_path.clear();
+                imageIsSelected = false;
             });
 
             progressIndicator.progressProperty().bind(task.progressProperty());
