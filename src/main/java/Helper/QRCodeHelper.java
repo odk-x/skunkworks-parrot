@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class QRCodeHelper {
-    public BufferedImage createQRCode(String textToEncode){
+    public BufferedImage createQRCode(String textToEncode) {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         int width = 300;
         int height = 300;
@@ -50,11 +50,11 @@ public class QRCodeHelper {
         return bufferedImage;
     }
 
-    public void saveQRCodeImage(BufferedImage image, String initialName){
+    public void saveQRCodeImage(BufferedImage image, String initialName) {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Image");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", ".png",".jpg"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", ".png", ".jpg"));
         File file = fileChooser.showSaveDialog(new Stage());
         fileChooser.setInitialFileName(initialName);
         if (file != null) {

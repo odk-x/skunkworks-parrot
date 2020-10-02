@@ -1,6 +1,7 @@
 package Model;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class Notification {
     private String id;
@@ -11,8 +12,15 @@ public class Notification {
     private String type;
     private String status;
     private String date_str;
+    private String attachmentPath;
+    private ArrayList<String> responseList;
 
-    public Notification(String id, String title, String message, long date, String group_id, String type, String status) {
+    public Notification() {
+
+    }
+
+    public Notification(String id, String title, String message, long date, String group_id, String type,
+                        String status) {
         this.id = id;
         this.title = title;
         this.message = message;
@@ -39,8 +47,9 @@ public class Notification {
         this.message = message;
     }
 
-    public void setDate(int date) {
+    public void setDate(long date) {
         this.date = date;
+        this.date_str = getDateStr(date);
     }
 
     public String getGroup_id() {
@@ -59,7 +68,7 @@ public class Notification {
         this.status = status;
     }
 
-    public String getDate_str(){
+    public String getDate_str() {
         return date_str;
     }
 
@@ -67,7 +76,7 @@ public class Notification {
         return date;
     }
 
-    private String getDateStr(long date){
+    private String getDateStr(long date) {
         SimpleDateFormat newFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
         return newFormat.format(date);
     }
@@ -86,5 +95,21 @@ public class Notification {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setAttachmentPath(String attachmentPath) {
+        this.attachmentPath = attachmentPath;
+    }
+
+    public String getAttachmentPath() {
+        return this.attachmentPath;
+    }
+
+    public void setResponseList(ArrayList<String> responseList) {
+        this.responseList = responseList;
+    }
+
+    public ArrayList<String> getResponseList() {
+        return this.responseList;
     }
 }

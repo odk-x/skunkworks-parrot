@@ -1,16 +1,15 @@
 package Controller;
 
-import Data.*;
+import Data.Data;
+import Data.ServerDatabaseCommunicator;
 import Helper.QRCodeHelper;
 import Model.Group;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
@@ -22,12 +21,17 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.wink.json4j.JSONException;
 import org.json.JSONObject;
 
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 public class CreateGroupController implements Initializable {
     public TextField name_field;
@@ -43,7 +47,7 @@ public class CreateGroupController implements Initializable {
     private MainController mainController;
     private QRCodeHelper qrCodeHelper = new QRCodeHelper();
 
-    public CreateGroupController(MainController mainController){
+    public CreateGroupController(MainController mainController) {
         this.mainController = mainController;
     }
 
@@ -72,12 +76,17 @@ public class CreateGroupController implements Initializable {
                     protected Void call() {
                         updateMessage("Please Wait...");
                         updateProgress(-1, 100);
-                        groupId = createNewGroup();
+                        groupId = UUID.randomUUID().toString();
                         groupLink = createGroupLink(groupId);
                         if (groupLink != null) {
                             updateMessage("Group Link: " + groupLink);
                             updateProgress(100, 100);
-                            addGroupToDatabase(new Group(groupId,groupName,groupLink));
+                            try {
+                                ServerDatabaseCommunicator.getInstance().uploadGroup(new Group(groupId, groupName,
+                                        groupLink));
+                            } catch (JSONException | IOException e) {
+                                e.printStackTrace();
+                            }
                         } else {
                             updateMessage("There is some error in creating the group. Please try again.");
                             updateProgress(0, 100);
@@ -86,7 +95,7 @@ public class CreateGroupController implements Initializable {
                     }
                 };
                 task.setOnSucceeded(taskFinishEvent -> {
-                    if(groupLink!=null) {
+                    if (groupLink != null) {
                         clipboardButton.setVisible(true);
                         saveImageButton.setVisible(true);
                     }
@@ -99,13 +108,8 @@ public class CreateGroupController implements Initializable {
             }
         }
     }
-    private String createNewGroup() {
-        DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("group");
-        DatabaseReference pushedPostRef = groupRef.push();
-        return pushedPostRef.getKey();
-    }
 
-    private String createGroupLink( String groupId) {
+    private String createGroupLink(String groupId) {
         String link = null;
         try {
             link = createDynamicLink(groupId);
@@ -118,13 +122,13 @@ public class CreateGroupController implements Initializable {
 
     private String createDynamicLink(String groupId) {
 
-        if(Data.data == null) Data.data = new Data();
+        if (Data.data == null) Data.data = new Data();
 
         JSONObject androidInfo = new JSONObject();
         androidInfo.put("androidPackageName", Data.data.getANDROID_APP_PACKAGE_NAME());
         JSONObject dynamicLinkInfo = new JSONObject();
         dynamicLinkInfo.put("domainUriPrefix", Data.data.getDYNAMIC_LINK_DOMAIN());
-        dynamicLinkInfo.put("link", "https://odknotificatons?id="+groupId);
+        dynamicLinkInfo.put("link", "https://odknotificatons?id=" + groupId);
         dynamicLinkInfo.put("androidInfo", androidInfo);
 
         JSONObject mainObject = new JSONObject();
@@ -140,7 +144,8 @@ public class CreateGroupController implements Initializable {
         HttpResponse response;
 
         try {
-            HttpPost post = new HttpPost(Data.data.getFIREBASE_INVITES_URL());
+            String url = Data.data.getFIREBASE_INVITES_URL().trim();
+            HttpPost post = new HttpPost(url);
             StringEntity se = new StringEntity(mainObject.toString());
             post.setEntity(se);
             response = client.execute(post);
@@ -150,7 +155,7 @@ public class CreateGroupController implements Initializable {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                 StringBuilder result = new StringBuilder();
                 String line;
-                while((line = reader.readLine()) != null) {
+                while ((line = reader.readLine()) != null) {
                     result.append(line);
                 }
                 System.out.println(result.toString());
@@ -163,13 +168,13 @@ public class CreateGroupController implements Initializable {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Error"+ " Cannot Establish Connection");
+            System.out.println("Error" + " Cannot Establish Connection");
         }
         return groupLink;
     }
 
     public void copyToClipboardClicked() {
-        if(groupLink!=null){
+        if (groupLink != null) {
             final Clipboard clipboard = Clipboard.getSystemClipboard();
             final ClipboardContent content = new ClipboardContent();
             content.putString(groupLink);
@@ -179,16 +184,7 @@ public class CreateGroupController implements Initializable {
     }
 
     public void saveImageButtonClicked(MouseEvent mouseEvent) {
-        if(bufferedImage!=null) qrCodeHelper.saveQRCodeImage(bufferedImage,groupName);
-    }
-
-    private void addGroupToDatabase(Group group){
-        DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("group").child(group.getId());
-        groupRef.setValueAsync(group);
-
-        DatabaseCommunicator dc = new DatabaseCommunicator();
-        dc.insertGroup(group);
-        dc.closeConnection();
+        if (bufferedImage != null) qrCodeHelper.saveQRCodeImage(bufferedImage, groupName);
     }
 
 }

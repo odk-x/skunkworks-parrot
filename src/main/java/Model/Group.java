@@ -1,9 +1,17 @@
 package Model;
 
+import java.util.ArrayList;
+
 public class Group {
     private String id;
     private String name;
     private String groupLink;
+    private ArrayList<String> notificationsList;
+    private ArrayList<String> usersList;
+
+    public Group() {
+
+    }
 
     public Group(String id, String name) {
         this.id = id;
@@ -39,5 +47,21 @@ public class Group {
 
     public void setGroupLink(String groupLink) {
         this.groupLink = groupLink;
+    }
+
+    public void setNotificationsList(ArrayList<String> notificationsList) {
+        this.notificationsList = notificationsList;
+    }
+
+    public void setUsersList(ArrayList<String> usersList) {
+        this.usersList = usersList;
+    }
+
+    public ArrayList<String> getNotificationsList() {
+        return this.notificationsList;
+    }
+
+    public ArrayList<String> getUsersList() {
+        return this.usersList;
     }
 }
